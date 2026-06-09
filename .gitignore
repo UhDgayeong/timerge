@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+*.log
+
+# env
+.env
+.env.*
+!.env.example
+
+# Capacitor native projects (추후 출시 단계에서 생성)
+/ios
+/android

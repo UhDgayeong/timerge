@@ -14,8 +14,11 @@ metadata:
 - [x] `src/domain/calc.ts` — 계산 엔진 전체 (점심 규칙, 역산, 공휴일 처리, 주간 요약, 퇴근 역산)
 - [x] `src/domain/calc.test.ts` — 설계 시나리오 검증 테스트 24개 전부 통과 ✅
 - [x] `DESIGN.md` — 합의된 설계 문서 저장 (B방식 공휴일 표시)
-- [x] `CLAUDE.md` — 작업 종료 프로토콜 포함
-- [x] git 저장소 초기화 + 초기 커밋
+- [x] `CLAUDE.md` — 작업 종료 프로토콜 + 세션 시작 시 memory 자동 로딩 지시문 포함
+- [x] git 저장소 초기화 + GitHub public 레포 생성 및 push
+- [x] `README.md` — 이모지 포함, Claude Code 협업 가이드 + 이슈 생성 가이드 작성
+- [x] `memory/` 폴더를 레포에 포함 — 공동 작업자 컨텍스트 공유
+- [x] Bucky5683 collaborator 추가 (push 권한)
 
 ## 다음 작업 (우선순위 순)
 

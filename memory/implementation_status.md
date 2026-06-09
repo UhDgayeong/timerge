@@ -1,0 +1,30 @@
+---
+name: implementation_status
+description: "timerge 개발 현황 — 완료된 항목, 다음 작업 우선순위"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: b427f1e7-6296-40c3-81f0-d4fb5509f56c
+---
+
+## 완료
+
+- [x] 프로젝트 초기화 (React + Vite + TypeScript + Vitest, 의존성 설치)
+- [x] `src/domain/types.ts` — 전체 도메인 타입 (`DayRecord`, `WeekRecord`, `Segment`, `Settings`, `DEFAULTS`)
+- [x] `src/domain/calc.ts` — 계산 엔진 전체 (점심 규칙, 역산, 공휴일 처리, 주간 요약, 퇴근 역산)
+- [x] `src/domain/calc.test.ts` — 설계 시나리오 검증 테스트 24개 전부 통과 ✅
+- [x] `DESIGN.md` — 합의된 설계 문서 저장 (B방식 공휴일 표시)
+- [x] `CLAUDE.md` — 작업 종료 프로토콜 포함
+- [x] git 저장소 초기화 + 초기 커밋
+
+## 다음 작업 (우선순위 순)
+
+1. **DB 레이어** — `src/db/index.ts` (Dexie 스키마: weeks, days 테이블, CRUD 함수)
+2. **한국 공휴일 데이터** — `src/data/holidays.ts` (2025~2027 정적 JSON + 대체공휴일)
+3. **주간 현황 화면** — 헤더(목표/누적/남은) + 요일별 카드 + 역산 표시
+4. **일 입력 모달** — 수동 입력 폼 (근무 유형 선택, 시간 입력)
+5. **주 이동** — 이전/다음 주 네비게이션
+6. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원
+7. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일)
+8. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화
+9. **앱 스토어 출시** — Capacitor iOS/Android 래핑

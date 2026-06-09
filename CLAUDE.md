@@ -1,5 +1,14 @@
 # timerge — Claude Code 지침
 
+## 세션 시작 시 필수
+
+새 세션을 시작하면 반드시 아래 파일들을 먼저 읽고 작업을 시작한다:
+
+1. `memory/MEMORY.md` — 메모리 인덱스
+2. `memory/implementation_status.md` — 개발 현황 및 다음 작업 우선순위
+3. `memory/timerge-project.md` — 프로젝트 컨텍스트 및 핵심 계산 규칙
+4. `DESIGN.md` — 상세 설계 문서
+
 ## 프로젝트 개요
 
 한국 직장인 대상 근무시간 계산/역산 앱. 설계 전체는 [DESIGN.md](DESIGN.md) 참고.

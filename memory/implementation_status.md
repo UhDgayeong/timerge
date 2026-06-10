@@ -19,12 +19,15 @@ metadata:
 - [x] `README.md` — 이모지 포함, Claude Code 협업 가이드 + 이슈 생성 가이드 작성
 - [x] `memory/` 폴더를 레포에 포함 — 공동 작업자 컨텍스트 공유
 - [x] Bucky5683 collaborator 추가 (push 권한)
-- [x] `src/db/index.ts` — Dexie 스키마(weeks/days/holidayOverrides/settings), CRUD, 날짜 유틸, JSON 백업/복원
+- [x] `src/db/index.ts` — Dexie 스키마(weeks/days/holidayOverrides/settings/holidayCache), CRUD, 날짜 유틸, JSON 백업/복원
+- [x] `src/data/holidays.ts` — 2025~2027 정적 공휴일 fallback (대체공휴일 포함, superkts.com 기준)
+- [x] `src/services/holidaySync.ts` — Google Calendar API + DB캐시(30일) + 정적 fallback 3계층
+- [x] `src/vite-env.d.ts` — import.meta.env 타입 선언
+- [x] `.env.local` — VITE_GOOGLE_CALENDAR_API_KEY 설정 (gitignore됨)
 
 ## 다음 작업 (우선순위 순)
 
-1. **한국 공휴일 데이터** — `src/data/holidays.ts` (2025~2027 정적 JSON + 대체공휴일)
-2. **주간 현황 화면** — 헤더(목표/누적/남은) + 요일별 카드 + 역산 표시
+1. **주간 현황 화면** — 헤더(목표/누적/남은) + 요일별 카드 + 역산 표시
 3. **일 입력 모달** — 수동 입력 폼 (근무 유형 선택, 시간 입력)
 4. **주 이동** — 이전/다음 주 네비게이션
 5. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원

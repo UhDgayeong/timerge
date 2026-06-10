@@ -35,3 +35,23 @@ metadata:
 **API 키**: `.env.local`의 `VITE_GOOGLE_CALENDAR_API_KEY` (gitignore됨, 팀 내 공유 필요)  
 **캘린더 ID**: `ko.south_korea#holiday@group.v.calendar.google.com`  
 **관련 파일**: `src/services/holidaySync.ts`, `src/data/holidays.ts`
+
+---
+
+## 2026-06-10 — 주간 현황 화면 데이터 로딩 패턴
+
+**결정**: `useWeekData` 훅이 진입 시 그 주의 7일치 `DayRecord` 스텁을 **DB에 즉시 생성(upsert)** 하고, 공휴일 여부는 그때 `resolveHoliday`로 판정해 레코드에 **baked-in** 한다. 리로드는 `version` 카운터 증가로 트리거.  
+**이유**:
+- 빈 DB 첫 로드 시 주/일 레코드가 없으면 화면이 비거나 깨짐 → get-or-create가 필수
+- 공휴일 플래그를 매 렌더마다 재조회하지 않고 레코드에 박아두면, 저장(`upsertDay`) 후 리로드해도 기존 레코드를 다시 읽을 뿐 공휴일 재판정을 안 함 → **모달에서 공휴일 토글 시 day 레코드의 `isHoliday`를 직접 갱신**해야 함 (override만 쓰면 반영 안 됨). DayEditModal이 둘 다 기록하는 이유.
+- 날짜 계산은 calc.ts와 동일하게 UTC 기준 유틸 재사용 (로컬 Date 산술 금지 — 경계일 off-by-one 방지)
+
+**관련 파일**: `src/hooks/useWeekData.ts`, `src/components/WeekView.tsx`, `src/components/DayEditModal.tsx`
+
+---
+
+## 2026-06-10 — 일 입력 모달 범위 (실적만, 고정목표 보류)
+
+**결정**: DayEditModal은 **실적(`recognizedMinutes`)** + 공휴일 토글만 입력. **미래 계획값(`fixedTargetMinutes`)은 의도적으로 다음 작업으로 미룸.**  
+**이유**: 우선순위 항목이 "유형 선택 + 시각 입력"(실적)이고, 역산 핵심값인 `avgNeededPerPendingDay`는 고정목표 없이도 동작. 모달 1차 범위를 일상적 입력(매일 출퇴근 기록)에 집중. 고정목표 입력 UI는 역산 정확도 향상이 필요할 때 추가.  
+**관련 파일**: `src/components/DayEditModal.tsx`, `memory/implementation_status.md`(다음 작업 3번)

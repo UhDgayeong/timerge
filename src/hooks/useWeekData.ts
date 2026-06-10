@@ -58,6 +58,7 @@ export function useWeekData(mondayDate: string) {
         date,
         recognizedMinutes: null,
         fixedTargetMinutes: null,
+        fixedTargetManual: false,
         isHoliday,
         holidayName: name,
         segments: [],

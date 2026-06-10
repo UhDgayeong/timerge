@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import type { DayRecord, Segment, SegmentType, Settings } from '../domain/types'
-import { formatMinutes, parseClock, recognizedFromSegments } from '../domain/calc'
+import {
+  effectiveFixedTarget,
+  formatMinutes,
+  isWeekend,
+  parseClock,
+  recognizedFromSegments,
+} from '../domain/calc'
 import { setHolidayOverride, upsertDay } from '../db/index'
 
 interface Props {
@@ -57,6 +63,20 @@ function formatDateTitle(dateStr: string): string {
   return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일 (${DOW[d.getUTCDay()]})`
 }
 
+/** 분 → 시간 문자열(입력칸용). null/0이면 '' */
+function minToHoursStr(min: number | null): string {
+  return min != null ? String(min / 60) : ''
+}
+
+/** 시간 문자열 → 분(정수). 빈칸·잘못된 값이면 null */
+function hoursStrToMin(s: string): number | null {
+  const t = s.trim()
+  if (!t) return null
+  const h = Number(t)
+  if (!Number.isFinite(h) || h <= 0) return null
+  return Math.round(h * 60)
+}
+
 export default function DayEditModal({ day, settings, onClose, onSaved }: Props) {
   const [isHoliday, setIsHoliday] = useState(day.isHoliday)
   const [holidayName, setHolidayName] = useState(day.holidayName ?? '')
@@ -65,7 +85,23 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
       ? day.segments.map(toEditSegment)
       : [{ type: 'work', start: '', end: '' }],
   )
+  // 계획 목표(요일 규칙 또는 이번 주 수동값)를 시간 문자열로 프리필
+  const [targetHours, setTargetHours] = useState(
+    minToHoursStr(effectiveFixedTarget(day, settings)),
+  )
   const [saving, setSaving] = useState(false)
+
+  const isWeekday = !isWeekend(day.date)
+  const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
+  const wdRule = settings.weekdayTargets?.[wd] ?? null
+  // 요일 규칙의 인정시간(분). 출퇴근 시각 → recognizedFromSegments로 계산
+  const ruleMinutes =
+    wdRule?.startMin != null
+      ? recognizedFromSegments(
+          [{ type: 'work', startMin: wdRule.startMin, endMin: wdRule.endMin }],
+          settings.lunchMinutes,
+        )
+      : null
 
   // 라이브 인정시간 미리보기
   const liveRecognized = recognizedFromSegments(
@@ -103,17 +139,46 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
           segments: [],
           source: 'manual',
         })
-      } else {
-        // 공휴일 해제 시 override도 해제
+      } else if (hasInput) {
+        // 실적 입력 → recognizedMinutes 채움. 계획 목표 필드는 그대로 보존(...day)
         if (day.isHoliday) await setHolidayOverride(day.date, false)
         const segs = segments.map(toSegment)
         await upsertDay({
           ...day,
-          recognizedMinutes: hasInput ? recognizedFromSegments(segs, settings.lunchMinutes) : null,
+          recognizedMinutes: recognizedFromSegments(segs, settings.lunchMinutes),
           isHoliday: false,
           holidayName: null,
-          segments: hasInput ? segs : [],
+          segments: segs,
           source: 'manual',
+        })
+      } else {
+        // 실적 없음 → 계획 목표(이번 주 한정 override) 적용
+        if (day.isHoliday) await setHolidayOverride(day.date, false)
+        const entered = isWeekday ? hoursStrToMin(targetHours) : null
+        let fixedTargetMinutes: number | null
+        let fixedTargetManual: boolean
+        if (entered === ruleMinutes) {
+          // 규칙값과 같음(둘 다 null 포함) → 규칙을 그대로 따름
+          fixedTargetMinutes = null
+          fixedTargetManual = false
+        } else if (entered == null) {
+          // 규칙은 있는데 이번 주 이 날만 비움 → 미정 처리
+          fixedTargetMinutes = null
+          fixedTargetManual = true
+        } else {
+          // 이번 주 이 날만 다른 값으로 덮어씀
+          fixedTargetMinutes = entered
+          fixedTargetManual = false
+        }
+        await upsertDay({
+          ...day,
+          recognizedMinutes: null,
+          isHoliday: false,
+          holidayName: null,
+          segments: [],
+          source: 'manual',
+          fixedTargetMinutes,
+          fixedTargetManual,
         })
       }
       onSaved()
@@ -133,6 +198,8 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
         holidayName: null,
         segments: [],
         source: 'manual',
+        fixedTargetMinutes: null,
+        fixedTargetManual: false,
       })
       onSaved()
     } finally {
@@ -225,6 +292,30 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
             <div className="modal__preview">
               인정시간 <strong>{hasInput ? formatMinutes(liveRecognized) : '—'}</strong>
             </div>
+
+            {isWeekday && !hasInput && (
+              <div className="modal__plan">
+                <label className="modal__plan-label">이 날 목표시간 (계획)</label>
+                <div className="modal__plan-row">
+                  <input
+                    className="modal__plan-input"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    step={0.5}
+                    placeholder="미정"
+                    value={targetHours}
+                    onChange={(e) => setTargetHours(e.target.value)}
+                  />
+                  <span className="modal__plan-unit">시간</span>
+                </div>
+                <p className="modal__plan-hint">
+                  {ruleMinutes != null
+                    ? `요일 규칙: ${formatMinutes(ruleMinutes)} · 비우면 이번 주만 해제`
+                    : '실적을 입력하면 목표는 무시됩니다'}
+                </p>
+              </div>
+            )}
           </>
         )}
 

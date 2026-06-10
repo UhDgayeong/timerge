@@ -58,6 +58,19 @@ metadata:
 
 ---
 
+## 2026-06-10 — 요일별 목표 규칙: 출퇴근 시각 기반 설계
+
+**결정**: `weekdayTargets`에 `{ startMin, endMin }` (WeekdayRule) 저장. 인정시간은 `recognizedFromSegments`로 렌더 타임에 계산. 홈 화면 override는 `fixedTargetMinutes`(분)으로 저장(시각 없이).  
+**이유**:
+- "N시간" 숫자 대신 출퇴근 시각을 저장하면 UI가 직관적 (실제 일정처럼 보임)
+- 인정시간 = 클락 − 점심. 저장 시 계산하면 lunchMinutes 설정 변경 시 불일치. 렌더 타임 계산으로 항상 최신값 사용.
+- 홈 화면 override는 "이번 주 이 날만" 이므로 시각 불필요 — 분만 저장해 단순화.
+- `effectiveTarget()` 한 함수가 { minutes, startMin?, endMin? } 리턴 → DayCard·WeekHeader가 출퇴근 시각 조건부 표시.
+
+**관련 파일**: `src/domain/types.ts`(WeekdayRule), `src/domain/calc.ts`(effectiveTarget), `src/components/SettingsView.tsx`, `src/components/DayCard.tsx`, `src/components/WeekHeader.tsx`
+
+---
+
 ## 2026-06-10 — 주 이동 네비게이션 구조
 
 **결정**: 현재 주 월요일(`currentWeekMonday()`)을 `useMemo`로 고정하던 것을 `monday` **state**로 전환. `thisMonday`(이번 주 기준값)는 별도 memo로 유지해 "오늘로" 복귀와 "이번 주" 라벨 판정에 사용. nav 바(‹/›/오늘로)는 `loading` early-return **바깥**에 두어 주 전환 시에도 항상 보이게 함.  

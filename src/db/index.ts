@@ -173,7 +173,8 @@ export async function getSettings(): Promise<Settings> {
   if (!record) return { ...DEFAULTS }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: _id, ...settings } = record
-  return settings
+  // 구버전 레코드에 없는 필드(weekdayTargets 등)는 DEFAULTS로 보강
+  return { ...DEFAULTS, ...settings }
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {

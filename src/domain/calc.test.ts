@@ -10,6 +10,8 @@ import {
   weekGoalMinutes,
   summarizeWeek,
   departureMinutes,
+  effectiveFixedTarget,
+  effectiveTarget,
 } from './calc'
 import { DEFAULTS, type DayRecord, type WeekRecord, type Segment, type SegmentType } from './types'
 
@@ -181,6 +183,80 @@ describe('summarizeWeek', () => {
     expect(s.totalRecognizedMinutes).toBe(2400) // 1920 + 480
     expect(s.overtimeMinutes).toBe(480) // 목표 1920 초과분
     expect(s.pendingDays).toBe(0)
+  })
+})
+
+// ── 요일별 목표 규칙 (weekdayTargets) ────────────────────────
+// 2026-05-29 = 금(getUTCDay 5), 05-28 = 목
+
+// 금 10:00~15:00 규칙 (5h clock − 1h 점심 = 4h 인정)
+const FRI_RULE = { startMin: parseClock('10:00'), endMin: parseClock('15:00') }
+
+describe('effectiveFixedTarget', () => {
+  const fri = { ...DEFAULTS, weekdayTargets: { 5: FRI_RULE } }
+
+  it('요일 규칙이 미실적 평일에 적용된다', () => {
+    expect(effectiveFixedTarget(day('2026-05-29'), fri)).toBe(240) // 금 → 4h
+    expect(effectiveFixedTarget(day('2026-05-28'), fri)).toBeNull() // 목은 규칙 없음
+  })
+
+  it('홈 수동 override(fixedTargetMinutes)가 요일 규칙을 이긴다', () => {
+    expect(effectiveFixedTarget(day('2026-05-29', { fixedTargetMinutes: 360 }), fri)).toBe(360)
+  })
+
+  it('fixedTargetManual=true + null = 규칙 있어도 이번 주만 해제(미정)', () => {
+    expect(effectiveFixedTarget(day('2026-05-29', { fixedTargetManual: true }), fri)).toBeNull()
+  })
+
+  it('실적·공휴일·주말이면 목표 무관(null)', () => {
+    expect(effectiveFixedTarget(day('2026-05-29', { recognizedMinutes: 300 }), fri)).toBeNull()
+    expect(effectiveFixedTarget(day('2026-05-29', { isHoliday: true }), fri)).toBeNull()
+    expect(effectiveFixedTarget(day('2026-05-30'), fri)).toBeNull() // 토
+  })
+
+  it('effectiveTarget이 요일 규칙의 출퇴근 시각을 반환한다', () => {
+    const t = effectiveTarget(day('2026-05-29'), fri)
+    expect(t).toEqual({ minutes: 240, startMin: parseClock('10:00'), endMin: parseClock('15:00') })
+  })
+
+  it('fixedTargetMinutes override는 시각 정보 없이 분만 반환', () => {
+    const t = effectiveTarget(day('2026-05-29', { fixedTargetMinutes: 360 }), fri)
+    expect(t).toEqual({ minutes: 360 })
+  })
+})
+
+describe('summarizeWeek + 요일 규칙', () => {
+  it('목표40h·금 4h 규칙 → 월화수목 평균, 남은 = 2400−240', () => {
+    const fri = { ...DEFAULTS, weekdayTargets: { 5: FRI_RULE } }
+    const days = [
+      day('2026-05-25'),
+      day('2026-05-26'),
+      day('2026-05-27'),
+      day('2026-05-28'),
+      day('2026-05-29'), // 금 → 규칙 240 적용
+      day('2026-05-30'),
+      day('2026-05-31'),
+    ]
+    const s = summarizeWeek(week, days, fri)
+    expect(s.pendingDays).toBe(4) // 월화수목
+    expect(s.remainingMinutes).toBe(2160) // 2400 − 240
+    expect(s.avgNeededPerPendingDay).toBe(540) // 9h
+  })
+
+  it('이번 주만 금요일 해제하면 금도 미정에 합류', () => {
+    const fri = { ...DEFAULTS, weekdayTargets: { 5: FRI_RULE } }
+    const days = [
+      day('2026-05-25'),
+      day('2026-05-26'),
+      day('2026-05-27'),
+      day('2026-05-28'),
+      day('2026-05-29', { fixedTargetManual: true }), // 이번 주만 해제
+      day('2026-05-30'),
+      day('2026-05-31'),
+    ]
+    const s = summarizeWeek(week, days, fri)
+    expect(s.pendingDays).toBe(5) // 월~금 전부 미정
+    expect(s.remainingMinutes).toBe(2400)
   })
 })
 

@@ -98,6 +98,43 @@ export function holidayCount(days: DayRecord[]): number {
   return days.filter((d) => d.isHoliday && !isWeekend(d.date)).length
 }
 
+/** effectiveTarget 반환값 — 출퇴근 시각은 요일 규칙에서 온 경우에만 포함 */
+export interface EffectiveTarget {
+  minutes: number
+  /** 요일 규칙에서 온 출근 예정 시각 (자정 기준 분) */
+  startMin?: number
+  /** 요일 규칙에서 온 퇴근 예정 시각 (자정 기준 분) */
+  endMin?: number
+}
+
+/**
+ * 한 날의 계획 목표를 결정한다 (출퇴근 시각 포함). 우선순위:
+ *  1. 실적(recognizedMinutes) 있으면 → null
+ *  2. 근무가능일 아니면(공휴일·주말) → null
+ *  3. fixedTargetMinutes 있으면 → 그 값 (홈 수동 override, 시각 정보 없음)
+ *  4. fixedTargetManual=true → null (이번 주만 해제)
+ *  5. 요일 규칙 있으면 → 출퇴근 시각에서 계산한 인정시간 + 시각 정보
+ */
+export function effectiveTarget(day: DayRecord, settings: Settings): EffectiveTarget | null {
+  if (day.recognizedMinutes != null) return null
+  if (!isWorkableDay(day)) return null
+  if (day.fixedTargetMinutes != null) return { minutes: day.fixedTargetMinutes }
+  if (day.fixedTargetManual) return null
+  const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
+  const rule = settings.weekdayTargets?.[wd]
+  if (!rule || rule.startMin == null || rule.endMin == null) return null
+  const minutes = recognizedFromSegments(
+    [{ type: 'work', startMin: rule.startMin, endMin: rule.endMin }],
+    settings.lunchMinutes,
+  )
+  return { minutes, startMin: rule.startMin, endMin: rule.endMin }
+}
+
+/** effectiveTarget의 분(minutes)만 반환하는 thin wrapper. 기존 코드와 호환 유지 */
+export function effectiveFixedTarget(day: DayRecord, settings: Settings): number | null {
+  return effectiveTarget(day, settings)?.minutes ?? null
+}
+
 /** 이번 주 목표(분) = baseGoal − 공휴일수 × 하루기준시간 */
 export function weekGoalMinutes(
   baseGoalMinutes: number,
@@ -142,9 +179,10 @@ export function summarizeWeek(
     if (!d.isHoliday && d.recognizedMinutes != null) {
       totalRecognized += d.recognizedMinutes
     }
-    // 평일·비공휴일 중 실적이 없는 날 → 고정목표 or 미정
+    // 평일·비공휴일 중 실적이 없는 날 → 고정목표(요일 규칙·수동) or 미정
     if (isWorkableDay(d) && d.recognizedMinutes == null) {
-      if (d.fixedTargetMinutes != null) totalFixed += d.fixedTargetMinutes
+      const eff = effectiveFixedTarget(d, settings)
+      if (eff != null) totalFixed += eff
       else pendingDays += 1
     }
   }

@@ -256,6 +256,15 @@ body {
   color: #bbb;
 }
 
+.day-card__lunch-badge {
+  font-size: 0.68rem;
+  color: #aaa;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+  white-space: nowrap;
+}
+
 .day-card__clock {
   font-size: 0.78rem;
   color: #aaa;
@@ -581,6 +590,30 @@ body {
     background: #162312;
     color: #95de64;
   }
+
+  .settings__wd-label {
+    color: #e0e0e0;
+  }
+
+  .settings__wd-tilde,
+  .settings__wd-preview {
+    color: #888;
+  }
+
+  .day-card__lunch-badge {
+    background: #2a2a2a;
+    color: #888;
+  }
+
+  .modal__plan {
+    border-top-color: #2d2d2d;
+  }
+
+  .modal__plan-input {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+    color: #e0e0e0;
+  }
 }
 
 /* ── App header ── */
@@ -705,4 +738,92 @@ body {
   border-radius: 8px;
   padding: 0.6rem;
   margin: 0;
+}
+
+/* 요일별 목표 */
+.settings__weekdays {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.settings__wd-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings__wd-label {
+  width: 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.settings__wd-time {
+  width: 6rem;
+  padding: 0.4rem 0.5rem;
+}
+
+.settings__wd-tilde {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.settings__wd-preview {
+  font-size: 0.82rem;
+  color: #888;
+  margin-left: 0.25rem;
+}
+
+.settings__wd-save {
+  width: 100%;
+  padding: 0.6rem;
+}
+
+/* DayEditModal — 계획 목표 */
+.modal__plan {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+.modal__plan-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.modal__plan-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal__plan-input {
+  width: 5rem;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.modal__plan-unit {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.modal__plan-hint {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin: 0.4rem 0 0;
+}
+
+/* WeekHeader — 계획(예정) 요약 */
+.week-header__planned {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 0.2rem;
 }

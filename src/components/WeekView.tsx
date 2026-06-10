@@ -50,13 +50,19 @@ export default function WeekView() {
         <div className="week-view__loading">불러오는 중...</div>
       ) : (
         <>
-          <WeekHeader week={data.week} summary={data.summary} days={data.days} />
+          <WeekHeader
+            week={data.week}
+            summary={data.summary}
+            days={data.days}
+            settings={data.settings}
+          />
           <div className="day-list">
             {data.days.map((day) => (
               <DayCard
                 key={day.id}
                 day={day}
                 isToday={day.date === today}
+                settings={data.settings}
                 onClick={() => setEditDay(day)}
               />
             ))}

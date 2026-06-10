@@ -24,13 +24,20 @@ metadata:
 - [x] `src/services/holidaySync.ts` — Google Calendar API + DB캐시(30일) + 정적 fallback 3계층
 - [x] `src/vite-env.d.ts` — import.meta.env 타입 선언
 - [x] `.env.local` — VITE_GOOGLE_CALENDAR_API_KEY 설정 (gitignore됨)
+- [x] `src/hooks/useWeekData.ts` — 주 get-or-create + 7일 스텁 + 공휴일 플래그 주입
+- [x] `src/components/WeekHeader.tsx` — 누적/목표/남은 + 평균 필요시간 + 초과/달성 배지
+- [x] `src/components/DayCard.tsx` — 요일 카드 (완료·공휴일·예정·미정·주말 상태)
+- [x] `src/components/WeekView.tsx` — 주간 현황 메인 화면
+- [x] `src/index.css` — 전체 스타일 (다크모드 포함)
+- [x] `src/components/DayEditModal.tsx` — 일 입력 모달 (구간 추가/삭제, 유형 선택, 시각 입력, 공휴일 토글, 라이브 인정시간 미리보기). DayCard 클릭 → 모달 → 저장 시 useWeekData.reload()로 갱신
+- [x] `useWeekData`에 `reload()` 추가 (version 카운터로 재조회)
 
 ## 다음 작업 (우선순위 순)
 
-1. **주간 현황 화면** — 헤더(목표/누적/남은) + 요일별 카드 + 역산 표시
-3. **일 입력 모달** — 수동 입력 폼 (근무 유형 선택, 시간 입력)
-4. **주 이동** — 이전/다음 주 네비게이션
-5. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원
-6. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일)
-7. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화
-8. **앱 스토어 출시** — Capacitor iOS/Android 래핑
+1. **주 이동** — 이전/다음 주 네비게이션 (currentWeekMonday 고정 → state로)
+2. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원
+3. **고정목표(fixedTargetMinutes) 입력** — 미래 날짜 "이 날은 N시간" 계획값. 현재 모달은 실적(recognizedMinutes)만 입력. 역산 정확도 향상에 필요
+4. **마지막 근무일 퇴근 시각 역산** — 출근시각 입력 시 헤더에 "N시 이후 퇴근 가능" (departureMinutes 활용)
+5. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일)
+6. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화
+7. **앱 스토어 출시** — Capacitor iOS/Android 래핑

@@ -4,6 +4,7 @@ import type { DayRecord } from '../domain/types'
 interface Props {
   day: DayRecord
   isToday: boolean
+  onClick: () => void
 }
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토']
@@ -23,7 +24,7 @@ function formatDateLabel(dateStr: string): string {
   return `${m}/${day} ${dow}`
 }
 
-export default function DayCard({ day, isToday }: Props) {
+export default function DayCard({ day, isToday, onClick }: Props) {
   const weekend = isWeekend(day.date)
 
   let cardClass = 'day-card'
@@ -65,13 +66,13 @@ export default function DayCard({ day, isToday }: Props) {
       : null
 
   return (
-    <div className={cardClass}>
+    <button type="button" className={cardClass} onClick={onClick}>
       <div className="day-card__date">{formatDateLabel(day.date)}</div>
       <div className="day-card__body">
         <span className="day-card__time">{timeDisplay}</span>
         {typeLabel && <span className="day-card__label">{typeLabel}</span>}
       </div>
       {clockDisplay && <div className="day-card__clock">{clockDisplay}</div>}
-    </div>
+    </button>
   )
 }

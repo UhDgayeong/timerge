@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { DayRecord, Settings, WeekRecord } from '../domain/types'
 import type { WeekSummary } from '../domain/calc'
 import { summarizeWeek } from '../domain/calc'
@@ -21,6 +21,9 @@ export interface WeekData {
 export function useWeekData(mondayDate: string) {
   const [data, setData] = useState<WeekData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [version, setVersion] = useState(0)
+
+  const reload = useCallback(() => setVersion((v) => v + 1), [])
 
   useEffect(() => {
     let cancelled = false
@@ -84,7 +87,7 @@ export function useWeekData(mondayDate: string) {
     return () => {
       cancelled = true
     }
-  }, [mondayDate])
+  }, [mondayDate, version])
 
-  return { data, loading }
+  return { data, loading, reload }
 }

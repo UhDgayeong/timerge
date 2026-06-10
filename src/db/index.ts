@@ -10,12 +10,24 @@ export interface HolidayOverride {
   updatedAt: number
 }
 
+/** Google Calendar API로 받아온 공휴일 캐시 */
+export interface HolidayCacheEntry {
+  /** primary key "2026-05-25" */
+  date: string
+  name: string
+  /** 연도별 일괄 조회용 인덱스 */
+  year: number
+  /** 이 연도 전체를 마지막으로 동기화한 시각 */
+  syncedAt: number
+}
+
 type SettingsRecord = Settings & { id: 1 }
 
 class TimergeDB extends Dexie {
   weeks!: Table<WeekRecord>
   days!: Table<DayRecord>
   holidayOverrides!: Table<HolidayOverride>
+  holidayCache!: Table<HolidayCacheEntry>
   settings!: Table<SettingsRecord>
 
   constructor() {
@@ -25,6 +37,9 @@ class TimergeDB extends Dexie {
       days: 'id, weekId, date',
       holidayOverrides: 'date',
       settings: 'id',
+    })
+    this.version(2).stores({
+      holidayCache: 'date, year',
     })
   }
 }

@@ -31,13 +31,13 @@ metadata:
 - [x] `src/index.css` — 전체 스타일 (다크모드 포함)
 - [x] `src/components/DayEditModal.tsx` — 일 입력 모달 (구간 추가/삭제, 유형 선택, 시각 입력, 공휴일 토글, 라이브 인정시간 미리보기). DayCard 클릭 → 모달 → 저장 시 useWeekData.reload()로 갱신
 - [x] `useWeekData`에 `reload()` 추가 (version 카운터로 재조회)
+- [x] **주 이동 네비게이션** — `WeekView`의 `monday`를 state로 전환, `addDays(m, ±7)`로 이전/다음 주 이동. ‹ / › 버튼 + 현재 주 아닐 때 "오늘로" 복귀 버튼(현재 주면 "이번 주" 라벨). 로딩 중에도 nav 바 유지(주 전환 깜빡임 방지). `.week-nav` 스타일 + 다크모드 추가
 
 ## 다음 작업 (우선순위 순)
 
-1. **주 이동** — 이전/다음 주 네비게이션 (currentWeekMonday 고정 → state로)
-2. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원
-3. **고정목표(fixedTargetMinutes) 입력** — 미래 날짜 "이 날은 N시간" 계획값. 현재 모달은 실적(recognizedMinutes)만 입력. 역산 정확도 향상에 필요
-4. **마지막 근무일 퇴근 시각 역산** — 출근시각 입력 시 헤더에 "N시 이후 퇴근 가능" (departureMinutes 활용)
-5. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일)
-6. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화
-7. **앱 스토어 출시** — Capacitor iOS/Android 래핑
+1. **설정 화면** — 기본 주간 목표 변경, JSON 백업/복원
+2. **고정목표(fixedTargetMinutes) 입력** — 미래 날짜 "이 날은 N시간" 계획값. 현재 모달은 실적(recognizedMinutes)만 입력. 역산 정확도 향상에 필요
+3. **마지막 근무일 퇴근 시각 역산** — 출근시각 입력 시 헤더에 "N시 이후 퇴근 가능" (departureMinutes 활용)
+4. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일)
+5. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화
+6. **앱 스토어 출시** — Capacitor iOS/Android 래핑

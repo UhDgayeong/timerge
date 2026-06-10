@@ -55,3 +55,15 @@ metadata:
 **결정**: DayEditModal은 **실적(`recognizedMinutes`)** + 공휴일 토글만 입력. **미래 계획값(`fixedTargetMinutes`)은 의도적으로 다음 작업으로 미룸.**  
 **이유**: 우선순위 항목이 "유형 선택 + 시각 입력"(실적)이고, 역산 핵심값인 `avgNeededPerPendingDay`는 고정목표 없이도 동작. 모달 1차 범위를 일상적 입력(매일 출퇴근 기록)에 집중. 고정목표 입력 UI는 역산 정확도 향상이 필요할 때 추가.  
 **관련 파일**: `src/components/DayEditModal.tsx`, `memory/implementation_status.md`(다음 작업 3번)
+
+---
+
+## 2026-06-10 — 주 이동 네비게이션 구조
+
+**결정**: 현재 주 월요일(`currentWeekMonday()`)을 `useMemo`로 고정하던 것을 `monday` **state**로 전환. `thisMonday`(이번 주 기준값)는 별도 memo로 유지해 "오늘로" 복귀와 "이번 주" 라벨 판정에 사용. nav 바(‹/›/오늘로)는 `loading` early-return **바깥**에 두어 주 전환 시에도 항상 보이게 함.  
+**이유**:
+- 주 전환은 `setMonday(m => addDays(m, ±7))` 한 줄. UTC 기준 `addDays` 재사용(로컬 Date 산술 금지 원칙 유지).
+- nav를 loading 분기 안에 두면 주를 넘길 때마다 "불러오는 중"이 통째로 화면을 덮어 nav까지 사라짐 → 깜빡임/연타 불가. 그래서 nav는 항상 렌더하고 헤더+리스트 영역만 로딩 표시로 교체.
+- `today` 강조는 실제 오늘 날짜 기준이라 다른 주를 보면 자연히 강조 없음(의도된 동작).
+
+**관련 파일**: `src/components/WeekView.tsx`, `src/index.css`(`.week-nav`)

@@ -26,6 +26,49 @@ body {
   color: #888;
 }
 
+/* ── WeekNav ── */
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.week-nav__btn {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.week-nav__btn:hover {
+  background: #ebebeb;
+}
+
+.week-nav__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #888;
+}
+
+.week-nav__today {
+  background: #1677ff;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* ── WeekHeader ── */
 
 .week-header {
@@ -407,6 +450,15 @@ body {
 @media (prefers-color-scheme: dark) {
   .week-header {
     background: #0d0d1a;
+  }
+
+  .week-nav__btn {
+    background: #2a2a2a;
+    color: #ccc;
+  }
+
+  .week-nav__btn:hover {
+    background: #333;
   }
 
   .day-card {

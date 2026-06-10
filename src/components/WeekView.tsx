@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { currentWeekMonday } from '../db/index'
+import { addDays, currentWeekMonday } from '../db/index'
 import { useWeekData } from '../hooks/useWeekData'
 import type { DayRecord } from '../domain/types'
 import DayCard from './DayCard'
@@ -12,41 +12,68 @@ function localTodayStr(): string {
 }
 
 export default function WeekView() {
-  const monday = useMemo(() => currentWeekMonday(), [])
+  const thisMonday = useMemo(() => currentWeekMonday(), [])
   const today = useMemo(() => localTodayStr(), [])
+  const [monday, setMonday] = useState(thisMonday)
   const { data, loading, reload } = useWeekData(monday)
   const [editDay, setEditDay] = useState<DayRecord | null>(null)
 
-  if (loading || !data) {
-    return <div className="week-view__loading">불러오는 중...</div>
-  }
-
-  const { week, days, summary, settings } = data
+  const isCurrentWeek = monday === thisMonday
 
   return (
     <div className="week-view">
-      <WeekHeader week={week} summary={summary} days={days} />
-      <div className="day-list">
-        {days.map((day) => (
-          <DayCard
-            key={day.id}
-            day={day}
-            isToday={day.date === today}
-            onClick={() => setEditDay(day)}
-          />
-        ))}
-      </div>
+      <nav className="week-nav">
+        <button
+          className="week-nav__btn"
+          onClick={() => setMonday((m) => addDays(m, -7))}
+          aria-label="이전 주"
+        >
+          ‹
+        </button>
+        {isCurrentWeek ? (
+          <span className="week-nav__label">이번 주</span>
+        ) : (
+          <button className="week-nav__today" onClick={() => setMonday(thisMonday)}>
+            오늘로
+          </button>
+        )}
+        <button
+          className="week-nav__btn"
+          onClick={() => setMonday((m) => addDays(m, 7))}
+          aria-label="다음 주"
+        >
+          ›
+        </button>
+      </nav>
 
-      {editDay && (
-        <DayEditModal
-          day={editDay}
-          settings={settings}
-          onClose={() => setEditDay(null)}
-          onSaved={() => {
-            setEditDay(null)
-            reload()
-          }}
-        />
+      {loading || !data ? (
+        <div className="week-view__loading">불러오는 중...</div>
+      ) : (
+        <>
+          <WeekHeader week={data.week} summary={data.summary} days={data.days} />
+          <div className="day-list">
+            {data.days.map((day) => (
+              <DayCard
+                key={day.id}
+                day={day}
+                isToday={day.date === today}
+                onClick={() => setEditDay(day)}
+              />
+            ))}
+          </div>
+
+          {editDay && (
+            <DayEditModal
+              day={editDay}
+              settings={data.settings}
+              onClose={() => setEditDay(null)}
+              onSaved={() => {
+                setEditDay(null)
+                reload()
+              }}
+            />
+          )}
+        </>
       )}
     </div>
   )

@@ -21,6 +21,13 @@
 3. `memory/decisions.md` — **왜 이렇게 만들었는가** (기술 선택 근거, 히스토리)
 4. `DESIGN.md` — 상세 설계 문서 (규칙 전체 레퍼런스)
 
+## 할 일 확인 시
+
+사용자가 할 일·태스크·다음 작업을 물어보면 아래 두 곳을 모두 확인하고 종합해서 답한다:
+
+1. `memory/implementation_status.md` — 개발 우선순위 목록
+2. `gh issue list --state open` — GitHub 이슈 (버그·개선 요청 등)
+
 ---
 
 ## memory/ 폴더 구조

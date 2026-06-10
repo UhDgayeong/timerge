@@ -541,4 +541,168 @@ body {
     background: #2a2a2a;
     color: #aaa;
   }
+
+  .app-header__title {
+    color: #e0e0e0;
+  }
+
+  .app-header__settings {
+    color: #aaa;
+  }
+
+  .app-header__settings:hover {
+    background: #2a2a2a;
+  }
+
+  .settings__title {
+    color: #e0e0e0;
+  }
+
+  .settings__back {
+    color: #ccc;
+  }
+
+  .settings__section {
+    background: #1c1c1c;
+    border-color: #2d2d2d;
+  }
+
+  .settings__section-title {
+    color: #e0e0e0;
+  }
+
+  .settings__input {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+    color: #e0e0e0;
+  }
+
+  .settings__status {
+    background: #162312;
+    color: #95de64;
+  }
+}
+
+/* ── App header ── */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.app-header__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1a1a2e;
+}
+
+.app-header__settings {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 8px;
+  color: #888;
+  cursor: pointer;
+}
+
+.app-header__settings:hover {
+  background: #f0f0f0;
+}
+
+/* ── SettingsView ── */
+
+.settings__header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.settings__back {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #555;
+  cursor: pointer;
+  padding: 0 0.4rem 0 0;
+}
+
+.settings__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.settings__section {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.settings__section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem;
+}
+
+.settings__hint {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.settings__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings__input {
+  width: 5rem;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.settings__unit {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.settings__save {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.6rem 1.1rem;
+}
+
+.settings__row--data {
+  gap: 0.5rem;
+}
+
+.settings__data-btn {
+  flex: 1;
+  padding: 0.7rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.settings__status {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #389e0d;
+  background: #f6ffed;
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin: 0;
 }

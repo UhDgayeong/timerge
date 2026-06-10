@@ -116,6 +116,24 @@ export async function updateWeekGoal(id: string, baseGoalMinutes: number): Promi
   await db.weeks.update(id, { baseGoalMinutes, updatedAt: Date.now() })
 }
 
+/**
+ * 기본 목표를 바꿀 때, 아직 이전 기본값을 그대로 쓰던 주들을 새 기본값으로 옮긴다.
+ * 사용자가 개별 변경한 주(목표가 oldDefault와 다른 주)는 건드리지 않는다.
+ * @returns 갱신된 주 수
+ */
+export async function reassignWeeksOnDefault(
+  oldDefault: number,
+  newDefault: number,
+): Promise<number> {
+  if (oldDefault === newDefault) return 0
+  // baseGoalMinutes는 인덱스가 아니라 where() 불가 → 전체 로드 후 JS 필터
+  const stale = (await db.weeks.toArray()).filter((w) => w.baseGoalMinutes === oldDefault)
+  if (stale.length === 0) return 0
+  const now = Date.now()
+  await db.weeks.bulkPut(stale.map((w) => ({ ...w, baseGoalMinutes: newDefault, updatedAt: now })))
+  return stale.length
+}
+
 // ── Day CRUD ──────────────────────────────────────────────────────
 
 export async function getDaysForWeek(weekId: string): Promise<DayRecord[]> {

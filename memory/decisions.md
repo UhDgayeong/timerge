@@ -92,3 +92,15 @@ metadata:
 - `today` 강조는 실제 오늘 날짜 기준이라 다른 주를 보면 자연히 강조 없음(의도된 동작).
 
 **관련 파일**: `src/components/WeekView.tsx`, `src/index.css`(`.week-nav`)
+
+---
+
+## 2026-06-11 — 퇴근 역산: 부분 입력(출근만) segments 보존
+
+**결정**: DayEditModal에서 출근만 입력하고 퇴근은 비워도 segments를 DB에 보존(recognizedMinutes=null 유지). 기존에는 완전 입력(출퇴근 둘 다)이 없으면 segments를 `[]`로 초기화했음.
+
+**이유**: 퇴근 역산 배너(`calcLastDayDeparture`)는 마지막 근무가능일의 `segments`에서 `clockInMin`을 읽는다. 부분 입력을 버리면 사용자가 출근을 찍어도 배너가 절대 뜨지 않는다.
+
+**주의**: `liveRecognized` 미리보기는 endMin=null이면 `-60분(-1시간)`으로 나왔는데, 부분 입력 감지 시 "퇴근 입력 후 계산"으로 대체 표시.
+
+**관련 파일**: `src/components/DayEditModal.tsx`(hasPartialInput), `src/components/WeekHeader.tsx`, `src/domain/calc.ts`(lastWorkableDay, calcLastDayDeparture)

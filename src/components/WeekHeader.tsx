@@ -40,9 +40,12 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
   // 계획(고정목표)이 걸린 미실적 평일 — "금 10:00~15:00 · 4시간" 식으로 안내
   // 마지막 근무일 퇴근 역산
   const lastDay = lastWorkableDay(days)
+  // remainingMinutes = goal - recognized - totalFixed (마지막 날 고정목표 포함).
+  // 퇴근 역산은 "마지막 날에 얼마나 일해야 하나"이므로, 마지막 날 자신의 고정목표를 다시 더한다.
+  const lastDayFixed = lastDay != null ? (effectiveFixedTarget(lastDay, settings) ?? 0) : 0
   const departureInfo =
     lastDay != null
-      ? calcLastDayDeparture(lastDay, summary.remainingMinutes, settings.lunchMinutes)
+      ? calcLastDayDeparture(lastDay, summary.remainingMinutes + lastDayFixed, settings.lunchMinutes)
       : null
 
   const plannedDays = days

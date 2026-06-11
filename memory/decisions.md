@@ -95,6 +95,16 @@ metadata:
 
 ---
 
+## 2026-06-11 — 퇴근 역산: remainingMinutes 보정 (lastDayFixed 재가산)
+
+**결정**: `WeekHeader`에서 `calcLastDayDeparture`에 넘기는 remaining = `summary.remainingMinutes + effectiveFixedTarget(lastDay)`.
+
+**이유**: `summarizeWeek`의 `remainingMinutes = goal - recognized - totalFixed`에는 마지막 날 자신의 고정목표도 차감된다. 이 값을 그대로 퇴근 역산에 쓰면, "마지막 날에 얼마나 일해야 하나"에서 이미 빠진 몫을 또 빼는 이중 차감이 된다. → 마지막 날 고정목표만큼 출발 시각이 앞당겨지는 버그(12:55가 17:55가 되어야 할 상황에서 일찍 나옴). 보정 후 `summary.remainingMinutes + lastDayFixed`가 곧 "마지막 날에 필요한 실근무 분".
+
+**관련 파일**: `src/components/WeekHeader.tsx`
+
+---
+
 ## 2026-06-11 — 퇴근 역산: 부분 입력(출근만) segments 보존
 
 **결정**: DayEditModal에서 출근만 입력하고 퇴근은 비워도 segments를 DB에 보존(recognizedMinutes=null 유지). 기존에는 완전 입력(출퇴근 둘 다)이 없으면 segments를 `[]`로 초기화했음.

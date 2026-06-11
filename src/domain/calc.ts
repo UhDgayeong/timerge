@@ -1,4 +1,4 @@
-import type { Segment, DayRecord, WeekRecord, Settings } from './types'
+import type { Segment, SegmentType, DayRecord, WeekRecord, Settings } from './types'
 
 const MIN_PER_DAY = 24 * 60
 const LEAVE_FULL = 480 // 연차 8h

@@ -4,6 +4,7 @@ import { useWeekData } from '../hooks/useWeekData'
 import type { DayRecord } from '../domain/types'
 import DayCard from './DayCard'
 import DayEditModal from './DayEditModal'
+import OcrImportModal from './OcrImportModal'
 import WeekHeader from './WeekHeader'
 
 function localTodayStr(): string {
@@ -17,6 +18,7 @@ export default function WeekView() {
   const [monday, setMonday] = useState(thisMonday)
   const { data, loading, reload } = useWeekData(monday)
   const [editDay, setEditDay] = useState<DayRecord | null>(null)
+  const [showOcr, setShowOcr] = useState(false)
 
   const isCurrentWeek = monday === thisMonday
 
@@ -56,6 +58,11 @@ export default function WeekView() {
             days={data.days}
             settings={data.settings}
           />
+          <div className="week-view__ocr-row">
+            <button className="btn btn--ocr" onClick={() => setShowOcr(true)}>
+              📷 스크린샷으로 입력
+            </button>
+          </div>
           <div className="day-list">
             {data.days.map((day) => (
               <DayCard
@@ -75,6 +82,18 @@ export default function WeekView() {
               onClose={() => setEditDay(null)}
               onSaved={() => {
                 setEditDay(null)
+                reload()
+              }}
+            />
+          )}
+
+          {showOcr && (
+            <OcrImportModal
+              monday={monday}
+              days={data.days}
+              onClose={() => setShowOcr(false)}
+              onSaved={() => {
+                setShowOcr(false)
                 reload()
               }}
             />

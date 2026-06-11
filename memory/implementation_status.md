@@ -47,8 +47,10 @@ metadata:
 - [x] **요일별 목표 시간 입력 UI 너비 수정** — `settings__wd-time` width 6rem → 8.5rem / min-width 7.5rem. 한국어 로케일에서 "오전 10:00" 형식이 잘려 보이던 문제 해결.
 - [x] **CSS 변수 전환 (다크모드 통합)** — 하드코딩 색상값을 `:root` CSS 변수 (~25개)로 전환. `@media (prefers-color-scheme: dark)` override를 `:root` 변수 재정의 방식으로 통합. 설정 화면 희멀건 색상 문제 및 누락 selector 문제 근본 해결.
 
+- [x] **OCR 입력 (Phase 1.5)** — Tesseract.js(kor+eng) + FLEX 텍스트 파서 + OcrImportModal. 여러 장 업로드 → 날짜 병합 → 검토 편집 → 저장. ⚠️ 배지 인식 실패 시 수동 보완. (이슈 #4 클로즈)
+
 ## 다음 작업 (우선순위 순)
 
-1. **Phase 1.5** — OCR 입력 (Tesseract.js 웹, ML Kit 모바일, 이슈 #4)
-3. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화 (이슈 #5)
-4. **앱 스토어 출시** — Capacitor iOS/Android 래핑 (이슈 #6)
+1. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화 (이슈 #5)
+2. **앱 스토어 출시** — Capacitor iOS/Android 래핑 (이슈 #6)
+3. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

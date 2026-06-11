@@ -71,6 +71,18 @@ metadata:
 
 ---
 
+## 2026-06-11 — 반차 분리 + 휴게 차감 명시화
+
+**결정**: `halfday` → `halfday-am` / `halfday-pm` 분리. `Segment`에 `lunchExcluded?: boolean` 추가. 기존 `halfday` 레거시 데이터는 타입 유니온에 유지(위치 기반 자동 판단 레거시 경로).
+
+**오전반차+근무 점심 규칙**: 오전반차 `lunchExcluded=true`면 점심을 "흡수" → 같은 날 근무 구간에서 별도 차감 없음. 오전반차(09:00~14:00) + 오후근무(14:00~18:30) = 240+270 = **510분** (FLEX 실데이터와 일치).
+
+**DayCard 배지 수정**: 기존에 `recognizedMinutes != null`이면 무조건 "휴게 1시간 제외" 배지 표시하던 것을 `wasLunchDeducted(segments)` 실제 차감 여부로 변경. 오후반차만 있는 날은 배지 안 뜸.
+
+**관련 파일**: `src/domain/types.ts`, `src/domain/calc.ts`(wasLunchDeducted), `src/components/DayEditModal.tsx`, `src/components/DayCard.tsx`
+
+---
+
 ## 2026-06-10 — 주 이동 네비게이션 구조
 
 **결정**: 현재 주 월요일(`currentWeekMonday()`)을 `useMemo`로 고정하던 것을 `monday` **state**로 전환. `thisMonday`(이번 주 기준값)는 별도 memo로 유지해 "오늘로" 복귀와 "이번 주" 라벨 판정에 사용. nav 바(‹/›/오늘로)는 `loading` early-return **바깥**에 두어 주 전환 시에도 항상 보이게 함.  

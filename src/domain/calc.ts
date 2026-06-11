@@ -42,7 +42,7 @@ export function formatClock(min: number): string {
 
 /**
  * 휴가 구간이 모든 근무 구간보다 시간상 앞이면(= 오전 휴가) 점심이 이미 흡수된 것으로 본다.
- * → 그날 추가 근무에는 점심을 차감하지 않는다.
+ * lunchExcluded가 없는 레거시 데이터에서만 사용.
  */
 function morningLeaveAbsorbsLunch(work: Segment[], leave: Segment[]): boolean {
   const workStarts = work.map((w) => w.startMin).filter((v): v is number => v != null)
@@ -51,17 +51,22 @@ function morningLeaveAbsorbsLunch(work: Segment[], leave: Segment[]): boolean {
   return leave.some((l) => l.endMin != null && l.endMin <= earliestWork)
 }
 
+function isHalfdayType(type: SegmentType): boolean {
+  return type === 'halfday-am' || type === 'halfday-pm' || type === 'halfday'
+}
+
 /**
  * 세그먼트로부터 하루 인정시간(분)을 계산한다 (수동 입력 경로).
- * - 연차=480, 반차=240
+ * - 연차=480, 반차(오전/오후/레거시)=240
  * - 근무/외근 = (퇴근 − 출근)
- * - 점심 60분(lunchMinutes)은 근무가 있으면 하루 1회 차감. 단 오전 휴가가 흡수한 경우 면제.
+ * - 점심(lunchMinutes): lunchExcluded가 명시된 새 데이터는 명시적 규칙 사용,
+ *   없는 레거시 데이터는 위치 기반 자동 판단(morningLeaveAbsorbsLunch).
  *
  * OCR 경로는 FLEX 배지값을 recognizedMinutes에 직접 넣으므로 이 함수를 쓰지 않는다.
  */
 export function recognizedFromSegments(segments: Segment[], lunchMinutes = 60): number {
   const work = segments.filter((s) => s.type === 'work' || s.type === 'field')
-  const leave = segments.filter((s) => s.type === 'annual' || s.type === 'halfday')
+  const leave = segments.filter((s) => s.type === 'annual' || isHalfdayType(s.type))
 
   let total = 0
   for (const s of leave) total += s.type === 'annual' ? LEAVE_FULL : LEAVE_HALF
@@ -70,10 +75,37 @@ export function recognizedFromSegments(segments: Segment[], lunchMinutes = 60): 
     total += minutesBetween(s.startMin, s.endMin)
   }
 
-  if (work.length > 0 && !morningLeaveAbsorbsLunch(work, leave)) {
-    total -= lunchMinutes
+  const hasExplicitLunch = segments.some((s) => s.lunchExcluded !== undefined)
+  if (hasExplicitLunch) {
+    // 오전반차가 lunchExcluded=true면 점심을 흡수 → 근무 구간에서 차감 안 함
+    const halfdayAbsorbs = segments.some(
+      (s) => (s.type === 'halfday-am' || s.type === 'halfday') && s.lunchExcluded,
+    )
+    const workDeducts =
+      !halfdayAbsorbs && work.length > 0 && work.some((s) => s.lunchExcluded)
+    if (workDeducts) total -= lunchMinutes
+  } else {
+    // 레거시: 위치 기반 자동 판단
+    if (work.length > 0 && !morningLeaveAbsorbsLunch(work, leave)) {
+      total -= lunchMinutes
+    }
   }
+
   return total
+}
+
+/** 세그먼트 기준으로 실제 점심이 차감됐는지 여부 (DayCard 배지용) */
+export function wasLunchDeducted(segments: Segment[]): boolean {
+  const work = segments.filter((s) => s.type === 'work' || s.type === 'field')
+  const leave = segments.filter((s) => s.type === 'annual' || isHalfdayType(s.type))
+  const hasExplicitLunch = segments.some((s) => s.lunchExcluded !== undefined)
+  if (hasExplicitLunch) {
+    const halfdayAbsorbs = segments.some(
+      (s) => (s.type === 'halfday-am' || s.type === 'halfday') && s.lunchExcluded,
+    )
+    return !halfdayAbsorbs && work.length > 0 && work.some((s) => s.lunchExcluded)
+  }
+  return work.length > 0 && !morningLeaveAbsorbsLunch(work, leave)
 }
 
 // ── 주/요일 ──────────────────────────────────────────────────

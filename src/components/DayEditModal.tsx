@@ -22,7 +22,8 @@ const TYPE_OPTIONS: { value: SegmentType; label: string }[] = [
   { value: 'work', label: '근무' },
   { value: 'field', label: '외근' },
   { value: 'annual', label: '연차' },
-  { value: 'halfday', label: '반차' },
+  { value: 'halfday-am', label: '오전반차' },
+  { value: 'halfday-pm', label: '오후반차' },
 ]
 
 /** 시각 입력이 필요한 유형 (연차는 종일 고정이라 시각 불필요) */
@@ -30,17 +31,31 @@ function needsTime(type: SegmentType): boolean {
   return type !== 'annual'
 }
 
+/** 휴게 체크박스 표시 여부 */
+function showsLunchCheckbox(type: SegmentType): boolean {
+  return type !== 'annual'
+}
+
+/** 유형별 휴게 차감 디폴트 */
+function defaultLunchExcluded(type: SegmentType): boolean {
+  return type === 'work' || type === 'field' || type === 'halfday-am'
+}
+
 interface EditSegment {
   type: SegmentType
   start: string // "HH:MM" or ""
   end: string
+  lunchExcluded: boolean
 }
 
 function toEditSegment(s: Segment): EditSegment {
+  // 레거시 halfday → halfday-am으로 표시
+  const type = s.type === 'halfday' ? 'halfday-am' : s.type
   return {
-    type: s.type,
+    type,
     start: s.startMin != null ? minToClock(s.startMin) : '',
     end: s.endMin != null ? minToClock(s.endMin) : '',
+    lunchExcluded: s.lunchExcluded ?? defaultLunchExcluded(type),
   }
 }
 
@@ -55,6 +70,7 @@ function toSegment(es: EditSegment): Segment {
     type: es.type,
     startMin: es.start ? parseClock(es.start) : null,
     endMin: es.end ? parseClock(es.end) : null,
+    lunchExcluded: es.lunchExcluded,
   }
 }
 
@@ -83,7 +99,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
   const [segments, setSegments] = useState<EditSegment[]>(
     day.segments.length > 0
       ? day.segments.map(toEditSegment)
-      : [{ type: 'work', start: '', end: '' }],
+      : [{ type: 'work', start: '', end: '', lunchExcluded: true }],
   )
   // 계획 목표(요일 규칙 또는 이번 주 수동값)를 시간 문자열로 프리필
   const [targetHours, setTargetHours] = useState(
@@ -115,11 +131,21 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
   })
 
   function updateSegment(idx: number, patch: Partial<EditSegment>) {
-    setSegments((prev) => prev.map((s, i) => (i === idx ? { ...s, ...patch } : s)))
+    setSegments((prev) =>
+      prev.map((s, i) => {
+        if (i !== idx) return s
+        const next = { ...s, ...patch }
+        // 유형 변경 시 lunchExcluded 디폴트 재설정 (명시적으로 넘기지 않은 경우)
+        if (patch.type !== undefined && patch.lunchExcluded === undefined) {
+          next.lunchExcluded = defaultLunchExcluded(patch.type)
+        }
+        return next
+      }),
+    )
   }
 
   function addSegment() {
-    setSegments((prev) => [...prev, { type: 'work', start: '', end: '' }])
+    setSegments((prev) => [...prev, { type: 'work', start: '', end: '', lunchExcluded: true }])
   }
 
   function removeSegment(idx: number) {
@@ -238,49 +264,64 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
           <>
             <div className="modal__segments">
               {segments.map((seg, idx) => (
-                <div className="seg-row" key={idx}>
-                  <select
-                    className="seg-row__type"
-                    value={seg.type}
-                    onChange={(e) =>
-                      updateSegment(idx, { type: e.target.value as SegmentType })
-                    }
-                  >
-                    {TYPE_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-
-                  {needsTime(seg.type) ? (
-                    <>
-                      <input
-                        className="seg-row__time"
-                        type="time"
-                        value={seg.start}
-                        onChange={(e) => updateSegment(idx, { start: e.target.value })}
-                      />
-                      <span className="seg-row__tilde">~</span>
-                      <input
-                        className="seg-row__time"
-                        type="time"
-                        value={seg.end}
-                        onChange={(e) => updateSegment(idx, { end: e.target.value })}
-                      />
-                    </>
-                  ) : (
-                    <span className="seg-row__fixed">종일 (8시간)</span>
-                  )}
-
-                  {segments.length > 1 && (
-                    <button
-                      className="seg-row__remove"
-                      onClick={() => removeSegment(idx)}
-                      aria-label="구간 삭제"
+                <div className="seg-block" key={idx}>
+                  <div className="seg-row">
+                    <select
+                      className="seg-row__type"
+                      value={seg.type}
+                      onChange={(e) =>
+                        updateSegment(idx, { type: e.target.value as SegmentType })
+                      }
                     >
-                      −
-                    </button>
+                      {TYPE_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {needsTime(seg.type) ? (
+                      <>
+                        <input
+                          className="seg-row__time"
+                          type="time"
+                          value={seg.start}
+                          onChange={(e) => updateSegment(idx, { start: e.target.value })}
+                        />
+                        <span className="seg-row__tilde">~</span>
+                        <input
+                          className="seg-row__time"
+                          type="time"
+                          value={seg.end}
+                          onChange={(e) => updateSegment(idx, { end: e.target.value })}
+                        />
+                      </>
+                    ) : (
+                      <span className="seg-row__fixed">종일 (8시간)</span>
+                    )}
+
+                    {segments.length > 1 && (
+                      <button
+                        className="seg-row__remove"
+                        onClick={() => removeSegment(idx)}
+                        aria-label="구간 삭제"
+                      >
+                        −
+                      </button>
+                    )}
+                  </div>
+
+                  {showsLunchCheckbox(seg.type) && (
+                    <label className="seg-row__lunch">
+                      <input
+                        type="checkbox"
+                        checked={seg.lunchExcluded}
+                        onChange={(e) =>
+                          updateSegment(idx, { lunchExcluded: e.target.checked })
+                        }
+                      />
+                      휴게 1시간 제외
+                    </label>
                   )}
                 </div>
               ))}

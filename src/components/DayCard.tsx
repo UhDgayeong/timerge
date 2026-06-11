@@ -1,4 +1,4 @@
-import { effectiveTarget, formatClock, formatMinutes, isWeekend } from '../domain/calc'
+import { effectiveTarget, formatClock, formatMinutes, isWeekend, wasLunchDeducted } from '../domain/calc'
 import type { DayRecord, Settings } from '../domain/types'
 
 interface Props {
@@ -15,6 +15,8 @@ const TYPE_LABEL: Record<string, string> = {
   field: '외근',
   annual: '연차',
   halfday: '반차',
+  'halfday-am': '오전반차',
+  'halfday-pm': '오후반차',
 }
 
 function formatDateLabel(dateStr: string): string {
@@ -44,7 +46,7 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
     timeDisplay = '0:00'
   } else if (day.recognizedMinutes != null) {
     timeDisplay = formatMinutes(day.recognizedMinutes)
-    showLunchBadge = true
+    showLunchBadge = wasLunchDeducted(day.segments)
   } else if (fixedTarget != null) {
     timeDisplay = formatMinutes(fixedTarget)
     showLunchBadge = true

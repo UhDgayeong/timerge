@@ -1,5 +1,5 @@
-/** 근무/휴가 구간의 유형 */
-export type SegmentType = 'work' | 'field' | 'annual' | 'halfday'
+/** 근무/휴가 구간의 유형. halfday는 레거시(halfday-am으로 취급) */
+export type SegmentType = 'work' | 'field' | 'annual' | 'halfday-am' | 'halfday-pm' | 'halfday'
 
 /**
  * 하루 안의 한 구간 (메타데이터: 화면 표시 + 역산 입력용).
@@ -10,6 +10,8 @@ export interface Segment {
   type: SegmentType
   startMin: number | null
   endMin: number | null
+  /** 휴게 1시간 차감 여부. undefined이면 레거시 동작(위치 기반 자동 판단) */
+  lunchExcluded?: boolean
 }
 
 /** 하루 기록 */

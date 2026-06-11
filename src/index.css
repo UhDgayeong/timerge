@@ -2,6 +2,92 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard',
     system-ui, sans-serif;
   color-scheme: light dark;
+
+  /* ── 라이트 팔레트 ── */
+  --bg-base:           #ffffff;
+  --bg-card:           #ffffff;
+  --bg-subtle:         #fafafa;
+  --bg-elevated:       #f5f5f5;
+  --bg-elevated-hover: #ebebeb;
+  --bg-input:          #ffffff;
+
+  --border:            #e8e8e8;
+  --border-input:      #dddddd;
+  --border-subtle:     #eeeeee;
+
+  --text-primary:      #222222;
+  --text-secondary:    #555555;
+  --text-muted:        #888888;
+  --text-faint:        #999999;
+  --text-title:        #1a1a2e;
+
+  /* ── 상태 색상 (라이트) ── */
+  --bg-today:          #f0f7ff;
+  --border-today:      #1677ff;
+  --text-today:        #1677ff;
+
+  --bg-done:           #f6ffed;
+  --border-done:       #b7eb8f;
+  --bg-label-done:     #d9f7be;
+  --text-label-done:   #389e0d;
+
+  --bg-fixed:          #fff7e6;
+  --border-fixed:      #ffd591;
+
+  --bg-holiday:        #fafafa;
+  --border-holiday:    #f0f0f0;
+
+  --bg-label:          #f0f0f0;
+  --bg-label-holiday:  #f5f5f5;
+  --text-label-holiday:#bbbbbb;
+
+  --bg-status-success: #f6ffed;
+  --text-status-success: #389e0d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ── 다크 팔레트 ── */
+    --bg-base:           #0f0f0f;
+    --bg-card:           #1c1c1c;
+    --bg-subtle:         #141414;
+    --bg-elevated:       #2a2a2a;
+    --bg-elevated-hover: #333333;
+    --bg-input:          #2a2a2a;
+
+    --border:            #2d2d2d;
+    --border-input:      #3a3a3a;
+    --border-subtle:     #2d2d2d;
+
+    --text-primary:      #e0e0e0;
+    --text-secondary:    #cccccc;
+    --text-muted:        #888888;
+    --text-faint:        #666666;
+    --text-title:        #e0e0e0;
+
+    /* ── 상태 색상 (다크) ── */
+    --bg-today:          #111d2c;
+    --border-today:      #177ddc;
+    --text-today:        #4096ff;
+
+    --bg-done:           #162312;
+    --border-done:       #274916;
+    --bg-label-done:     #1a3a0f;
+    --text-label-done:   #52c41a;
+
+    --bg-fixed:          #2b1d11;
+    --border-fixed:      #593815;
+
+    --bg-holiday:        #141414;
+    --border-holiday:    #222222;
+
+    --bg-label:          #2d2d2d;
+    --bg-label-holiday:  #1a1a1a;
+    --text-label-holiday:#555555;
+
+    --bg-status-success: #162312;
+    --text-status-success: #95de64;
+  }
 }
 
 * {
@@ -10,6 +96,8 @@
 
 body {
   margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
 }
 
 .app {
@@ -23,7 +111,7 @@ body {
 .week-view__loading {
   text-align: center;
   padding: 3rem 1rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 /* ── WeekNav ── */
@@ -36,26 +124,26 @@ body {
 }
 
 .week-nav__btn {
-  background: #f5f5f5;
+  background: var(--bg-elevated);
   border: none;
   border-radius: 8px;
   width: 2.2rem;
   height: 2.2rem;
   font-size: 1.4rem;
   line-height: 1;
-  color: #555;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .week-nav__btn:hover {
-  background: #ebebeb;
+  background: var(--bg-elevated-hover);
 }
 
 .week-nav__label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .week-nav__today {
@@ -77,6 +165,12 @@ body {
   border-radius: 14px;
   padding: 1.25rem 1.25rem 1rem;
   margin-bottom: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .week-header {
+    background: #0d0d1a;
+  }
 }
 
 .week-header__range {
@@ -159,8 +253,9 @@ body {
   gap: 0.75rem;
   padding: 0.7rem 1rem;
   border-radius: 10px;
-  border: 1px solid #e8e8e8;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
   transition: border-color 0.15s, transform 0.05s;
   width: 100%;
   text-align: left;
@@ -177,24 +272,24 @@ body {
 }
 
 .day-card--today {
-  border-color: #1677ff;
-  background: #f0f7ff;
+  border-color: var(--border-today);
+  background: var(--bg-today);
 }
 
 .day-card--holiday,
 .day-card--weekend {
-  background: #fafafa;
-  border-color: #f0f0f0;
+  background: var(--bg-holiday);
+  border-color: var(--border-holiday);
 }
 
 .day-card--done {
-  background: #f6ffed;
-  border-color: #b7eb8f;
+  background: var(--bg-done);
+  border-color: var(--border-done);
 }
 
 .day-card--fixed {
-  background: #fff7e6;
-  border-color: #ffd591;
+  background: var(--bg-fixed);
+  border-color: var(--border-fixed);
 }
 
 .day-card__date {
@@ -202,16 +297,16 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   flex-shrink: 0;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .day-card--holiday .day-card__date,
 .day-card--weekend .day-card__date {
-  color: #bbb;
+  color: var(--text-label-holiday);
 }
 
 .day-card--today .day-card__date {
-  color: #1677ff;
+  color: var(--text-today);
   font-weight: 700;
 }
 
@@ -225,41 +320,41 @@ body {
 .day-card__time {
   font-size: 1rem;
   font-weight: 600;
-  color: #222;
+  color: var(--text-primary);
 }
 
 .day-card--pending .day-card__time {
-  color: #ccc;
+  color: var(--border-input);
   font-weight: 400;
 }
 
 .day-card--holiday .day-card__time,
 .day-card--weekend .day-card__time {
-  color: #ccc;
+  color: var(--border-input);
 }
 
 .day-card__label {
   font-size: 0.75rem;
-  color: #888;
-  background: #f0f0f0;
+  color: var(--text-muted);
+  background: var(--bg-label);
   padding: 0.1rem 0.45rem;
   border-radius: 4px;
 }
 
 .day-card--done .day-card__label {
-  background: #d9f7be;
-  color: #389e0d;
+  background: var(--bg-label-done);
+  color: var(--text-label-done);
 }
 
 .day-card--holiday .day-card__label {
-  background: #f5f5f5;
-  color: #bbb;
+  background: var(--bg-label-holiday);
+  color: var(--text-label-holiday);
 }
 
 .day-card__lunch-badge {
   font-size: 0.68rem;
-  color: #aaa;
-  background: #f5f5f5;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
   border-radius: 4px;
   padding: 0.05rem 0.35rem;
   white-space: nowrap;
@@ -267,7 +362,7 @@ body {
 
 .day-card__clock {
   font-size: 0.78rem;
-  color: #aaa;
+  color: var(--text-muted);
   flex-shrink: 0;
   text-align: right;
 }
@@ -286,7 +381,8 @@ body {
 }
 
 .modal {
-  background: #fff;
+  background: var(--bg-card);
+  color: var(--text-primary);
   width: 100%;
   max-width: 640px;
   border-radius: 16px 16px 0 0;
@@ -321,7 +417,7 @@ body {
   background: none;
   border: none;
   font-size: 1.1rem;
-  color: #999;
+  color: var(--text-faint);
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
@@ -338,9 +434,11 @@ body {
 .modal__holiday-name {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 0.95rem;
+  background: var(--bg-input);
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -368,17 +466,18 @@ body {
   align-items: center;
   gap: 0.4rem;
   font-size: 0.82rem;
-  color: #666;
+  color: var(--text-secondary);
   padding-left: 0.2rem;
   cursor: pointer;
 }
 
 .seg-row__type {
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 0.9rem;
-  background: #fff;
+  background: var(--bg-input);
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
@@ -386,38 +485,40 @@ body {
   flex: 1;
   min-width: 0;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 0.9rem;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .seg-row__tilde {
-  color: #999;
+  color: var(--text-faint);
   flex-shrink: 0;
 }
 
 .seg-row__fixed {
   flex: 1;
-  color: #888;
+  color: var(--text-muted);
   font-size: 0.9rem;
   padding: 0.5rem;
 }
 
 .seg-row__remove {
-  background: #f5f5f5;
+  background: var(--bg-elevated);
   border: none;
   border-radius: 6px;
   width: 1.8rem;
   height: 1.8rem;
   font-size: 1.1rem;
-  color: #888;
+  color: var(--text-muted);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .modal__add-seg {
   background: none;
-  border: 1px dashed #ccc;
+  border: 1px dashed var(--border-input);
   border-radius: 8px;
   padding: 0.5rem;
   color: #1677ff;
@@ -427,15 +528,15 @@ body {
 
 .modal__preview {
   font-size: 0.95rem;
-  color: #555;
+  color: var(--text-secondary);
   padding: 0.6rem 0;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-subtle);
   margin-bottom: 0.5rem;
 }
 
 .modal__preview strong {
   font-size: 1.05rem;
-  color: #222;
+  color: var(--text-primary);
   margin-left: 0.25rem;
 }
 
@@ -461,180 +562,14 @@ body {
 }
 
 .btn--ghost {
-  background: #f5f5f5;
-  color: #888;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
   flex: 0 0 auto;
 }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: default;
-}
-
-/* ── 다크 모드 ── */
-
-@media (prefers-color-scheme: dark) {
-  .week-header {
-    background: #0d0d1a;
-  }
-
-  .week-nav__btn {
-    background: #2a2a2a;
-    color: #ccc;
-  }
-
-  .week-nav__btn:hover {
-    background: #333;
-  }
-
-  .day-card {
-    background: #1c1c1c;
-    border-color: #2d2d2d;
-    color: #e0e0e0;
-  }
-
-  .day-card--today {
-    background: #111d2c;
-    border-color: #177ddc;
-  }
-
-  .day-card--holiday,
-  .day-card--weekend {
-    background: #141414;
-    border-color: #222;
-  }
-
-  .day-card--done {
-    background: #162312;
-    border-color: #274916;
-  }
-
-  .day-card--fixed {
-    background: #2b1d11;
-    border-color: #593815;
-  }
-
-  .day-card__date {
-    color: #ccc;
-  }
-
-  .day-card--today .day-card__date {
-    color: #4096ff;
-  }
-
-  .day-card__time {
-    color: #e0e0e0;
-  }
-
-  .day-card__label {
-    background: #2d2d2d;
-    color: #888;
-  }
-
-  .day-card--done .day-card__label {
-    background: #1a3a0f;
-    color: #52c41a;
-  }
-
-  .modal {
-    background: #1c1c1c;
-    color: #e0e0e0;
-  }
-
-  .modal__holiday-name,
-  .seg-row__type,
-  .seg-row__time {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-    color: #e0e0e0;
-  }
-
-  .seg-row__remove {
-    background: #2a2a2a;
-    color: #aaa;
-  }
-
-  .seg-row__lunch {
-    color: #888;
-  }
-
-  .modal__preview {
-    color: #aaa;
-    border-top-color: #2d2d2d;
-  }
-
-  .modal__preview strong {
-    color: #e0e0e0;
-  }
-
-  .btn--ghost {
-    background: #2a2a2a;
-    color: #aaa;
-  }
-
-  .app-header__title {
-    color: #e0e0e0;
-  }
-
-  .app-header__settings {
-    color: #aaa;
-  }
-
-  .app-header__settings:hover {
-    background: #2a2a2a;
-  }
-
-  .settings__title {
-    color: #e0e0e0;
-  }
-
-  .settings__back {
-    color: #ccc;
-  }
-
-  .settings__section {
-    background: #1c1c1c;
-    border-color: #2d2d2d;
-  }
-
-  .settings__section-title {
-    color: #e0e0e0;
-  }
-
-  .settings__input {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-    color: #e0e0e0;
-  }
-
-  .settings__status {
-    background: #162312;
-    color: #95de64;
-  }
-
-  .settings__wd-label {
-    color: #e0e0e0;
-  }
-
-  .settings__wd-tilde,
-  .settings__wd-preview {
-    color: #888;
-  }
-
-  .day-card__lunch-badge {
-    background: #2a2a2a;
-    color: #888;
-  }
-
-  .modal__plan {
-    border-top-color: #2d2d2d;
-  }
-
-  .modal__plan-input {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-    color: #e0e0e0;
-  }
 }
 
 /* ── App header ── */
@@ -650,7 +585,7 @@ body {
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #1a1a2e;
+  color: var(--text-title);
 }
 
 .app-header__settings {
@@ -661,12 +596,12 @@ body {
   width: 2.2rem;
   height: 2.2rem;
   border-radius: 8px;
-  color: #888;
+  color: var(--text-muted);
   cursor: pointer;
 }
 
 .app-header__settings:hover {
-  background: #f0f0f0;
+  background: var(--bg-elevated);
 }
 
 /* ── SettingsView ── */
@@ -683,7 +618,7 @@ body {
   border: none;
   font-size: 1.6rem;
   line-height: 1;
-  color: #555;
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 0 0.4rem 0 0;
 }
@@ -692,11 +627,12 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .settings__section {
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.85rem;
@@ -706,11 +642,12 @@ body {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0 0 0.3rem;
+  color: var(--text-primary);
 }
 
 .settings__hint {
   font-size: 0.8rem;
-  color: #999;
+  color: var(--text-faint);
   margin: 0 0 0.75rem;
   line-height: 1.4;
 }
@@ -724,15 +661,17 @@ body {
 .settings__input {
   width: 5rem;
   padding: 0.6rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 1rem;
   text-align: right;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .settings__unit {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .settings__save {
@@ -754,8 +693,8 @@ body {
 .settings__status {
   text-align: center;
   font-size: 0.85rem;
-  color: #389e0d;
-  background: #f6ffed;
+  color: var(--text-status-success);
+  background: var(--bg-status-success);
   border-radius: 8px;
   padding: 0.6rem;
   margin: 0;
@@ -772,28 +711,38 @@ body {
 .settings__wd-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .settings__wd-label {
   width: 1.5rem;
   font-weight: 600;
   font-size: 0.95rem;
+  flex-shrink: 0;
+  color: var(--text-primary);
 }
 
 .settings__wd-time {
-  width: 6rem;
+  width: 8.5rem;
+  min-width: 7.5rem;
   padding: 0.4rem 0.5rem;
+  flex-shrink: 0;
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.9rem;
 }
 
 .settings__wd-tilde {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .settings__wd-preview {
   font-size: 0.82rem;
-  color: #888;
+  color: var(--text-muted);
   margin-left: 0.25rem;
 }
 
@@ -806,7 +755,7 @@ body {
 .modal__plan {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .modal__plan-label {
@@ -825,20 +774,22 @@ body {
 .modal__plan-input {
   width: 5rem;
   padding: 0.6rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 1rem;
   text-align: right;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .modal__plan-unit {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .modal__plan-hint {
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--text-muted);
   margin: 0.4rem 0 0;
 }
 

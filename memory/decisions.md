@@ -105,6 +105,20 @@ metadata:
 
 ---
 
+## 2026-06-11 — CSS 변수 전환으로 다크모드 통합 관리
+
+**결정**: 하드코딩된 색상값을 `:root` CSS 변수로 전환. 다크모드는 `@media (prefers-color-scheme: dark) { :root { ... } }` 방식으로 변수 재정의.
+
+**이유**: 기존 방식(개별 selector마다 다크 override 추가)은 새 컴포넌트 추가 시 다크 override를 누락하면 라이트 색상이 그대로 노출됨. 설정 화면에서 `.settings__hint`, `.settings__unit` 등이 누락되어 희멀건 색상으로 표시되는 문제가 발생. 변수 방식으로 전환하면 변수만 정의하면 자동 반영.
+
+**변수 분류**: 중립 색상(bg-base/card/subtle/elevated/input, border, text), 상태 색상(today/done/fixed/holiday), 레이블 색상, 상태 메시지 색상 (~25개).
+
+**week-header 예외**: `.week-header`는 라이트/다크 모두 어두운 배경(#1a1a2e/#0d0d1a)을 사용하는 의도적 설계라 변수 미적용, 별도 dark override 유지.
+
+**관련 파일**: `src/index.css`
+
+---
+
 ## 2026-06-11 — 퇴근 역산: 부분 입력(출근만) segments 보존
 
 **결정**: DayEditModal에서 출근만 입력하고 퇴근은 비워도 segments를 DB에 보존(recognizedMinutes=null 유지). 기존에는 완전 입력(출퇴근 둘 다)이 없으면 segments를 `[]`로 초기화했음.

@@ -124,11 +124,15 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
     segments.map(toSegment),
     settings.lunchMinutes,
   )
-  const hasInput = segments.some((s) => {
+  // 완전 입력: 인정시간 계산 가능 (출퇴근 둘 다, 또는 연차/반차)
+  const hasCompleteInput = segments.some((s) => {
     if (s.type === 'annual') return true
     if (s.type === 'halfday') return true
     return s.start !== '' && s.end !== ''
   })
+  // 부분 입력: 출근만 입력된 상태 (역산용 메타데이터로 보존)
+  const hasPartialInput = !hasCompleteInput && segments.some((s) => s.start !== '')
+  const hasInput = hasCompleteInput || hasPartialInput
 
   function updateSegment(idx: number, patch: Partial<EditSegment>) {
     setSegments((prev) =>
@@ -165,13 +169,25 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
           segments: [],
           source: 'manual',
         })
-      } else if (hasInput) {
+      } else if (hasCompleteInput) {
         // 실적 입력 → recognizedMinutes 채움. 계획 목표 필드는 그대로 보존(...day)
         if (day.isHoliday) await setHolidayOverride(day.date, false)
         const segs = segments.map(toSegment)
         await upsertDay({
           ...day,
           recognizedMinutes: recognizedFromSegments(segs, settings.lunchMinutes),
+          isHoliday: false,
+          holidayName: null,
+          segments: segs,
+          source: 'manual',
+        })
+      } else if (hasPartialInput) {
+        // 출근만 입력 → segments 보존(역산용), recognizedMinutes는 null 유지
+        if (day.isHoliday) await setHolidayOverride(day.date, false)
+        const segs = segments.map(toSegment)
+        await upsertDay({
+          ...day,
+          recognizedMinutes: null,
           isHoliday: false,
           holidayName: null,
           segments: segs,
@@ -331,7 +347,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
             </div>
 
             <div className="modal__preview">
-              인정시간 <strong>{hasInput ? formatMinutes(liveRecognized) : '—'}</strong>
+              인정시간 <strong>{hasCompleteInput ? formatMinutes(liveRecognized) : hasPartialInput ? '퇴근 입력 후 계산' : '—'}</strong>
             </div>
 
             {isWeekday && !hasInput && (

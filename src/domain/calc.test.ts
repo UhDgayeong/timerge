@@ -12,6 +12,8 @@ import {
   departureMinutes,
   effectiveFixedTarget,
   effectiveTarget,
+  calcLastDayDeparture,
+  lastWorkableDay,
 } from './calc'
 import { DEFAULTS, type DayRecord, type WeekRecord, type Segment, type SegmentType } from './types'
 
@@ -266,5 +268,98 @@ describe('departureMinutes', () => {
   it('09:30 출근, 5h 필요 → 점심 포함 15:30 이후 퇴근', () => {
     const out = departureMinutes(parseClock('09:30'), 300)
     expect(formatClock(out)).toBe('15:30')
+  })
+})
+
+// ── calcLastDayDeparture ─────────────────────────────────────
+
+function makeDay(overrides: Partial<DayRecord>): DayRecord {
+  return {
+    id: 'test',
+    weekId: 'w',
+    date: '2026-06-13',
+    recognizedMinutes: null,
+    fixedTargetMinutes: null,
+    fixedTargetManual: false,
+    isHoliday: false,
+    holidayName: null,
+    segments: [],
+    source: 'manual',
+    updatedAt: 0,
+    ...overrides,
+  }
+}
+
+describe('calcLastDayDeparture', () => {
+  it('일반 근무: 09:30 출근, 남은 5h → 점심 포함 15:30', () => {
+    const day = makeDay({ segments: [seg('work', '09:30', null)] })
+    const result = calcLastDayDeparture(day, 300)
+    expect(result).not.toBeNull()
+    expect(formatClock(result!.departureMin)).toBe('15:30')
+  })
+
+  it('오전반차: 14:00 출근(오후 근무), 남은 7h → 점심 흡수, 오후 근무만 3h → 17:00', () => {
+    // 남은 7h(420분). 오전반차 240분 기여 → 추가 근무 180분. 점심 흡수 → departure = 14:00 + 180 = 17:00
+    const day = makeDay({
+      segments: [
+        seg('halfday-am', null, null),
+        seg('work', '14:00', null),
+      ],
+    })
+    const result = calcLastDayDeparture(day, 420)
+    expect(result).not.toBeNull()
+    expect(formatClock(result!.departureMin)).toBe('17:00')
+  })
+
+  it('이미 실적 있으면 null 반환', () => {
+    const day = makeDay({
+      recognizedMinutes: 480,
+      segments: [seg('work', '09:00', '18:00')],
+    })
+    expect(calcLastDayDeparture(day, 100)).toBeNull()
+  })
+
+  it('출근 시각 미입력이면 null 반환', () => {
+    const day = makeDay({ segments: [seg('work', null, null)] })
+    expect(calcLastDayDeparture(day, 300)).toBeNull()
+  })
+
+  it('남은 목표 0이면 이미 출근 시각이 퇴근 가능', () => {
+    const day = makeDay({ segments: [seg('work', '09:00', null)] })
+    const result = calcLastDayDeparture(day, 0)
+    expect(result).not.toBeNull()
+    expect(formatClock(result!.departureMin)).toBe('10:00') // 0 + 60(점심)
+  })
+})
+
+// ── lastWorkableDay ──────────────────────────────────────────
+
+describe('lastWorkableDay', () => {
+  it('금요일이 마지막 근무가능일', () => {
+    const days: DayRecord[] = [
+      makeDay({ date: '2026-06-08' }), // 월
+      makeDay({ date: '2026-06-09' }), // 화
+      makeDay({ date: '2026-06-10' }), // 수
+      makeDay({ date: '2026-06-11' }), // 목
+      makeDay({ date: '2026-06-12' }), // 금
+      makeDay({ date: '2026-06-13', isHoliday: false }), // 토 → 주말
+      makeDay({ date: '2026-06-14', isHoliday: false }), // 일 → 주말
+    ]
+    const last = lastWorkableDay(days)
+    expect(last?.date).toBe('2026-06-12')
+  })
+
+  it('금요일이 공휴일이면 목요일', () => {
+    const days: DayRecord[] = [
+      makeDay({ date: '2026-06-08' }),
+      makeDay({ date: '2026-06-09' }),
+      makeDay({ date: '2026-06-10' }),
+      makeDay({ date: '2026-06-11' }),
+      makeDay({ date: '2026-06-12', isHoliday: true }), // 금 공휴일
+      makeDay({ date: '2026-06-13' }),
+      makeDay({ date: '2026-06-14' }),
+    ]
+    const last = lastWorkableDay(days)
+    expect(last?.date).toBe('2026-06-11')
   })
 })

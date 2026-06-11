@@ -243,3 +243,54 @@ export function departureMinutes(
 ): number {
   return clockInMin + neededMinutes + lunchMinutes
 }
+
+export interface LastDayDepartureInfo {
+  /** 퇴근 가능 시각 (자정 기준 분) */
+  departureMin: number
+  /** 출근 시각 (자정 기준 분) */
+  clockInMin: number
+}
+
+/**
+ * 마지막 근무일의 퇴근 가능 시각을 계산한다.
+ * remainingMinutes = 이 날 포함 이번 주에 남은 목표분 (WeekSummary.remainingMinutes).
+ *
+ * - 오전반차(halfday-am): 240분 이미 기여 + 점심 흡수 → 추가 근무만 역산
+ * - 일반 근무: clockIn + remaining + lunch
+ *
+ * null 반환 = 역산 불가 (출근 미입력, 이미 실적 있음)
+ */
+export function calcLastDayDeparture(
+  day: DayRecord,
+  remainingMinutes: number,
+  lunchMinutes = 60,
+): LastDayDepartureInfo | null {
+  if (day.recognizedMinutes != null) return null
+
+  const workSegs = day.segments.filter((s) => s.type === 'work' || s.type === 'field')
+  const clockInMin = workSegs.find((s) => s.startMin != null)?.startMin
+  if (clockInMin == null) return null
+
+  const hasHalfdayAm = day.segments.some(
+    (s) => s.type === 'halfday-am' || s.type === 'halfday',
+  )
+
+  // 오전반차: 240분 기여 + 점심 흡수(차감 없음)
+  const alreadyContributed = hasHalfdayAm ? 240 : 0
+  const lunchToAdd = hasHalfdayAm ? 0 : lunchMinutes
+  const neededWork = Math.max(0, remainingMinutes - alreadyContributed)
+
+  return {
+    clockInMin,
+    departureMin: clockInMin + neededWork + lunchToAdd,
+  }
+}
+
+/**
+ * 그 주 마지막 근무가능일 (평일 + 비공휴일 중 가장 늦은 날).
+ * 연차·반차일도 포함(isWorkableDay 기준).
+ */
+export function lastWorkableDay(days: DayRecord[]): DayRecord | null {
+  const workable = days.filter(isWorkableDay)
+  return workable.length > 0 ? workable[workable.length - 1] : null
+}

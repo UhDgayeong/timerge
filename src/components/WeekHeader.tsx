@@ -1,4 +1,4 @@
-import { effectiveFixedTarget, effectiveTarget, formatClock, formatMinutes, isWorkableDay } from '../domain/calc'
+import { calcLastDayDeparture, effectiveFixedTarget, effectiveTarget, formatClock, formatMinutes, isWorkableDay, lastWorkableDay } from '../domain/calc'
 import type { WeekSummary } from '../domain/calc'
 import type { DayRecord, Settings, WeekRecord } from '../domain/types'
 
@@ -38,6 +38,13 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
     .map((d) => utcDow(d.date))
 
   // 계획(고정목표)이 걸린 미실적 평일 — "금 10:00~15:00 · 4시간" 식으로 안내
+  // 마지막 근무일 퇴근 역산
+  const lastDay = lastWorkableDay(days)
+  const departureInfo =
+    lastDay != null
+      ? calcLastDayDeparture(lastDay, summary.remainingMinutes, settings.lunchMinutes)
+      : null
+
   const plannedDays = days
     .filter((d) => d.recognizedMinutes == null)
     .map((d) => ({ d, target: effectiveTarget(d, settings) }))
@@ -71,6 +78,14 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
         <div className="week-header__avg">
           {pendingDayNames.join('·')} · 평균{' '}
           <strong>{formatMinutes(Math.ceil(avgNeededPerPendingDay))}</strong>씩
+        </div>
+      )}
+
+      {departureInfo != null && (
+        <div className="week-header__departure">
+          {lastDay && utcDow(lastDay.date)}요일{' '}
+          {formatClock(departureInfo.clockInMin)} 출근 →{' '}
+          <strong>{formatClock(departureInfo.departureMin)} 이후 퇴근 가능</strong>
         </div>
       )}
 

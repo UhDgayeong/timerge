@@ -68,12 +68,23 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
 
   // 출퇴근 시각: 요일 규칙(예정) > 실적 세그먼트
   const workSeg = day.segments.find((s) => s.type === 'work' || s.type === 'field')
-  const clockDisplay =
+  const halfdaySeg = day.segments.find(
+    (s) => s.type === 'halfday-am' || s.type === 'halfday-pm' || s.type === 'halfday',
+  )
+
+  const workClockStr =
     target?.startMin != null
       ? `${formatClock(target.startMin)}~${formatClock(target.endMin!)}`
       : workSeg?.startMin != null && workSeg?.endMin != null
         ? `${formatClock(workSeg.startMin)}~${formatClock(workSeg.endMin)}`
         : null
+
+  const halfdayClockStr =
+    halfdaySeg?.startMin != null && halfdaySeg?.endMin != null
+      ? `${formatClock(halfdaySeg.startMin)}~${formatClock(halfdaySeg.endMin)}`
+      : null
+
+  const clockDisplay = workClockStr
 
   return (
     <button type="button" className={cardClass} onClick={onClick}>
@@ -83,7 +94,16 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
         {showLunchBadge && <span className="day-card__lunch-badge">휴게 1시간 제외</span>}
         {typeLabel && <span className="day-card__label">{typeLabel}</span>}
       </div>
-      {clockDisplay && <div className="day-card__clock">{clockDisplay}</div>}
+      {(clockDisplay || halfdayClockStr) && (
+        <div className="day-card__clock">
+          {clockDisplay && (
+            <div>{halfdayClockStr ? (workSeg?.type === 'field' ? '외근 ' : '근무 ') : ''}{clockDisplay}</div>
+          )}
+          {halfdayClockStr && (
+            <div>{TYPE_LABEL[halfdaySeg!.type] ?? '반차'} {halfdayClockStr}</div>
+          )}
+        </div>
+      )}
     </button>
   )
 }

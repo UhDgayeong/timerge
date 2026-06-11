@@ -269,6 +269,7 @@ body {
   font-size: 0.78rem;
   color: #aaa;
   flex-shrink: 0;
+  text-align: right;
 }
 
 /* ── Modal ── */

@@ -1,12 +1,17 @@
+import { Capacitor } from '@capacitor/core'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
 export type { User }
 
+const OAUTH_REDIRECT = Capacitor.isNativePlatform()
+  ? 'com.clokoo.app://'
+  : window.location.origin
+
 export async function signInWithGoogle() {
   return supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin },
+    options: { redirectTo: OAUTH_REDIRECT },
   })
 }
 

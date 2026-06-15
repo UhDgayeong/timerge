@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>OCR Spike</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #eee; }
+    label { display: inline-block; padding: 12px 24px; background: #2a5; color: #fff; cursor: pointer; border-radius: 6px; font-size: 16px; margin-bottom: 16px; }
+    img { max-width: 360px; display: block; margin: 10px 0; }
+    pre { background: #111; padding: 16px; white-space: pre-wrap; max-height: 600px; overflow-y: auto; font-size: 13px; }
+    #status { color: #fa0; margin: 10px 0; min-height: 24px; }
+  </style>
+</head>
+<body>
+  <h2>FLEX OCR 스파이크</h2>
+  <label>
+    📁 스크린샷 선택
+    <input type="file" id="file" accept="image/*" style="display:none">
+  </label>
+  <img id="preview">
+  <div id="status"></div>
+  <pre id="output">파일을 선택하면 OCR 결과가 여기 표시됩니다.</pre>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const preview = document.getElementById('preview');
+    const status = document.getElementById('status');
+    const output = document.getElementById('output');
+
+    fileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      preview.src = url;
+      runOCR(url);
+    });
+
+    async function runOCR(url) {
+      status.textContent = '⏳ Tesseract 로딩 중... (첫 실행은 kor 언어팩 다운로드로 30~60초 걸림)';
+      output.textContent = '';
+
+      try {
+        const Tesseract = await import('https://cdn.jsdelivr.net/npm/tesseract.js@6/dist/tesseract.esm.min.js');
+        const createWorker = Tesseract.createWorker ?? Tesseract.default?.createWorker;
+        const worker = await createWorker('kor+eng', 1, {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              status.textContent = `⏳ 인식 중... ${Math.round(m.progress * 100)}%`;
+            } else {
+              status.textContent = '⏳ ' + m.status;
+            }
+          }
+        });
+        const result = await worker.recognize(url);
+        await worker.terminate();
+        status.textContent = '✅ 완료';
+        output.textContent = '=== RAW OCR TEXT ===\n\n' + result.data.text;
+      } catch (e) {
+        status.textContent = '❌ 오류: ' + e.message;
+        output.textContent = e.stack;
+      }
+    }
+  </script>
+</body>
+</html>

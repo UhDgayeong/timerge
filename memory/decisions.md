@@ -147,6 +147,18 @@ metadata:
 
 ---
 
+## 2026-06-15 — Capacitor OAuth 딥링크 패턴
+
+**결정**: 네이티브 앱에서 Google OAuth `redirectTo`를 `com.clokoo.app://`(커스텀 스킴)으로 설정. 웹에서는 기존대로 `window.location.origin`.
+
+**이유**: Capacitor WebView 안에서 OAuth 완료 후 `localhost`로 리다이렉트되면 서버가 없어 ERR_CONNECTION_REFUSED 발생. 커스텀 스킴을 쓰면 Android intent-filter가 가로채서 앱을 다시 열고, `appUrlOpen` 이벤트로 `#access_token=...` 해시를 추출해 `supabase.auth.setSession()` 호출.
+
+**필수 설정**: Supabase Dashboard → Authentication → URL Configuration → Redirect URLs에 `com.clokoo.app://` 추가 필요.
+
+**관련 파일**: `src/services/auth.ts`(OAUTH_REDIRECT), `src/App.tsx`(appUrlOpen 리스너), `android/app/src/main/AndroidManifest.xml`(intent-filter)
+
+---
+
 ## 2026-06-15 — 앱 이름: Clokoo 확정
 
 **결정**: 앱 이름을 **Clokoo** (clock + cuckoo 합성어)로 확정. GitHub 레포명(timerge)은 유지.

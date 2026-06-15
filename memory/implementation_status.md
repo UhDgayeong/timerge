@@ -49,8 +49,11 @@ metadata:
 
 - [x] **OCR 입력 (Phase 1.5)** — Tesseract.js(kor+eng) + FLEX 텍스트 파서 + OcrImportModal. 여러 장 업로드 → 날짜 병합 → 검토 편집 → 저장. ⚠️ 배지 인식 실패 시 수동 보완. (이슈 #4 클로즈)
 
+- [x] **Phase 2 — Supabase 클라우드 동기화** — Supabase Auth(Google OAuth) + weeks/days/settings/holiday_overrides 테이블 + RLS + last-write-wins 동기화 레이어(`src/services/sync.ts`). 설정 화면에 "계정 및 동기화" 섹션 추가. 로그인/로그아웃 + 동기화 연결됨 뱃지. 카카오는 비즈앱 심사 필요로 보류, Google만 활성화. (이슈 #5 클로즈)
+
 ## 다음 작업 (우선순위 순)
 
-1. **Phase 2** — 백엔드 + 인증 + 클라우드 동기화 (이슈 #5)
-2. **앱 스토어 출시** — Capacitor iOS/Android 래핑 (이슈 #6)
-3. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+1. **앱 스토어 출시** — Capacitor iOS/Android 래핑 (이슈 #6)
+2. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
+3. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+4. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

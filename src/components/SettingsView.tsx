@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import AuthSection from './AuthSection'
 import type { BackupData } from '../db/index'
 import {
   exportBackup,
@@ -280,6 +281,11 @@ export default function SettingsView({ onClose }: Props) {
             onChange={handleRestoreFile}
           />
         </div>
+      </section>
+
+      <section className="settings__section">
+        <h3 className="settings__section-title">계정 및 동기화</h3>
+        <AuthSection />
       </section>
 
       {status && <p className="settings__status">{status}</p>}

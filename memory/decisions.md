@@ -144,3 +144,16 @@ metadata:
 **주의**: `liveRecognized` 미리보기는 endMin=null이면 `-60분(-1시간)`으로 나왔는데, 부분 입력 감지 시 "퇴근 입력 후 계산"으로 대체 표시.
 
 **관련 파일**: `src/components/DayEditModal.tsx`(hasPartialInput), `src/components/WeekHeader.tsx`, `src/domain/calc.ts`(lastWorkableDay, calcLastDayDeparture)
+
+---
+
+## 2026-06-15 — Phase 2 백엔드: Supabase 선택 + 카카오 보류
+
+**결정**: 백엔드 플랫폼으로 Supabase 선택. 카카오 OAuth는 구현했으나 비활성화, Google OAuth만 운영.
+
+**이유**:
+- Supabase: 기존 Dexie 스키마(weeks/days/settings/holiday_overrides)가 Postgres 테이블로 1:1 매핑. RLS로 유저별 데이터 격리. 사용자가 이미 경험 있어 선택.
+- 카카오: 이메일(`account_email`) 수집이 비즈앱 심사 필요 항목. 사업자등록증 + 배포된 서비스 URL + 개인정보처리방침 필요 → 앱스토어 출시 시점에 재신청 예정.
+- 동기화 전략: last-write-wins(`updated_at` 타임스탬프 비교). 로컬 Dexie가 primary store(오프라인 완전 동작), 온라인 복귀 시 `syncAll()` 자동 실행.
+
+**관련 파일**: `src/lib/supabase.ts`, `src/services/auth.ts`, `src/services/sync.ts`, `src/components/AuthSection.tsx`

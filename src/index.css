@@ -700,6 +700,79 @@ body {
   margin: 0;
 }
 
+/* ── Auth Section ─────────────────────────────────────────── */
+.auth-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-section__loading {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.auth-section__desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.auth-section__info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.auth-section__email {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.auth-section__badge {
+  font-size: 0.75rem;
+  background: var(--bg-status-success);
+  color: var(--text-status-success);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+}
+
+.auth-section__btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-section__btn {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.auth-section__btn:hover { opacity: 0.85; }
+
+.auth-section__btn--google {
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid var(--border);
+}
+
+.auth-section__btn--kakao {
+  background: #fee500;
+  color: #000;
+}
+
+.auth-section__btn--out {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+
 /* 요일별 목표 */
 .settings__weekdays {
   display: flex;

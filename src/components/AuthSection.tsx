@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getUser, onAuthStateChange, signInWithGoogle, signInWithKakao, signOut } from '../services/auth'
+import { getUser, onAuthStateChange, signInWithGoogle, signOut } from '../services/auth'
 import type { User } from '../services/auth'
 
 export default function AuthSection() {

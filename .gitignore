@@ -10,6 +10,8 @@ dist-ssr
 .env.*
 !.env.example
 
-# Capacitor native projects (추후 출시 단계에서 생성)
-/ios
-/android
+# Capacitor — 빌드 캐시만 제외 (프로젝트 파일은 추적)
+/ios/App/Pods
+/ios/.build
+/android/.gradle
+/android/app/build

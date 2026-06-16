@@ -86,7 +86,13 @@ export function recognizedFromSegments(segments: Segment[], lunchMinutes = 60): 
     if (workDeducts) total -= lunchMinutes
   } else {
     // 레거시: 위치 기반 자동 판단
-    if (work.length > 0 && !morningLeaveAbsorbsLunch(work, leave)) {
+    // 실제 근무 시간이 0이면 점심 차감 안 함 (startMin === endMin인 경우 방어)
+    const workDuration = work.reduce(
+      (sum, s) =>
+        s.startMin != null && s.endMin != null ? sum + minutesBetween(s.startMin, s.endMin) : sum,
+      0,
+    )
+    if (workDuration > 0 && !morningLeaveAbsorbsLunch(work, leave)) {
       total -= lunchMinutes
     }
   }

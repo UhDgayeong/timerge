@@ -821,6 +821,22 @@ body {
   margin-left: 0.25rem;
 }
 
+.settings__wd-clear {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.settings__wd-clear:hover {
+  color: var(--text-primary);
+  background: var(--bg-input);
+}
+
 .settings__wd-save {
   width: 100%;
   padding: 0.6rem;

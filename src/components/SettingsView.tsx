@@ -246,6 +246,17 @@ export default function SettingsView({ onClose }: Props) {
                   }
                 />
                 {preview && <span className="settings__wd-preview">{preview}</span>}
+                {(t.start || t.end) && (
+                  <button
+                    className="settings__wd-clear"
+                    onClick={() =>
+                      setWdTimes((prev) => ({ ...prev, [wd]: { start: '', end: '' } }))
+                    }
+                    title="이 요일 목표 삭제"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             )
           })}

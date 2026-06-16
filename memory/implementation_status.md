@@ -56,8 +56,9 @@ metadata:
 
 ## 다음 작업 (우선순위 순)
 
-1. **Safe Area 처리 (이슈 #8)** — iOS 상단 상태바 + Android 하단 시스템 UI 겹침 모두 해결 필요. `env(safe-area-inset-*)` CSS + `viewport-fit=cover` 적용
-2. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
+1. **상단 상태바 겹침 처리 (이슈 #9)** — iOS/Android 공통. `viewport-fit=cover` + `env(safe-area-inset-top)` CSS 적용
+2. **갤럭시 폴드 하단 시스템 UI 겹침 (이슈 #8)** — `env(safe-area-inset-bottom)` + Android WindowInsets 처리
+3. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
 3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
 4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
 5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

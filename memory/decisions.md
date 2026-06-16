@@ -173,6 +173,16 @@ metadata:
 
 ---
 
+## 2026-06-16 — Safe Area 상단 여백: calc(1rem + env(safe-area-inset-top)) 유지
+
+**결정**: 상단 Safe Area 패딩을 `env(safe-area-inset-top)` 단독이 아닌 `calc(1rem + env(safe-area-inset-top))`으로 적용. 기존 `.app { padding: 1rem }` 위에 덮는 방식.
+
+**이유**: 순수 `env(safe-area-inset-top)` 단독이면 상태바 바로 아래 헤더가 너무 바짝 붙어 보일 수 있음. 실기기에서 확인 결과 다른 앱들과 상단 여백이 비슷한 수준으로 판단돼 1rem 기본 패딩을 그대로 유지.
+
+**관련 파일**: `src/index.css`(.app), `index.html`(viewport-fit=cover)
+
+---
+
 ## 2026-06-15 — Phase 2 백엔드: Supabase 선택 + 카카오 보류
 
 **결정**: 백엔드 플랫폼으로 Supabase 선택. 카카오 OAuth는 구현했으나 비활성화, Google OAuth만 운영.

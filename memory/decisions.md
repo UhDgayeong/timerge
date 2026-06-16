@@ -183,6 +183,16 @@ metadata:
 
 ---
 
+## 2026-06-16 — recognizedFromSegments 점심 차감 방어 조건 추가
+
+**결정**: 레거시 점심 차감 경로(`hasExplicitLunch === false`)에서 `work.length > 0` 조건 대신 `workDuration > 0` (실제 근무 시간 합산값)을 조건으로 사용.
+
+**이유**: 설정에서 요일별 목표 시작·종료 시각을 동일하게 설정하면 `minutesBetween(x, x) = 0`이라 근무 시간이 0분인데, 기존 조건(`work.length > 0`)은 세그먼트 존재 여부만 보므로 무조건 60분 차감 → `0 - 60 = -60분(-1시간)` 표시 버그 발생. `workDuration`을 직접 합산해 실제 시간이 0이면 차감 스킵.
+
+**관련 파일**: `src/domain/calc.ts`(recognizedFromSegments, 레거시 else 분기)
+
+---
+
 ## 2026-06-15 — Phase 2 백엔드: Supabase 선택 + 카카오 보류
 
 **결정**: 백엔드 플랫폼으로 Supabase 선택. 카카오 OAuth는 구현했으나 비활성화, Google OAuth만 운영.

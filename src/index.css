@@ -104,6 +104,7 @@ body {
   max-width: 640px;
   margin: 0 auto;
   padding: 1rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
 }
 
 /* ── WeekView ── */

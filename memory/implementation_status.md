@@ -52,12 +52,12 @@ metadata:
 - [x] **Phase 2 — Supabase 클라우드 동기화** — Supabase Auth(Google OAuth) + weeks/days/settings/holiday_overrides 테이블 + RLS + last-write-wins 동기화 레이어(`src/services/sync.ts`). 설정 화면에 "계정 및 동기화" 섹션 추가. 로그인/로그아웃 + 동기화 연결됨 뱃지. 카카오는 비즈앱 심사 필요로 보류, Google만 활성화. (이슈 #5 클로즈)
 
 - [x] **Capacitor Android 래핑** — @capacitor/core|cli|ios|android 7.6.6 설치. Google OAuth 딥링크(`com.clokoo.app://`) 처리. Android 실기기 로그인·동기화·데이터 퍼시스턴스 전부 확인. (이슈 #6 부분 완료 — iOS/스토어 제출은 별도)
+- [x] **iOS 빌드 확인** — `xcodebuild -runFirstLaunch` + Apple ID 로그인(Personal Team) 후 실기기 빌드 성공. 앱 동작 확인.
 
 ## 다음 작업 (우선순위 순)
 
-1. **UI 개선** — 모바일 최적화, 이슈 #8(갤럭시 폴드 하단 시스템 UI 겹침) 포함
-2. **iOS 빌드** — Xcode 설치 후 `npm run cap:ios` → 시뮬레이터 확인
-3. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6)
-4. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
-5. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-6. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+1. **Safe Area 처리 (이슈 #8)** — iOS 상단 상태바 + Android 하단 시스템 UI 겹침 모두 해결 필요. `env(safe-area-inset-*)` CSS + `viewport-fit=cover` 적용
+2. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
+3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
+4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

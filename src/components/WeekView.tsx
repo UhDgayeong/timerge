@@ -58,11 +58,6 @@ export default function WeekView() {
             days={data.days}
             settings={data.settings}
           />
-          <div className="week-view__ocr-row">
-            <button className="btn btn--ocr" onClick={() => setShowOcr(true)}>
-              📷 스크린샷으로 입력
-            </button>
-          </div>
           <div className="day-list">
             {data.days.map((day) => (
               <DayCard
@@ -73,6 +68,11 @@ export default function WeekView() {
                 onClick={() => setEditDay(day)}
               />
             ))}
+          </div>
+          <div className="week-view__ocr-row">
+            <button className="btn btn--ocr" onClick={() => setShowOcr(true)}>
+              📷 스크린샷으로 입력
+            </button>
           </div>
 
           {editDay && (

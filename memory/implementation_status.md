@@ -54,10 +54,11 @@ metadata:
 - [x] **Capacitor Android 래핑** — @capacitor/core|cli|ios|android 7.6.6 설치. Google OAuth 딥링크(`com.clokoo.app://`) 처리. Android 실기기 로그인·동기화·데이터 퍼시스턴스 전부 확인. (이슈 #6 부분 완료 — iOS/스토어 제출은 별도)
 - [x] **iOS 빌드 확인** — `xcodebuild -runFirstLaunch` + Apple ID 로그인(Personal Team) 후 실기기 빌드 성공. 앱 동작 확인.
 - [x] **상단 상태바 겹침 처리 (이슈 #9)** — `.app`에 `padding-top: calc(1rem + env(safe-area-inset-top))` 적용. iOS/Android 공통.
+- [x] **"스크린샷으로 입력" 버튼 하단 고정** — `position: fixed; bottom: 0`으로 화면 최하단 바 형태로 이동. `env(safe-area-inset-bottom)` 포함. `day-list`에 `padding-bottom` 추가해 버튼에 가려지지 않도록 처리.
 
 ## 다음 작업 (우선순위 순)
 
-1. **갤럭시 폴드 하단 시스템 UI 겹침 (이슈 #8)** — `env(safe-area-inset-bottom)` + Android WindowInsets 처리
+1. **갤럭시 폴드 하단 시스템 UI 겹침 (이슈 #8)** — `env(safe-area-inset-bottom)` + Android WindowInsets 처리 (OCR 버튼 safe-area 처리는 이미 반영됨, day-list 외 영역 확인 필요)
 3. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
 3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
 4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화

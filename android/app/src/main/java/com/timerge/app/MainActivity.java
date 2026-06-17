@@ -1,4 +1,4 @@
-package com.clokoo.app;
+package com.timerge.app;
 
 import com.getcapacitor.BridgeActivity;
 

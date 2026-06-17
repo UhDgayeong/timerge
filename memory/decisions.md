@@ -149,27 +149,26 @@ metadata:
 
 ## 2026-06-15 — Capacitor OAuth 딥링크 패턴
 
-**결정**: 네이티브 앱에서 Google OAuth `redirectTo`를 `com.clokoo.app://`(커스텀 스킴)으로 설정. 웹에서는 기존대로 `window.location.origin`.
+**결정**: 네이티브 앱에서 Google OAuth `redirectTo`를 `com.timerge.app://`(커스텀 스킴)으로 설정. 웹에서는 기존대로 `window.location.origin`.
 
 **이유**: Capacitor WebView 안에서 OAuth 완료 후 `localhost`로 리다이렉트되면 서버가 없어 ERR_CONNECTION_REFUSED 발생. 커스텀 스킴을 쓰면 Android intent-filter가 가로채서 앱을 다시 열고, `appUrlOpen` 이벤트로 `#access_token=...` 해시를 추출해 `supabase.auth.setSession()` 호출.
 
-**필수 설정**: Supabase Dashboard → Authentication → URL Configuration → Redirect URLs에 `com.clokoo.app://` 추가 필요.
+**필수 설정**: Supabase Dashboard → Authentication → URL Configuration → Redirect URLs에 `com.timerge.app://` 추가 필요.
 
 **관련 파일**: `src/services/auth.ts`(OAUTH_REDIRECT), `src/App.tsx`(appUrlOpen 리스너), `android/app/src/main/AndroidManifest.xml`(intent-filter)
 
 ---
 
-## 2026-06-15 — 앱 이름: Clokoo 확정
+## 2026-06-15 — 앱 이름: Clokoo → 2026-06-17 Timerge로 복귀
 
-**결정**: 앱 이름을 **Clokoo** (clock + cuckoo 합성어)로 확정. GitHub 레포명(timerge)은 유지.
+**결정**: 앱 이름을 **Timerge**로 사용. 패키지 ID `com.timerge.app`.
 
 **이유**:
-- 기존 이름 `Timerge`는 macOS 휴식 알림 앱으로 App Store에 정식 등록돼 있어 충돌.
-- 30+회 영어 포트만토 검색 결과, 시간·근무 관련 단어 조합은 글로벌 앱스토어에서 대부분 선점됨.
-- `Clokoo`: clock + cuckoo → 뻐꾸기시계처럼 정각에 "퇴근할 시간!"을 알려주는 콘셉트. App Store / Play Store 양쪽 네임 충돌 없음 확인.
-- "아주 조금 더 귀엽게" UI 방향과도 부합 (뻐꾸기 마스코트 확장 가능).
+- Clokoo로 변경했으나 팀 논의 후 원래 이름 Timerge로 복귀 결정.
+- App Store에 동일 이름 macOS 앱이 있다는 우려가 있었으나, 카테고리·플랫폼이 다르고 브랜드 충돌 우려보다 팀 아이덴티티 유지가 더 중요하다고 판단.
+- GitHub 레포명(timerge)과 앱 이름이 다시 일치하게 됨.
 
-**관련 이슈**: #7 클로즈
+**관련 이슈**: #7
 
 ---
 

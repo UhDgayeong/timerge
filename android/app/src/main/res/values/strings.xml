@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Clokoo</string>
-    <string name="title_activity_main">Clokoo</string>
-    <string name="package_name">com.clokoo.app</string>
-    <string name="custom_url_scheme">com.clokoo.app</string>
+    <string name="app_name">Timerge</string>
+    <string name="title_activity_main">Timerge</string>
+    <string name="package_name">com.timerge.app</string>
+    <string name="custom_url_scheme">com.timerge.app</string>
 </resources>

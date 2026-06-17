@@ -51,7 +51,7 @@ metadata:
 
 - [x] **Phase 2 — Supabase 클라우드 동기화** — Supabase Auth(Google OAuth) + weeks/days/settings/holiday_overrides 테이블 + RLS + last-write-wins 동기화 레이어(`src/services/sync.ts`). 설정 화면에 "계정 및 동기화" 섹션 추가. 로그인/로그아웃 + 동기화 연결됨 뱃지. 카카오는 비즈앱 심사 필요로 보류, Google만 활성화. (이슈 #5 클로즈)
 
-- [x] **Capacitor Android 래핑** — @capacitor/core|cli|ios|android 7.6.6 설치. Google OAuth 딥링크(`com.clokoo.app://`) 처리. Android 실기기 로그인·동기화·데이터 퍼시스턴스 전부 확인. (이슈 #6 부분 완료 — iOS/스토어 제출은 별도)
+- [x] **Capacitor Android 래핑** — @capacitor/core|cli|ios|android 7.6.6 설치. Google OAuth 딥링크(`com.timerge.app://`) 처리. Android 실기기 로그인·동기화·데이터 퍼시스턴스 전부 확인. (이슈 #6 부분 완료 — iOS/스토어 제출은 별도)
 - [x] **iOS 빌드 확인** — `xcodebuild -runFirstLaunch` + Apple ID 로그인(Personal Team) 후 실기기 빌드 성공. 앱 동작 확인.
 - [x] **상단 상태바 겹침 처리 (이슈 #9)** — `.app`에 `padding-top: calc(1rem + env(safe-area-inset-top))` 적용. iOS/Android 공통.
 - [x] **"스크린샷으로 입력" 버튼 하단 고정** — `position: fixed; bottom: 0`으로 화면 최하단 바 형태로 이동. `env(safe-area-inset-bottom)` 포함. `day-list`에 `padding-bottom` 추가해 버튼에 가려지지 않도록 처리.

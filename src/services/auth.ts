@@ -5,7 +5,7 @@ import type { User } from '@supabase/supabase-js'
 export type { User }
 
 const OAUTH_REDIRECT = Capacitor.isNativePlatform()
-  ? 'com.clokoo.app://'
+  ? 'com.timerge.app://'
   : window.location.origin
 
 export async function signInWithGoogle() {

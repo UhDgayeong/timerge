@@ -19,7 +19,7 @@ export default function App() {
     syncAll().catch(() => {})
 
     // 네이티브 앱: Google OAuth 딥링크 콜백 처리
-    // com.clokoo.app://#access_token=...&refresh_token=... 형태로 돌아옴
+    // com.timerge.app://#access_token=...&refresh_token=... 형태로 돌아옴
     let deepLinkHandle: { remove: () => void } | null = null
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('appUrlOpen', ({ url }) => {
@@ -45,7 +45,7 @@ export default function App() {
       {view === 'week' ? (
         <>
           <header className="app-header">
-            <span className="app-header__title">timerge</span>
+            <span className="app-header__title">Timerge</span>
             <button
               className="app-header__settings"
               onClick={() => setView('settings')}

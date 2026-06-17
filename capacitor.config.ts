@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.clokoo.app',
-  appName: 'Clokoo',
+  appId: 'com.timerge.app',
+  appName: 'Timerge',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

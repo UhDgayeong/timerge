@@ -69,6 +69,13 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
         )}
       </div>
 
+      <div className="week-header__progress">
+        <div
+          className="week-header__progress-fill"
+          style={{ width: `${goalMinutes > 0 ? Math.min(100, Math.round((totalRecognizedMinutes / goalMinutes) * 100)) : 0}%` }}
+        />
+      </div>
+
       {isOvertime && (
         <span className="week-header__overtime">{formatMinutes(overtimeMinutes)} 초과</span>
       )}

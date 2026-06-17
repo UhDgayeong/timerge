@@ -6,28 +6,42 @@
   /* JS probe로 덮어씌워짐. env() 폴백 역할 */
   --sab: var(--sab);
 
+  /* ── 액센트 ── */
+  --accent:            #6D4BFF;
+  --accent-subtle:     rgba(109, 75, 255, 0.08);
+
   /* ── 라이트 팔레트 ── */
-  --bg-base:           #ffffff;
+  --bg-base:           #f4f2ff;
   --bg-card:           #ffffff;
-  --bg-subtle:         #fafafa;
-  --bg-elevated:       #f5f5f5;
-  --bg-elevated-hover: #ebebeb;
+  --bg-subtle:         #f7f5ff;
+  --bg-elevated:       #ede9ff;
+  --bg-elevated-hover: #e0dbff;
   --bg-input:          #ffffff;
 
-  --border:            #e8e8e8;
-  --border-input:      #dddddd;
-  --border-subtle:     #eeeeee;
+  --border:            #e2ddf5;
+  --border-input:      #d4cef0;
+  --border-subtle:     #ece8f8;
 
-  --text-primary:      #222222;
-  --text-secondary:    #555555;
-  --text-muted:        #888888;
-  --text-faint:        #999999;
-  --text-title:        #1a1a2e;
+  --text-primary:      #1a1530;
+  --text-secondary:    #4a4270;
+  --text-muted:        #8880aa;
+  --text-faint:        #a9a4c4;
+  --text-title:        #1a1530;
+
+  /* ── Week Header 글래스 (라이트) ── */
+  --wh-bg:             rgba(255, 255, 255, 0.72);
+  --wh-border:         rgba(109, 75, 255, 0.15);
+  --wh-shadow:         0 4px 24px rgba(109, 75, 255, 0.08);
+  --wh-text:           #1a1530;
+  --wh-text-dim:       rgba(26, 21, 48, 0.45);
+  --wh-text-secondary: rgba(26, 21, 48, 0.7);
+  --wh-remaining:      #6D4BFF;
+  --wh-progress-track: rgba(109, 75, 255, 0.12);
 
   /* ── 상태 색상 (라이트) ── */
-  --bg-today:          #f0f7ff;
-  --border-today:      #1677ff;
-  --text-today:        #1677ff;
+  --bg-today:          linear-gradient(135deg, #f0ebff 0%, #e4d9ff 100%);
+  --border-today:      rgba(109, 75, 255, 0.35);
+  --text-today:        #6D4BFF;
 
   --bg-done:           #f6ffed;
   --border-done:       #b7eb8f;
@@ -37,12 +51,12 @@
   --bg-fixed:          #fff7e6;
   --border-fixed:      #ffd591;
 
-  --bg-holiday:        #fafafa;
-  --border-holiday:    #f0f0f0;
+  --bg-holiday:        #f7f5ff;
+  --border-holiday:    #e2ddf5;
 
-  --bg-label:          #f0f0f0;
-  --bg-label-holiday:  #f5f5f5;
-  --text-label-holiday:#bbbbbb;
+  --bg-label:          #ede9ff;
+  --bg-label-holiday:  #f0eeff;
+  --text-label-holiday:#b0aacc;
 
   --bg-status-success: #f6ffed;
   --text-status-success: #389e0d;
@@ -51,27 +65,37 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* ── 다크 팔레트 ── */
-    --bg-base:           #0f0f0f;
-    --bg-card:           #1c1c1c;
-    --bg-subtle:         #141414;
-    --bg-elevated:       #2a2a2a;
-    --bg-elevated-hover: #333333;
-    --bg-input:          #2a2a2a;
+    --bg-base:           #0d0b1a;
+    --bg-card:           #18142e;
+    --bg-subtle:         #100e20;
+    --bg-elevated:       #231d3d;
+    --bg-elevated-hover: #2c2548;
+    --bg-input:          #1e1838;
 
-    --border:            #2d2d2d;
-    --border-input:      #3a3a3a;
-    --border-subtle:     #2d2d2d;
+    --border:            #2d2750;
+    --border-input:      #3a3260;
+    --border-subtle:     #261f44;
 
-    --text-primary:      #e0e0e0;
-    --text-secondary:    #cccccc;
-    --text-muted:        #888888;
-    --text-faint:        #666666;
-    --text-title:        #e0e0e0;
+    --text-primary:      #e8e4ff;
+    --text-secondary:    #c0b8e8;
+    --text-muted:        #7c74a8;
+    --text-faint:        #5a5280;
+    --text-title:        #e8e4ff;
+
+    /* ── Week Header 글래스 (다크) ── */
+    --wh-bg:             rgba(20, 10, 50, 0.82);
+    --wh-border:         rgba(109, 75, 255, 0.22);
+    --wh-shadow:         0 4px 24px rgba(0, 0, 0, 0.4);
+    --wh-text:           #f0ecff;
+    --wh-text-dim:       rgba(220, 210, 255, 0.4);
+    --wh-text-secondary: rgba(220, 210, 255, 0.72);
+    --wh-remaining:      #a78bff;
+    --wh-progress-track: rgba(109, 75, 255, 0.2);
 
     /* ── 상태 색상 (다크) ── */
-    --bg-today:          #111d2c;
-    --border-today:      #177ddc;
-    --text-today:        #4096ff;
+    --bg-today:          linear-gradient(135deg, rgba(109, 75, 255, 0.28) 0%, rgba(60, 30, 180, 0.18) 100%);
+    --border-today:      rgba(109, 75, 255, 0.5);
+    --text-today:        #a78bff;
 
     --bg-done:           #162312;
     --border-done:       #274916;
@@ -81,12 +105,12 @@
     --bg-fixed:          #2b1d11;
     --border-fixed:      #593815;
 
-    --bg-holiday:        #141414;
-    --border-holiday:    #222222;
+    --bg-holiday:        #100e20;
+    --border-holiday:    #2d2750;
 
-    --bg-label:          #2d2d2d;
-    --bg-label-holiday:  #1a1a1a;
-    --text-label-holiday:#555555;
+    --bg-label:          #231d3d;
+    --bg-label-holiday:  #18142e;
+    --text-label-holiday:#5a5280;
 
     --bg-status-success: #162312;
     --text-status-success: #95de64;
@@ -142,30 +166,37 @@ body {
 }
 
 .week-nav__btn {
-  background: var(--bg-elevated);
-  border: none;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
   width: 2.2rem;
   height: 2.2rem;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   line-height: 1;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .week-nav__btn:hover {
-  background: var(--bg-elevated-hover);
+  background: var(--bg-elevated);
+  border-color: var(--accent);
 }
 
 .week-nav__label {
-  font-size: 0.9rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 1.2rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: var(--text-muted);
 }
 
 .week-nav__today {
-  background: #1677ff;
+  background: var(--accent);
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -178,22 +209,20 @@ body {
 /* ── WeekHeader ── */
 
 .week-header {
-  background: #1a1a2e;
-  color: #fff;
-  border-radius: 14px;
+  background: var(--wh-bg);
+  color: var(--wh-text);
+  border-radius: 16px;
   padding: 1.25rem 1.25rem 1rem;
   margin-bottom: 0.75rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .week-header {
-    background: #0d0d1a;
-  }
+  border: 1px solid var(--wh-border);
+  box-shadow: var(--wh-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .week-header__range {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--wh-text-dim);
   margin-bottom: 0.4rem;
   letter-spacing: 0.02em;
 }
@@ -203,30 +232,47 @@ body {
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .week-header__accumulated {
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--wh-text);
 }
 
 .week-header__sep {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--wh-text-dim);
   font-size: 0.9rem;
 }
 
 .week-header__goal {
   font-size: 1rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--wh-text-secondary);
 }
 
 .week-header__remaining {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffd666;
+  color: var(--wh-remaining);
+}
+
+.week-header__progress {
+  height: 3px;
+  background: var(--wh-progress-track);
+  border-radius: 99px;
+  margin: 0.55rem 0 0.5rem;
+  overflow: hidden;
+}
+
+.week-header__progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  min-width: 0;
 }
 
 .week-header__overtime {
@@ -240,19 +286,19 @@ body {
 }
 
 .week-header__done {
-  color: #73d13d;
+  color: #52c41a;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .week-header__avg {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--wh-text-secondary);
   margin-top: 0.25rem;
 }
 
 .week-header__avg strong {
-  color: #fff;
+  color: var(--wh-text);
 }
 
 /* ── DayList ── */
@@ -283,7 +329,7 @@ body {
 }
 
 .day-card:hover {
-  border-color: #1677ff;
+  border-color: var(--accent);
 }
 
 .day-card:active {
@@ -293,6 +339,7 @@ body {
 .day-card--today {
   border-color: var(--border-today);
   background: var(--bg-today);
+  background-clip: padding-box;
 }
 
 .day-card--holiday,
@@ -541,7 +588,7 @@ body {
   border: 1px dashed var(--border-input);
   border-radius: 8px;
   padding: 0.5rem;
-  color: #1677ff;
+  color: var(--accent);
   font-size: 0.9rem;
   cursor: pointer;
 }
@@ -577,7 +624,7 @@ body {
 }
 
 .btn--primary {
-  background: #1677ff;
+  background: var(--accent);
   color: #fff;
 }
 
@@ -604,26 +651,31 @@ body {
 }
 
 .app-header__title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-title);
 }
 
 .app-header__settings {
-  background: none;
-  border: none;
-  font-size: 1.3rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 1.1rem;
   line-height: 1;
   width: 2.2rem;
   height: 2.2rem;
-  border-radius: 8px;
+  border-radius: 50%;
   color: var(--text-muted);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .app-header__settings:hover {
   background: var(--bg-elevated);
+  border-color: var(--accent);
 }
 
 /* ── SettingsView ── */
@@ -928,22 +980,22 @@ body {
 /* WeekHeader — 계획(예정) 요약 */
 .week-header__planned {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--wh-text-secondary);
   margin-top: 0.2rem;
 }
 
 .week-header__departure {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--wh-text-secondary);
   margin-top: 0.35rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(109, 75, 255, 0.1);
   border-radius: 6px;
   padding: 0.3rem 0.6rem;
   display: inline-block;
 }
 
 .week-header__departure strong {
-  color: #fff;
+  color: var(--wh-text);
 }
 
 /* ── OCR 입력 버튼 ─────────────────────────────────────────────── */

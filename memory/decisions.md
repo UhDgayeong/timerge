@@ -5,6 +5,14 @@ metadata:
   type: project
 ---
 
+## 2026-06-17 — 글래스 리디자인 1차: 퍼플 팔레트
+
+**결정**: 파랑(#1677ff) → 퍼플(#6D4BFF) 전체 교체. WeekHeader를 다크 네이비 단색 → 글래스 카드(backdrop-filter blur, CSS 변수 --wh-*)로 전환. 라이트/다크 모두 별도 변수 세트 사용.  
+**이유**: Claude Design에서 글래스 리디자인 작업 후 Send to로 전달. DesignSync/WebFetch 로그인 이슈로 파일 직접 파싱 불가 → 스크린샷 기반으로 1차 구현. 디자인과 세부 디테일 불일치 있어 추후 재수정 예정.  
+**관련 파일**: `src/index.css`, `src/components/WeekHeader.tsx`
+
+---
+
 ## 2026-06-09 — 공휴일 표시 방식 (B방식 확정)
 
 **결정**: 공휴일은 "목표 −8h + 누적 0" 한 방식으로만 처리  

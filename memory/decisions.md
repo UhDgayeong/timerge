@@ -192,6 +192,16 @@ metadata:
 
 ---
 
+## 2026-06-17 — 헤더 고정: position:sticky → flex 레이아웃으로 전환
+
+**결정**: 홈/설정 헤더 고정을 `position: sticky` 대신 **flex 컬럼 레이아웃**으로 구현. `html/body/#root { height: 100% }`, `.app { display: flex; flex-direction: column }`, 콘텐츠 영역은 `.app__scroll / .settings__scroll { flex: 1; overflow-y: auto }`.
+
+**이유**: Android WebView에서 `position: sticky`가 신뢰할 수 없음 — 스크롤 컨테이너 판정 방식이 브라우저와 달라 무시되는 경우가 있음. 프리뷰 웹에서는 잘 됐지만 실기기에선 동작 안 함. flex + overflow 방식은 모바일 WebView에서 100% 안정적.
+
+**관련 파일**: `src/index.css`(.app, .app__scroll, .settings, .settings__scroll, .settings__header, .app-header), `src/App.tsx`, `src/components/SettingsView.tsx`
+
+---
+
 ## 2026-06-15 — Phase 2 백엔드: Supabase 선택 + 카카오 보류
 
 **결정**: 백엔드 플랫폼으로 Supabase 선택. 카카오 OAuth는 구현했으나 비활성화, Google OAuth만 운영.

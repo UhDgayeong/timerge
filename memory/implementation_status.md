@@ -59,10 +59,11 @@ metadata:
 - [x] **요일별 목표 개별 삭제 버튼(×) 추가** — 설정 화면 요일별 목표 행에 시간이 입력된 경우에만 × 버튼 표시. 클릭 시 해당 요일 입력 초기화 → "요일 목표 저장"으로 반영.
 - [x] **앱 이름 Timerge 복귀** — Clokoo → Timerge / com.clokoo.app → com.timerge.app. capacitor.config.ts, Android(build.gradle·AndroidManifest·strings·MainActivity), iOS(Info.plist·project.pbxproj), src(App.tsx·auth.ts) 전체 변경. Supabase Redirect URL도 com.timerge.app:// 로 수동 변경 완료.
 
+- [x] **헤더 스크롤 고정** — 홈/설정 화면 헤더가 스크롤해도 상단에 고정되도록 수정. `position: sticky` 대신 flex 레이아웃(`display: flex; flex-direction: column; height: 100%`) + 스크롤 영역(`app__scroll`, `settings__scroll`)으로 구조 변경. Android WebView에서 sticky 미작동 문제 해결.
+
 ## 다음 작업 (우선순위 순)
 
-1. **갤럭시 폴드 하단 시스템 UI 겹침 (이슈 #8)** — `env(safe-area-inset-bottom)` + Android WindowInsets 처리 (OCR 버튼 safe-area 처리는 이미 반영됨, day-list 외 영역 확인 필요)
-3. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
-3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
-4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+1. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
+2. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
+3. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+4. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

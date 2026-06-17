@@ -195,6 +195,7 @@ export default function SettingsView({ onClose }: Props) {
         <h2 className="settings__title">설정</h2>
       </header>
 
+      <div className="settings__scroll">
       <section className="settings__section">
         <h3 className="settings__section-title">기본 주간 목표</h3>
         <p className="settings__hint">5일 만근 기준 목표 시간. 공휴일이 있는 주는 자동으로 −8시간.</p>
@@ -300,6 +301,7 @@ export default function SettingsView({ onClose }: Props) {
       </section>
 
       {status && <p className="settings__status">{status}</p>}
+      </div>
     </div>
   )
 }

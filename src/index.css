@@ -3,6 +3,9 @@
     system-ui, sans-serif;
   color-scheme: light dark;
 
+  /* JS probe로 덮어씌워짐. env() 폴백 역할 */
+  --sab: var(--sab);
+
   /* ── 라이트 팔레트 ── */
   --bg-base:           #ffffff;
   --bg-card:           #ffffff;
@@ -94,8 +97,14 @@
   box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
+}
+
+body {
   background: var(--bg-base);
   color: var(--text-primary);
 }
@@ -103,9 +112,16 @@ body {
 .app {
   max-width: 640px;
   margin: 0 auto;
-  padding: 1rem;
-  padding-top: calc(1rem + env(safe-area-inset-top));
-  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  padding: 0 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── WeekView ── */
@@ -245,7 +261,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  padding-bottom: calc(4rem + var(--sab));
 }
 
 /* ── DayCard ── */
@@ -390,7 +406,7 @@ body {
   max-width: 640px;
   border-radius: 16px 16px 0 0;
   padding: 1.25rem;
-  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  padding-bottom: calc(1.25rem + var(--sab));
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
   animation: modal-up 0.2s ease;
 }
@@ -579,10 +595,12 @@ body {
 /* ── App header ── */
 
 .app-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
+  padding-bottom: 0.75rem;
 }
 
 .app-header__title {
@@ -611,14 +629,27 @@ body {
 /* ── SettingsView ── */
 
 .settings {
-  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.settings__scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: max(4rem, calc(2rem + var(--sab)));
 }
 
 .settings__header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  margin-bottom: 1rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
+  padding-bottom: 1rem;
 }
 
 .settings__back {
@@ -767,6 +798,9 @@ body {
   background: #fff;
   color: #3c4043;
   border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .auth-section__btn--kakao {
@@ -919,7 +953,7 @@ body {
   transform: translateX(-50%);
   width: 100%;
   max-width: 640px;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem 1rem calc(0.75rem + var(--sab));
   background: var(--bg-base);
   border-top: 1px solid var(--border);
   z-index: 10;

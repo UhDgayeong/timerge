@@ -7,10 +7,28 @@ import { onAuthStateChange } from './services/auth'
 import { supabase } from './lib/supabase'
 import { syncAll } from './services/sync'
 
+function applySafeAreaBottom() {
+  // CSS env(safe-area-inset-bottom) 실제 값을 probe해서 --sab 변수로 주입.
+  // Android WebView에서 env()가 0을 반환하는 경우 56px fallback 적용.
+  const probe = document.createElement('div')
+  probe.style.cssText =
+    'position:fixed;bottom:0;left:0;width:1px;height:env(safe-area-inset-bottom,0px);' +
+    'pointer-events:none;visibility:hidden;'
+  document.documentElement.appendChild(probe)
+  requestAnimationFrame(() => {
+    const sab = probe.offsetHeight
+    probe.remove()
+    const final = Capacitor.getPlatform() === 'android' && sab < 20 ? 56 : sab
+    document.documentElement.style.setProperty('--sab', `${final}px`)
+  })
+}
+
 export default function App() {
   const [view, setView] = useState<'week' | 'settings'>('week')
 
   useEffect(() => {
+    if (Capacitor.isNativePlatform()) applySafeAreaBottom()
+
     // 로그인 상태 변경 시 동기화
     const unsub = onAuthStateChange((user) => {
       if (user) syncAll().catch(() => {})
@@ -54,7 +72,9 @@ export default function App() {
               ⚙
             </button>
           </header>
-          <WeekView />
+          <div className="app__scroll">
+            <WeekView />
+          </div>
         </>
       ) : (
         <SettingsView onClose={() => setView('week')} />

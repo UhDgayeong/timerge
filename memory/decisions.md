@@ -202,6 +202,25 @@ metadata:
 
 ---
 
+## 2026-06-17 — Safe Area 하단 여백: --sab CSS 변수 + JS probe + Android 56px fallback
+
+**결정**: `env(safe-area-inset-bottom)` 단독 대신 CSS 변수 `--sab`를 도입. JS probe로 실측 후 주입하고, Android에서 측정값이 20px 미만이면 56px로 강제.
+
+**3계층 방어**:
+1. `MainActivity.java`에 `WindowCompat.setDecorFitsSystemWindows(getWindow(), false)` 명시 → Android WebView가 window inset을 받도록
+2. `App.tsx`의 `applySafeAreaBottom()`: 보이지 않는 div로 `env(safe-area-inset-bottom)` 실측 → `--sab` CSS 변수로 주입. Android에서 0이면 56px fallback.
+3. CSS 전체에서 `env(safe-area-inset-bottom)` → `var(--sab)` 교체. `.settings__scroll`은 `max(4rem, calc(2rem + var(--sab)))` — 최소 패딩 보장.
+
+**이유**: Galaxy Fold(Android 15 edge-to-edge 강제) + Capacitor WebView 조합에서 `env(safe-area-inset-bottom)`이 0을 반환하는 경우 발생. `WindowCompat`만으로 해결 안 됨.
+
+**주의**: CSS에 `--sab: var(--sab)` 자기참조 선언이 있어도(린터가 만든 것) JS inline style이 우선하므로 런타임 동작은 정상.
+
+**남은 한계**: 설정 화면은 스크롤 끝까지 내리면 시스템 바와 겹침 없음. 중간 스크롤 위치에서는 마지막 항목이 바 위에 보일 수 있음(사용자 수용).
+
+**관련 파일**: `android/app/src/main/java/com/timerge/app/MainActivity.java`, `src/App.tsx`(applySafeAreaBottom), `src/index.css`(--sab 전체)
+
+---
+
 ## 2026-06-15 — Phase 2 백엔드: Supabase 선택 + 카카오 보류
 
 **결정**: 백엔드 플랫폼으로 Supabase 선택. 카카오 OAuth는 구현했으나 비활성화, Google OAuth만 운영.

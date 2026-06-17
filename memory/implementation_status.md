@@ -61,6 +61,8 @@ metadata:
 
 - [x] **헤더 스크롤 고정** — 홈/설정 화면 헤더가 스크롤해도 상단에 고정되도록 수정. `position: sticky` 대신 flex 레이아웃(`display: flex; flex-direction: column; height: 100%`) + 스크롤 영역(`app__scroll`, `settings__scroll`)으로 구조 변경. Android WebView에서 sticky 미작동 문제 해결.
 
+- [x] **갤럭시 폴드 하단 시스템 UI 겹침 수정 (이슈 #8)** — 3단 방어: ① `MainActivity.java`에 `WindowCompat.setDecorFitsSystemWindows(false)` 명시 ② `App.tsx`에 JS probe로 `env(safe-area-inset-bottom)` 실측 후 `--sab` CSS 변수 주입 (Android에서 0이면 56px fallback) ③ CSS 전체를 `var(--sab)` 기반으로 교체. 바텀시트 저장 버튼은 완전 해결. 설정 화면은 스크롤 끝까지 내리면 잘리지 않음 (사용자 수용).
+
 ## 다음 작업 (우선순위 순)
 
 1. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)

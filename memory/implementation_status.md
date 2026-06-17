@@ -57,6 +57,7 @@ metadata:
 - [x] **"스크린샷으로 입력" 버튼 하단 고정** — `position: fixed; bottom: 0`으로 화면 최하단 바 형태로 이동. `env(safe-area-inset-bottom)` 포함. `day-list`에 `padding-bottom` 추가해 버튼에 가려지지 않도록 처리.
 - [x] **시작·종료 시간 동일 설정 시 -1시간 버그 수정** — `recognizedFromSegments` 레거시 점심 차감 경로에서 실제 근무 시간(workDuration)이 0일 때 점심을 차감하지 않도록 수정.
 - [x] **요일별 목표 개별 삭제 버튼(×) 추가** — 설정 화면 요일별 목표 행에 시간이 입력된 경우에만 × 버튼 표시. 클릭 시 해당 요일 입력 초기화 → "요일 목표 저장"으로 반영.
+- [x] **앱 이름 Timerge 복귀** — Clokoo → Timerge / com.clokoo.app → com.timerge.app. capacitor.config.ts, Android(build.gradle·AndroidManifest·strings·MainActivity), iOS(Info.plist·project.pbxproj), src(App.tsx·auth.ts) 전체 변경. Supabase Redirect URL도 com.timerge.app:// 로 수동 변경 완료.
 
 ## 다음 작업 (우선순위 순)
 

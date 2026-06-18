@@ -66,6 +66,7 @@ metadata:
 - [x] **글래스 리디자인 1차** — 퍼플 팔레트(#6D4BFF), WeekHeader 글래스 카드(backdrop-filter), 프로그레스 바, 오늘 카드 퍼플 그라디언트, 타이틀/네비/버튼 스타일 갱신. 디자인과 완전히 일치하진 않아 추후 재수정 예정.
 - [x] **UI 리디자인 2차** — PhoneScreen.dc.html 기반 글래스 모피즘 전면 적용. CSS 변수 시스템 교체(--text/--glass/--accent 등), 그라디언트 배경 + blob 애니메이션, 모든 카드/버튼/모달/설정 글래스 스타일. 커스텀 체크박스, 커스텀 휠 시간 선택기(TimePicker) 구현.
 - [x] **설정 화면 OS 뒤로가기** — Android 하드웨어/제스처 뒤로가기(`backButton` Capacitor 이벤트) + iOS 엣지 스와이프(`history.pushState` + `popstate`) 처리. Android 실기기 확인.
+- [x] **폰트 변경: Pretendard → IBM Plex Sans KR** — `@fontsource/ibm-plex-sans-kr` 로컬 번들 방식으로 적용 (Capacitor `file://` 환경 대응). `src/main.tsx`에서 400/500/600/700 weight import.
 
 ## 다음 작업 (우선순위 순)
 

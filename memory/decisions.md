@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — 폰트: IBM Plex Sans KR 로컬 번들 적용
+
+**결정**: `@fontsource/ibm-plex-sans-kr` npm 패키지로 로컬 번들링. `src/main.tsx`에서 400/500/600/700 weight CSS import.
+
+**이유**: Capacitor 앱은 `file://` 프로토콜로 동작해 Google Fonts CDN `@import url(...)` 방식이 네트워크를 타지 않아 폰트 미로드. fontsource는 woff2 파일을 빌드 산출물에 포함시키므로 오프라인/모바일 환경 모두 동작. weight 800은 IBM Plex Sans KR 미지원(최대 700) — 기존 800 선언부는 자동으로 700으로 fallback됨.
+
+**관련 파일**: `src/main.tsx`, `src/index.css`, `package.json`
+
+---
+
 ## 2026-06-18 — 설정 화면 OS 뒤로가기 처리
 
 **결정**: Android `backButton` + iOS `popstate` 이벤트 두 갈래로 처리. 설정 진입 시 `history.pushState()`로 히스토리 엔트리 추가 → iOS 엣지 스와이프가 `popstate` 발생 → `setView('week')`. Android는 Capacitor `CapApp.addListener('backButton', ...)`. 두 리스너 모두 `useEffect([view])`에서 등록/해제.  

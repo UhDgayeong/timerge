@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import TimePicker from './TimePicker'
 import type { DayRecord, Segment, SegmentType, Settings } from '../domain/types'
 import {
   effectiveFixedTarget,
@@ -106,6 +107,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
     minToHoursStr(effectiveFixedTarget(day, settings)),
   )
   const [saving, setSaving] = useState(false)
+  const [activePicker, setActivePicker] = useState<{ segIdx: number; field: 'start' | 'end' } | null>(null)
 
   const isWeekday = !isWeekend(day.date)
   const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
@@ -300,19 +302,23 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
 
                     {needsTime(seg.type) ? (
                       <>
-                        <input
-                          className="seg-row__time"
-                          type="time"
-                          value={seg.start}
-                          onChange={(e) => updateSegment(idx, { start: e.target.value })}
-                        />
+                        <button
+                          type="button"
+                          className={`time-pill${!seg.start ? ' time-pill--empty' : ''}`}
+                          onClick={() => setActivePicker({ segIdx: idx, field: 'start' })}
+                        >
+                          <span>{seg.start || '--:--'}</span>
+                          <span className="time-pill__chevron" />
+                        </button>
                         <span className="seg-row__tilde">~</span>
-                        <input
-                          className="seg-row__time"
-                          type="time"
-                          value={seg.end}
-                          onChange={(e) => updateSegment(idx, { end: e.target.value })}
-                        />
+                        <button
+                          type="button"
+                          className={`time-pill${!seg.end ? ' time-pill--empty' : ''}`}
+                          onClick={() => setActivePicker({ segIdx: idx, field: 'end' })}
+                        >
+                          <span>{seg.end || '--:--'}</span>
+                          <span className="time-pill__chevron" />
+                        </button>
                       </>
                     ) : (
                       <span className="seg-row__fixed">종일 (8시간)</span>
@@ -389,6 +395,18 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
           </button>
         </div>
       </div>
+
+      {activePicker && (
+        <TimePicker
+          label={activePicker.field === 'start' ? '시작 시간' : '종료 시간'}
+          value={segments[activePicker.segIdx]?.[activePicker.field] ?? ''}
+          onConfirm={(val) => {
+            updateSegment(activePicker.segIdx, { [activePicker.field]: val })
+            setActivePicker(null)
+          }}
+          onCancel={() => setActivePicker(null)}
+        />
+      )}
     </div>
   )
 }

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;}
+    .wheel-scroll::-webkit-scrollbar,.scroll-y::-webkit-scrollbar{display:none;}
+    .wheel-scroll,.scroll-y{-ms-overflow-style:none;scrollbar-width:none;}
+    @keyframes floaty{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(14px,-18px) scale(1.08);}}
+  </style>
+</helmet>
+
+<div id="pptx-root" style="min-height:100vh;width:100%;background:radial-gradient(120% 80% at 80% 0%,#f0ecff,transparent 60%),radial-gradient(100% 70% at 0% 100%,#fdeef5,transparent 55%),linear-gradient(160deg,#eceaf2,#e7e4ee);font-family:'IBM Plex Sans KR','Pretendard',-apple-system,sans-serif;padding:44px 32px 64px;display:flex;flex-direction:column;align-items:center;">
+
+  <!-- header -->
+  <div style="text-align:center;margin-bottom:8px;">
+    <div style="font-size:30px;font-weight:800;letter-spacing:-.6px;color:#241d3f;">Timerge · 글래스 리디자인</div>
+    <div style="font-size:15px;font-weight:700;color:#6b6483;margin-top:8px;">상단에서 화면 전환 · 설정에서 라이트/다크 테마 변경 가능</div>
+  </div>
+
+  <!-- segmented control -->
+  <div style="display:inline-flex;gap:4px;padding:5px;border-radius:18px;background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.8);box-shadow:0 10px 30px rgba(80,60,140,.1);margin:26px 0 36px;">
+    <sc-for list="{{ nav }}" as="t" hint-placeholder-count="3">
+      <div onClick="{{ t.onClick }}" style="padding:11px 20px;border-radius:14px;font-size:14.5px;font-weight:700;white-space:nowrap;cursor:pointer;transition:all .2s;color:{{ t.color }};background:{{ t.bg }};box-shadow:{{ t.shadow }};">{{ t.label }}</div>
+    </sc-for>
+  </div>
+
+  <!-- phone -->
+  <div style="width:396px;height:828px;border-radius:54px;padding:11px;background:linear-gradient(145deg,#2a2733,#15131c);box-shadow:0 40px 90px rgba(40,30,80,.28),inset 0 0 0 2px rgba(255,255,255,.06);position:relative;">
+    <div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);width:104px;height:28px;border-radius:99px;background:#0a0910;z-index:10;"></div>
+
+    <!-- LIGHT -->
+    <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Light" style="width:100%;height:100%;border-radius:43px;overflow:hidden;position:relative;background:radial-gradient(120% 70% at 100% 0%,#efe9ff 0%,transparent 55%),radial-gradient(110% 60% at 0% 100%,#fde6f1 0%,transparent 55%),linear-gradient(160deg,#f3effe,#fbf0f7 55%,#fef2ea);--text:#241d3f;--text-dim:rgba(36,29,63,.58);--text-faint:rgba(36,29,63,.38);--glass:rgba(255,255,255,.5);--glass-strong:rgba(255,255,255,.66);--glass-faint:rgba(255,255,255,.34);--glass-border:rgba(255,255,255,.75);--track:rgba(124,92,255,.16);--accent:#7c5cff;--accent-soft:rgba(124,92,255,.12);--accent-line:rgba(124,92,255,.45);--accent-glow:rgba(124,92,255,.26);--scrim:rgba(70,52,120,.16);--sheet:rgba(255,255,255,.74);--sheet-solid:rgba(248,244,255,.96);--shadow:0 8px 26px rgba(90,68,150,.1);">
+        <div style="position:absolute;top:120px;left:-40px;width:200px;height:200px;border-radius:50%;background:#c9b8ff;opacity:.5;filter:blur(36px);z-index:0;animation:floaty 11s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:380px;right:-50px;width:220px;height:220px;border-radius:50%;background:#ffc4e0;opacity:.5;filter:blur(40px);z-index:0;animation:floaty 14s ease-in-out infinite reverse;"></div>
+        <div style="position:absolute;bottom:60px;left:30px;width:180px;height:180px;border-radius:50%;background:#ffd9bd;opacity:.45;filter:blur(38px);z-index:0;animation:floaty 13s ease-in-out infinite;"></div>
+        <dc-import name="PhoneScreen" screen="{{ screen }}" on-settings="{{ goSettings }}" on-home="{{ goHome }}" on-pick-time="{{ goPicker }}" on-theme-change="{{ changeTheme }}" current-theme="{{ currentTheme }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:1;"></dc-import>
+      </div>
+    </sc-if>
+
+    <!-- DARK -->
+    <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Dark" style="width:100%;height:100%;border-radius:43px;overflow:hidden;position:relative;background:radial-gradient(120% 70% at 100% 0%,#2c2257 0%,transparent 55%),radial-gradient(110% 60% at 0% 100%,#3a1d4a 0%,transparent 55%),linear-gradient(160deg,#181231,#120e22 55%,#0c0916);--text:rgba(255,255,255,.95);--text-dim:rgba(255,255,255,.56);--text-faint:rgba(255,255,255,.34);--glass:rgba(255,255,255,.08);--glass-strong:rgba(255,255,255,.14);--glass-faint:rgba(255,255,255,.04);--glass-border:rgba(255,255,255,.15);--track:rgba(255,255,255,.12);--accent:#a78bfa;--accent-soft:rgba(167,139,250,.18);--accent-line:rgba(167,139,250,.5);--accent-glow:rgba(124,92,255,.45);--scrim:rgba(6,4,16,.52);--sheet:rgba(34,27,60,.74);--sheet-solid:rgba(28,22,52,.96);--shadow:0 8px 28px rgba(0,0,0,.32);">
+        <div style="position:absolute;top:120px;left:-40px;width:200px;height:200px;border-radius:50%;background:#7c3aed;opacity:.45;filter:blur(44px);z-index:0;animation:floaty 11s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:380px;right:-50px;width:220px;height:220px;border-radius:50%;background:#c026d3;opacity:.34;filter:blur(48px);z-index:0;animation:floaty 14s ease-in-out infinite reverse;"></div>
+        <div style="position:absolute;bottom:60px;left:30px;width:180px;height:180px;border-radius:50%;background:#4338ca;opacity:.4;filter:blur(44px);z-index:0;animation:floaty 13s ease-in-out infinite;"></div>
+        <dc-import name="PhoneScreen" screen="{{ screen }}" on-settings="{{ goSettings }}" on-home="{{ goHome }}" on-pick-time="{{ goPicker }}" on-theme-change="{{ changeTheme }}" current-theme="{{ currentTheme }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:1;"></dc-import>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { screen: 'home', theme: 'light' };
+
+  renderVals() {
+    const cur = this.state.screen;
+    const theme = this.state.theme;
+    const items = [
+      { key: 'home', label: '홈' },
+      { key: 'settings', label: '설정' },
+      { key: 'picker', label: '시간 선택' },
+    ];
+    return {
+      screen: cur,
+      goHome: () => this.setState({ screen: 'home' }),
+      goSettings: () => this.setState({ screen: 'settings' }),
+      goPicker: () => this.setState({ screen: 'picker' }),
+      changeTheme: (t) => this.setState({ theme: t }),
+      currentTheme: theme,
+      isLight: theme === 'light',
+      isDark: theme === 'dark',
+      nav: items.map(it => ({
+        label: it.label,
+        onClick: () => this.setState({ screen: it.key }),
+        color: cur === it.key ? '#fff' : '#5b5475',
+        bg: cur === it.key ? '#7c5cff' : 'transparent',
+        shadow: cur === it.key ? '0 6px 16px rgba(124,92,255,.4)' : 'none',
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

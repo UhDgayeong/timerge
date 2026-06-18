@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="height:100%;width:100%;position:relative;overflow:hidden;color:var(--text);font-family:'IBM Plex Sans KR','Pretendard',-apple-system,sans-serif;display:flex;flex-direction:column;">
+
+  <!-- status bar -->
+  <div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:700;letter-spacing:.2px;color:var(--text);">
+    <span>4:30</span>
+    <span style="display:flex;align-items:center;gap:7px;">
+      <span style="display:flex;align-items:flex-end;gap:2px;height:11px;">
+        <span style="width:3px;height:5px;background:var(--text);border-radius:1px;opacity:.85;"></span>
+        <span style="width:3px;height:7px;background:var(--text);border-radius:1px;opacity:.85;"></span>
+        <span style="width:3px;height:9px;background:var(--text);border-radius:1px;opacity:.85;"></span>
+        <span style="width:3px;height:11px;background:var(--text);border-radius:1px;opacity:.45;"></span>
+      </span>
+      <span style="display:flex;align-items:center;gap:3px;">
+        <span style="width:21px;height:11px;border:1.4px solid var(--text);border-radius:3px;position:relative;display:flex;align-items:center;padding:1.4px;opacity:.9;"><span style="display:block;width:70%;height:100%;background:var(--text);border-radius:1px;"></span></span>
+        <span style="font-size:11px;font-weight:700;">97</span>
+      </span>
+    </span>
+  </div>
+
+  <!-- ===================== HOME ===================== -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1;position:relative;overflow:hidden;">
+
+  <div class="scroll-y" style="position:absolute;inset:0;overflow-y:auto;padding:6px 18px 26px;">
+
+    <!-- header: logo + settings -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:6px 2px 18px;">
+      <span style="font-size:25px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(100deg,var(--text) 35%,var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Timerge</span>
+      <span onClick="{{ onSettings }}" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </span>
+    </div>
+
+    <!-- week nav -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="width:42px;height:42px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);"><span style="width:8px;height:8px;border-left:2px solid var(--text);border-bottom:2px solid var(--text);transform:rotate(45deg) translate(2px,-1px);display:block;"></span></span>
+      <span style="flex:1;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text);background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">이번 주</span>
+      <span style="width:42px;height:42px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);"><span style="width:8px;height:8px;border-right:2px solid var(--text);border-top:2px solid var(--text);transform:rotate(45deg) translate(-2px,1px);display:block;"></span></span>
+    </div>
+
+    <!-- summary card -->
+    <div style="padding:20px 22px;border-radius:26px;margin-bottom:18px;background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30px;right:-20px;width:120px;height:120px;border-radius:50%;background:var(--accent);opacity:.18;filter:blur(20px);"></div>
+      <div style="font-size:13px;font-weight:700;color:var(--text-dim);margin-bottom:8px;position:relative;">6.15 ~ 6.21</div>
+      <div style="display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;position:relative;">
+        <span style="font-size:46px;font-weight:800;line-height:1;letter-spacing:-1.5px;color:var(--text);">0</span>
+        <span style="font-size:22px;font-weight:700;color:var(--text);">분</span>
+        <span style="font-size:14px;font-weight:700;color:var(--text-dim);margin-left:8px;">목표 <b style="color:var(--text);">40시간</b> · 남은 <b style="color:var(--accent);">40시간</b></span>
+      </div>
+      <div style="height:7px;border-radius:99px;background:var(--track);margin:16px 0 12px;overflow:hidden;position:relative;"><span style="display:block;width:2%;height:100%;border-radius:99px;background:var(--accent);"></span></div>
+      <div style="font-size:13px;font-weight:700;color:var(--text-dim);position:relative;">월·화·수·목·금 · 평균 <b style="color:var(--text);">8시간</b>씩</div>
+    </div>
+
+    <!-- day rows -->
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div onClick="{{ openMon }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);" style-active="transform:scale(.985);"><span style="font-size:15.5px;font-weight:700;color:var(--text);">6/15 <span style="color:var(--text-dim);font-weight:700;">월</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">미정</span></div>
+      <div onClick="{{ openTue }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);" style-active="transform:scale(.985);"><span style="font-size:15.5px;font-weight:700;color:var(--text);">6/16 <span style="color:var(--text-dim);font-weight:700;">화</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">미정</span></div>
+      <div onClick="{{ openWed }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;cursor:pointer;background:var(--accent-soft);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1.5px solid var(--accent);box-shadow:0 8px 24px var(--accent-glow);" style-active="transform:scale(.985);"><span style="font-size:15.5px;font-weight:800;color:var(--accent);">6/17 <span style="font-weight:700;">수</span> <span style="font-size:11px;font-weight:700;opacity:.85;">· 오늘</span></span><span style="font-size:14px;font-weight:700;color:var(--accent);opacity:.8;">미정</span></div>
+      <div onClick="{{ openThu }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);" style-active="transform:scale(.985);"><span style="font-size:15.5px;font-weight:700;color:var(--text);">6/18 <span style="color:var(--text-dim);font-weight:700;">목</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">미정</span></div>
+      <div onClick="{{ openFri }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--shadow);" style-active="transform:scale(.985);"><span style="font-size:15.5px;font-weight:700;color:var(--text);">6/19 <span style="color:var(--text-dim);font-weight:700;">금</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">미정</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;background:var(--glass-faint);border:1px solid var(--glass-border);opacity:.55;"><span style="font-size:15.5px;font-weight:700;color:var(--text-faint);">6/20 <span style="font-weight:700;">토</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">–</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:18px;background:var(--glass-faint);border:1px solid var(--glass-border);opacity:.55;"><span style="font-size:15.5px;font-weight:700;color:var(--text-faint);">6/21 <span style="font-weight:700;">일</span></span><span style="font-size:14px;font-weight:700;color:var(--text-faint);">–</span></div>
+    </div>
+
+    <!-- bottom CTA -->
+    <div style="margin-top:18px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:700;color:var(--text);background:var(--glass-strong);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="6.5" width="19" height="13" rx="3.5" stroke="var(--accent)" stroke-width="1.8"></rect><circle cx="12" cy="13" r="3.6" stroke="var(--accent)" stroke-width="1.8"></circle><rect x="8" y="4" width="8" height="3" rx="1.5" fill="var(--accent)"></rect></svg>
+      스크린샷으로 입력
+    </div>
+
+  </div>
+
+  <!-- ===== bottom sheet overlay (opens on day tap) ===== -->
+  <sc-if value="{{ sheetVisible }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:var(--scrim);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 20px 22px;border-radius:30px 30px 0 0;background:var(--sheet);-webkit-backdrop-filter:blur(30px) saturate(170%);backdrop-filter:blur(30px) saturate(170%);border:1px solid var(--glass-border);border-bottom:none;box-shadow:0 -16px 50px rgba(0,0,0,.28);">
+      <div style="width:42px;height:5px;border-radius:99px;background:var(--text-faint);margin:0 auto 16px;opacity:.6;"></div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <span style="font-size:21px;font-weight:800;letter-spacing:-.3px;color:var(--text);">{{ sheetDate }} <span style="color:var(--text-dim);font-weight:700;">{{ sheetWd }}</span></span>
+        <span onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--glass);border:1px solid var(--glass-border);position:relative;"><span style="position:absolute;width:14px;height:1.8px;background:var(--text-dim);transform:rotate(45deg);"></span><span style="position:absolute;width:14px;height:1.8px;background:var(--text-dim);transform:rotate(-45deg);"></span></span>
+      </div>
+
+      <div onClick="{{ toggleHoliday }}" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;cursor:pointer;">
+        <span style="width:24px;height:24px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:{{ holidayBg }};border:1.6px solid {{ holidayBorder }};"><sc-if value="{{ holiday }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:11px;border-right:2.4px solid #fff;border-bottom:2.4px solid #fff;transform:rotate(45deg) translate(-1px,-1px);display:block;"></span></sc-if></span>
+        <span style="font-size:16px;font-weight:700;white-space:nowrap;color:var(--text);">공휴일</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <div style="width:96px;flex:none;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--glass-border);"><span style="font-size:15px;font-weight:700;color:var(--text);">근무</span><span style="width:7px;height:7px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg) translateY(-2px);display:block;"></span></div>
+        <div onClick="{{ onPickTime }}" style="flex:1;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--glass-border);"><span style="font-size:15px;font-weight:700;color:var(--accent);">09:00</span><span style="width:7px;height:7px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg) translateY(-2px);display:block;"></span></div>
+        <span style="color:var(--text-dim);font-weight:700;">~</span>
+        <div onClick="{{ onPickTime }}" style="flex:1;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--glass-border);"><span style="font-size:15px;font-weight:700;color:var(--accent);">18:00</span><span style="width:7px;height:7px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg) translateY(-2px);display:block;"></span></div>
+      </div>
+
+      <div onClick="{{ toggleBreak }}" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;cursor:pointer;">
+        <span style="width:24px;height:24px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:{{ breakBg }};border:1.6px solid {{ breakBorder }};"><sc-if value="{{ breakExcl }}" hint-placeholder-val="{{ true }}"><span style="width:6px;height:11px;border-right:2.4px solid #fff;border-bottom:2.4px solid #fff;transform:rotate(45deg) translate(-1px,-1px);display:block;"></span></sc-if></span>
+        <span style="font-size:15px;font-weight:700;white-space:nowrap;color:var(--text);">휴게 1시간 제외</span>
+      </div>
+
+      <div style="height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:15px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent-line);margin-bottom:18px;background:var(--accent-soft);">+ 구간 추가</div>
+
+      <div style="height:1px;background:var(--glass-border);margin-bottom:14px;"></div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <span style="font-size:15px;font-weight:700;color:var(--text);">인정시간</span>
+        <span style="font-size:17px;font-weight:800;color:var(--accent);">8시간 0분</span>
+      </div>
+
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;">이 날 목표시간 <span style="color:var(--text-dim);font-weight:700;">(계획)</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="width:120px;height:46px;border-radius:13px;display:flex;align-items:center;padding:0 16px;background:var(--glass);border:1px solid var(--glass-border);font-size:15px;font-weight:700;color:var(--text-faint);">미정</div>
+        <span style="font-size:15px;font-weight:700;color:var(--text-dim);">시간</span>
+      </div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--text-faint);margin-bottom:18px;">실적을 입력하면 목표는 무시됩니다</div>
+
+      <div style="display:flex;gap:10px;">
+        <div style="width:118px;flex:none;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text-dim);background:var(--glass);border:1px solid var(--glass-border);">기록 지우기</div>
+        <div onClick="{{ closeSheet }}" style="flex:1;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;background:var(--accent);box-shadow:0 10px 26px var(--accent-glow);cursor:pointer;">저장</div>
+      </div>
+    </div>
+  </sc-if>
+
+  </div>
+  </sc-if>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
+  <div class="scroll-y" style="flex:1;overflow-y:auto;padding:6px 18px 26px;">
+    <div style="display:flex;align-items:center;gap:10px;margin:6px 4px 18px;">
+      <span onClick="{{ onHome }}" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--glass);border:1px solid var(--glass-border);box-shadow:var(--shadow);"><span style="width:9px;height:9px;border-left:2.2px solid var(--text);border-bottom:2.2px solid var(--text);transform:rotate(45deg) translateX(2px);display:block;"></span></span>
+      <span style="font-size:23px;font-weight:800;letter-spacing:-.4px;color:var(--text);">설정</span>
+    </div>
+
+    <!-- 화면 테마 -->
+    <div style="padding:20px;border-radius:24px;margin-bottom:14px;background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;">화면 테마</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.5;color:var(--text-dim);margin-bottom:16px;">앱 색상 테마를 선택하세요.</div>
+      <div style="display:flex;gap:8px;">
+        <div onClick="{{ selectLight }}" style="flex:1;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer;background:{{ lightBtnBg }};color:{{ lightBtnColor }};border:1px solid var(--glass-border);box-shadow:{{ lightBtnShadow }};">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          라이트
+        </div>
+        <div onClick="{{ selectDark }}" style="flex:1;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer;background:{{ darkBtnBg }};color:{{ darkBtnColor }};border:1px solid var(--glass-border);box-shadow:{{ darkBtnShadow }};">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          다크
+        </div>
+      </div>
+    </div>
+
+    <!-- 기본 주간 목표 -->
+    <div style="padding:20px;border-radius:24px;margin-bottom:14px;background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;">기본 주간 목표</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.5;color:var(--text-dim);margin-bottom:16px;">5일 만근 기준 목표 시간. 공휴일이 있는 주는 자동으로 −8시간.</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:88px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--text);background:var(--glass-strong);border:1px solid var(--glass-border);">40</div>
+        <span style="flex:1;font-size:14px;font-weight:700;color:var(--text-dim);">시간 / 주</span>
+        <div style="width:80px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;background:var(--accent);box-shadow:0 8px 20px var(--accent-glow);">저장</div>
+      </div>
+    </div>
+
+    <!-- 요일별 목표 -->
+    <div style="padding:20px;border-radius:24px;margin-bottom:14px;background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;">요일별 목표</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.5;color:var(--text-dim);margin-bottom:16px;">특정 요일에 매주 적용할 목표시간. 비워두면 평소대로 자동 배분.</div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <sc-for list="{{ weekdays }}" as="d" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:22px;flex:none;font-size:15px;font-weight:800;color:var(--text);">{{ d }}</span>
+            <div style="flex:1;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;background:var(--glass-strong);border:1px solid var(--glass-border);"><span style="font-size:14px;font-weight:700;white-space:nowrap;color:var(--text-faint);">시작</span><span style="width:6px;height:6px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg) translateY(-2px);display:block;"></span></div>
+            <span style="color:var(--text-dim);font-weight:700;">~</span>
+            <div style="flex:1;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;background:var(--glass-strong);border:1px solid var(--glass-border);"><span style="font-size:14px;font-weight:700;white-space:nowrap;color:var(--text-faint);">종료</span><span style="width:6px;height:6px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg) translateY(-2px);display:block;"></span></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;background:var(--accent);box-shadow:0 10px 24px var(--accent-glow);margin-top:14px;">요일 목표 저장</div>
+    </div>
+
+    <!-- 데이터 -->
+    <div style="padding:20px;border-radius:24px;margin-bottom:14px;background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;">데이터</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.5;color:var(--text-dim);margin-bottom:16px;">모든 기록을 JSON 파일로 백업하거나 복원합니다.</div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:700;color:var(--text);background:var(--glass-strong);border:1px solid var(--glass-border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>백업 내려받기</div>
+        <div style="flex:1;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:700;color:var(--text);background:var(--glass-strong);border:1px solid var(--glass-border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>복원하기</div>
+      </div>
+    </div>
+
+    <!-- 계정 -->
+    <div style="padding:20px;border-radius:24px;background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);box-shadow:var(--shadow);">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;">계정 및 동기화</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.5;color:var(--text-dim);margin-bottom:16px;">로그인하면 기기 간 데이터가 자동으로 동기화됩니다.</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:11px;font-size:15px;font-weight:700;color:#3c4043;background:#ffffff;box-shadow:0 8px 22px rgba(0,0,0,.16);">
+          <img src="google-g.svg" alt="Google" width="20" height="20" style="display:block;" />Google로 로그인
+        </div>
+        <div style="height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:15px;font-weight:700;color:#fff;background:#000;box-shadow:0 8px 22px rgba(0,0,0,.24);">
+          <img src="apple-logo.svg" alt="Apple" width="17" height="20" style="display:block;margin-top:-3px;" />Apple로 로그인
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== PICKER ===================== -->
+  <sc-if value="{{ isPicker }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+    <div style="position:absolute;inset:0;background:var(--scrim);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);"></div>
+
+    <div style="position:relative;width:86%;max-width:330px;padding:26px 22px 18px;border-radius:30px;background:var(--sheet);-webkit-backdrop-filter:blur(34px) saturate(180%);backdrop-filter:blur(34px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 30px 70px rgba(0,0,0,.32);">
+
+      <div style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-align:center;margin-bottom:2px;">시작 시간</div>
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:8px;margin-bottom:22px;">
+        <span style="font-size:16px;font-weight:700;color:var(--accent);align-self:center;white-space:nowrap;">{{ readoutAmpm }}</span>
+        <span style="font-size:46px;font-weight:800;letter-spacing:-1px;color:var(--text);line-height:1;">{{ readoutTime }}</span>
+      </div>
+
+      <div style="position:relative;height:220px;margin-bottom:8px;">
+        <div style="position:absolute;top:88px;left:0;right:0;height:44px;border-radius:14px;background:var(--accent-soft);border:1.5px solid var(--accent);box-shadow:0 6px 18px var(--accent-glow);pointer-events:none;"></div>
+
+        <div style="position:relative;display:flex;height:100%;">
+          <div class="wheel-scroll" ref="{{ ampmRef }}" onScroll="{{ onAmpmScroll }}" style="flex:0 0 30%;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;padding:88px 0;">
+            <sc-for list="{{ ampmList }}" as="it" hint-placeholder-count="2"><div style="height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:18px;font-weight:700;white-space:nowrap;color:var(--text);">{{ it }}</div></sc-for>
+          </div>
+          <div class="wheel-scroll" ref="{{ hourRef }}" onScroll="{{ onHourScroll }}" style="flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;padding:88px 0;">
+            <sc-for list="{{ hoursList }}" as="it" hint-placeholder-count="12"><div style="height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:26px;font-weight:800;white-space:nowrap;color:var(--text);">{{ it }}</div></sc-for>
+          </div>
+          <div style="flex:0 0 18px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--text);">:</div>
+          <div class="wheel-scroll" ref="{{ minRef }}" onScroll="{{ onMinScroll }}" style="flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;padding:88px 0;">
+            <sc-for list="{{ minsList }}" as="it" hint-placeholder-count="12"><div style="height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:26px;font-weight:800;white-space:nowrap;color:var(--text);">{{ it }}</div></sc-for>
+          </div>
+        </div>
+
+        <div style="position:absolute;top:0;left:0;right:0;height:80px;pointer-events:none;background:linear-gradient(var(--sheet-solid),transparent);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:80px;pointer-events:none;background:linear-gradient(transparent,var(--sheet-solid));"></div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:6px;">
+        <div onClick="{{ onHome }}" style="flex:1;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text-dim);background:var(--glass);border:1px solid var(--glass-border);cursor:pointer;">취소</div>
+        <div onClick="{{ onHome }}" style="flex:1;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;background:var(--accent);box-shadow:0 8px 20px var(--accent-glow);cursor:pointer;">확인</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;settings&quot;,&quot;picker&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onSettings&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;},&quot;onHome&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;},&quot;onPickTime&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  state = { holiday: false, breakExcl: true, aIdx: 1, hIdx: 3, mIdx: 6, sheetDay: null };
+
+  constructor(props) {
+    super(props);
+    this.ampmRef = React.createRef();
+    this.hourRef = React.createRef();
+    this.minRef = React.createRef();
+    this._pickerInit = false;
+  }
+
+  ampms() { return ['오전', '오후']; }
+  hours() { return Array.from({ length: 12 }, (_, i) => i + 1); }
+  mins() { return Array.from({ length: 12 }, (_, i) => i * 5); }
+  pad(n) { return String(n).padStart(2, '0'); }
+
+  initPicker() {
+    if (this._pickerInit) return;
+    const a = this.ampmRef.current, h = this.hourRef.current, m = this.minRef.current;
+    if (!a || !h || !m) return;
+    a.scrollTop = this.state.aIdx * 44;
+    h.scrollTop = this.state.hIdx * 44;
+    m.scrollTop = this.state.mIdx * 44;
+    this._pickerInit = true;
+  }
+
+  componentDidMount() { if ((this.props.screen ?? 'home') === 'picker') this.initPicker(); }
+  componentDidUpdate() { if ((this.props.screen ?? 'home') === 'picker') this.initPicker(); else this._pickerInit = false; }
+
+  onScroll(ref, key, max) {
+    const el = ref.current; if (!el) return;
+    const idx = Math.max(0, Math.min(max, Math.round(el.scrollTop / 44)));
+    if (this.state[key] !== idx) this.setState({ [key]: idx });
+  }
+
+  open(d, w) { return () => this.setState({ sheetDay: { d, w } }); }
+
+  renderVals() {
+    const s = this.props.screen ?? 'home';
+    const onSettings = this.props.onSettings ?? (() => {});
+    const onHome = this.props.onHome ?? (() => {});
+    const onPickTime = this.props.onPickTime ?? (() => {});
+    const onThemeChange = this.props.onThemeChange ?? (() => {});
+    const currentTheme = this.props.currentTheme ?? 'light';
+    const isLightTheme = currentTheme === 'light';
+    const acc = (on) => on ? { Bg: 'var(--accent)', Border: 'var(--accent)' } : { Bg: 'transparent', Border: 'var(--text-faint)' };
+    const hol = acc(this.state.holiday), brk = acc(this.state.breakExcl);
+    const sd = this.state.sheetDay;
+    return {
+      isHome: s === 'home', isSettings: s === 'settings', isPicker: s === 'picker',
+      onSettings, onHome, onPickTime,
+      weekdays: ['월', '화', '수', '목', '금'],
+      holiday: this.state.holiday, breakExcl: this.state.breakExcl,
+      holidayBg: hol.Bg, holidayBorder: hol.Border, breakBg: brk.Bg, breakBorder: brk.Border,
+      toggleHoliday: () => this.setState(p => ({ holiday: !p.holiday })),
+      toggleBreak: () => this.setState(p => ({ breakExcl: !p.breakExcl })),
+      openMon: this.open('6월 15일', '(월)'),
+      openTue: this.open('6월 16일', '(화)'),
+      openWed: this.open('6월 17일', '(수)'),
+      openThu: this.open('6월 18일', '(목)'),
+      openFri: this.open('6월 19일', '(금)'),
+      closeSheet: () => this.setState({ sheetDay: null }),
+      sheetVisible: !!sd, sheetDate: sd ? sd.d : '', sheetWd: sd ? sd.w : '',
+      ampmList: this.ampms(), hoursList: this.hours(), minsList: this.mins().map(m => this.pad(m)),
+      ampmRef: this.ampmRef, hourRef: this.hourRef, minRef: this.minRef,
+      onAmpmScroll: () => this.onScroll(this.ampmRef, 'aIdx', 1),
+      onHourScroll: () => this.onScroll(this.hourRef, 'hIdx', 11),
+      onMinScroll: () => this.onScroll(this.minRef, 'mIdx', 11),
+      readoutAmpm: this.ampms()[this.state.aIdx],
+      readoutTime: this.hours()[this.state.hIdx] + ':' + this.pad(this.mins()[this.state.mIdx]),
+      selectLight: () => onThemeChange('light'),
+      selectDark: () => onThemeChange('dark'),
+      lightBtnBg: isLightTheme ? 'var(--accent)' : 'var(--glass-strong)',
+      lightBtnColor: isLightTheme ? '#fff' : 'var(--text-dim)',
+      lightBtnShadow: isLightTheme ? '0 8px 20px var(--accent-glow)' : 'none',
+      darkBtnBg: !isLightTheme ? 'var(--accent)' : 'var(--glass-strong)',
+      darkBtnColor: !isLightTheme ? '#fff' : 'var(--text-dim)',
+      darkBtnShadow: !isLightTheme ? '0 8px 20px var(--accent-glow)' : 'none',
+    };
+  }
+}
+</script>
+</body>
+</html>

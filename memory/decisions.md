@@ -23,6 +23,14 @@ metadata:
 
 ---
 
+## 2026-06-18 — 수동 테마 전환: data-theme 속성 + localStorage
+
+**결정**: `<html data-theme="light|dark">` 속성으로 OS 설정을 override. CSS에서 `:root[data-theme="dark"]`와 `:root[data-theme="light"]`가 `@media (prefers-color-scheme: dark)`보다 specificity가 높아(0,2,0 vs 0,1,0) 항상 우선 적용. 기존 미디어쿼리는 `:root:not([data-theme="light"])`로 변경해 data-theme="light" 설정 시 OS 다크모드를 무시. 기본값은 `'light'`(localStorage 없을 때).  
+**이유**: 디자인 명세 — 기본 라이트, 설정에서 수동 전환. OS 설정 무시가 핵심 요구사항. Capacitor `file://` 환경에서도 localStorage 동작 확인.  
+**관련 파일**: `src/index.css`, `src/App.tsx`, `src/components/SettingsView.tsx`
+
+---
+
 ## 2026-06-18 — UI 리디자인 2차: PhoneScreen.dc.html 기반 글래스 시스템
 
 **결정**: CSS 변수 시스템 전면 교체 (`--text-primary` 등 → `--text/--glass/--accent` 등 디자인 파일 그대로). 기존 컴포넌트 하위호환을 위해 alias 변수 추가. `input[type=time]` 완전 제거 → 커스텀 휠 스크롤 피커(TimePicker.tsx) 구현. OCR 버튼 `position:fixed` → inline.  

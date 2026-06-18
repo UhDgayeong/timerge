@@ -82,7 +82,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --text:          rgba(255,255,255,.95);
     --text-dim:      rgba(255,255,255,.56);
     --text-faint:    rgba(255,255,255,.34);
@@ -119,6 +119,85 @@
     --blob2: #c026d3;
     --blob3: #4338ca;
   }
+}
+
+/* 수동 테마 강제 override — data-theme이 설정되면 OS 설정 무시 */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text:          rgba(255,255,255,.95);
+  --text-dim:      rgba(255,255,255,.56);
+  --text-faint:    rgba(255,255,255,.34);
+  --glass:         rgba(255,255,255,.08);
+  --glass-strong:  rgba(255,255,255,.14);
+  --glass-faint:   rgba(255,255,255,.04);
+  --glass-border:  rgba(255,255,255,.15);
+  --track:         rgba(255,255,255,.12);
+  --accent:        #a78bfa;
+  --accent-soft:   rgba(167,139,250,.18);
+  --accent-line:   rgba(167,139,250,.5);
+  --accent-glow:   rgba(124,92,255,.45);
+  --scrim:         rgba(6,4,16,.52);
+  --sheet:         rgba(34,27,60,.74);
+  --sheet-solid:   rgba(28,22,52,.96);
+  --shadow:        0 8px 28px rgba(0,0,0,.32);
+
+  --bg: radial-gradient(120% 70% at 100% 0%,#2c2257 0%,transparent 55%),
+        radial-gradient(110% 60% at 0% 100%,#3a1d4a 0%,transparent 55%),
+        linear-gradient(160deg,#181231,#120e22 55%,#0c0916);
+
+  --input-bg:     rgba(255,255,255,.07);
+  --input-border: rgba(255,255,255,.18);
+
+  --bg-done:            rgba(82,196,26,.07);
+  --border-done:        rgba(82,196,26,.2);
+  --bg-label-done:      rgba(82,196,26,.08);
+  --text-label-done:    #52c41a;
+  --bg-fixed:           rgba(167,139,250,.08);
+  --bg-status-success:  rgba(82,196,26,.06);
+  --text-status-success: #95de64;
+
+  --blob1: #7c3aed;
+  --blob2: #c026d3;
+  --blob3: #4338ca;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --text:          #241d3f;
+  --text-dim:      rgba(36,29,63,.58);
+  --text-faint:    rgba(36,29,63,.38);
+  --glass:         rgba(255,255,255,.5);
+  --glass-strong:  rgba(255,255,255,.66);
+  --glass-faint:   rgba(255,255,255,.34);
+  --glass-border:  rgba(255,255,255,.75);
+  --track:         rgba(124,92,255,.16);
+  --accent:        #7c5cff;
+  --accent-soft:   rgba(124,92,255,.12);
+  --accent-line:   rgba(124,92,255,.45);
+  --accent-glow:   rgba(124,92,255,.26);
+  --scrim:         rgba(70,52,120,.16);
+  --sheet:         rgba(255,255,255,.74);
+  --sheet-solid:   rgba(248,244,255,.96);
+  --shadow:        0 8px 26px rgba(90,68,150,.1);
+
+  --bg: radial-gradient(120% 70% at 100% 0%,#efe9ff 0%,transparent 55%),
+        radial-gradient(110% 60% at 0% 100%,#fde6f1 0%,transparent 55%),
+        linear-gradient(160deg,#f3effe,#fbf0f7 55%,#fef2ea);
+
+  --input-bg:     rgba(255,255,255,.8);
+  --input-border: rgba(100,80,200,.25);
+
+  --bg-done:            rgba(82,196,26,.08);
+  --border-done:        rgba(82,196,26,.3);
+  --bg-label-done:      rgba(82,196,26,.1);
+  --text-label-done:    #389e0d;
+  --bg-fixed:           rgba(124,92,255,.07);
+  --bg-status-success:  rgba(82,196,26,.08);
+  --text-status-success: #52c41a;
+
+  --blob1: #c9b8ff;
+  --blob2: #ffc4e0;
+  --blob3: #ffd9bd;
 }
 
 @keyframes floaty {
@@ -965,6 +1044,35 @@ body {
   line-height: 1.5;
   color: var(--text-dim);
   margin: 0 0 1rem;
+}
+
+.settings__theme-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.settings__theme-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  transition: background .15s, color .15s, box-shadow .15s;
+  background: var(--glass-strong);
+  color: var(--text-dim);
+}
+
+.settings__theme-btn--active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 8px 20px var(--accent-glow);
+  border-color: transparent;
 }
 
 .settings__row {

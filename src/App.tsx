@@ -23,8 +23,22 @@ function applySafeAreaBottom() {
   })
 }
 
+type Theme = 'light' | 'dark'
+
+function getInitialTheme(): Theme {
+  const saved = localStorage.getItem('theme')
+  return saved === 'dark' ? 'dark' : 'light'
+}
+
 export default function App() {
   const [view, setView] = useState<'week' | 'settings'>('week')
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
+
+  function handleThemeChange(t: Theme) {
+    setTheme(t)
+    localStorage.setItem('theme', t)
+    document.documentElement.setAttribute('data-theme', t)
+  }
 
   function goToSettings() {
     // iOS 엣지 스와이프 뒤로가기를 위해 히스토리 엔트리 추가
@@ -35,6 +49,11 @@ export default function App() {
   function goToWeek() {
     setView('week')
   }
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) applySafeAreaBottom()
@@ -115,7 +134,7 @@ export default function App() {
             </div>
           </>
         ) : (
-          <SettingsView onClose={goToWeek} />
+          <SettingsView onClose={goToWeek} theme={theme} onThemeChange={handleThemeChange} />
         )}
       </main>
     </>

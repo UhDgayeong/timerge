@@ -12,6 +12,8 @@ import { parseClock, formatClock, recognizedFromSegments } from '../domain/calc'
 
 interface Props {
   onClose: () => void
+  theme: 'light' | 'dark'
+  onThemeChange: (t: 'light' | 'dark') => void
 }
 
 /** 요일 규칙 대상 — 월~금 (getUTCDay 기준 1=월 … 5=금) */
@@ -59,7 +61,7 @@ function isBackupData(v: unknown): v is BackupData {
   )
 }
 
-export default function SettingsView({ onClose }: Props) {
+export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
   const [hours, setHours] = useState('')
   const [originalDefault, setOriginalDefault] = useState<number | null>(null)
   // 요일별 목표: 요일→출퇴근 시각 문자열 ('' = 규칙 없음)
@@ -196,6 +198,31 @@ export default function SettingsView({ onClose }: Props) {
       </header>
 
       <div className="settings__scroll">
+      <section className="settings__section">
+        <h3 className="settings__section-title">화면 테마</h3>
+        <p className="settings__hint">앱 색상 테마를 선택하세요.</p>
+        <div className="settings__theme-btns">
+          <button
+            className={`settings__theme-btn${theme === 'light' ? ' settings__theme-btn--active' : ''}`}
+            onClick={() => onThemeChange('light')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+            라이트
+          </button>
+          <button
+            className={`settings__theme-btn${theme === 'dark' ? ' settings__theme-btn--active' : ''}`}
+            onClick={() => onThemeChange('dark')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            다크
+          </button>
+        </div>
+      </section>
+
       <section className="settings__section">
         <h3 className="settings__section-title">기본 주간 목표</h3>
         <p className="settings__hint">5일 만근 기준 목표 시간. 공휴일이 있는 주는 자동으로 −8시간.</p>

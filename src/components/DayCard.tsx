@@ -19,13 +19,6 @@ const TYPE_LABEL: Record<string, string> = {
   'halfday-pm': '오후반차',
 }
 
-function formatDateLabel(dateStr: string): string {
-  const d = new Date(`${dateStr}T00:00:00Z`)
-  const m = d.getUTCMonth() + 1
-  const day = d.getUTCDate()
-  const dow = DOW[d.getUTCDay()]
-  return `${m}/${day} ${dow}`
-}
 
 export default function DayCard({ day, isToday, settings, onClick }: Props) {
   const weekend = isWeekend(day.date)
@@ -86,24 +79,34 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
 
   const clockDisplay = workClockStr
 
+  const dateNum = (() => {
+    const d = new Date(`${day.date}T00:00:00Z`)
+    return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`
+  })()
+  const dowLabel = DOW[new Date(`${day.date}T00:00:00Z`).getUTCDay()]
+
   return (
     <button type="button" className={cardClass} onClick={onClick}>
-      <div className="day-card__date">{formatDateLabel(day.date)}</div>
-      <div className="day-card__body">
-        <span className="day-card__time">{timeDisplay}</span>
-        {showLunchBadge && <span className="day-card__lunch-badge">휴게 1시간 제외</span>}
-        {typeLabel && <span className="day-card__label">{typeLabel}</span>}
+      <div className="day-card__date">
+        {dateNum}{' '}
+        <span className="day-card__date-dow">{dowLabel}</span>
+        {isToday && <span className="day-card__today-badge"> · 오늘</span>}
       </div>
-      {(clockDisplay || halfdayClockStr) && (
-        <div className="day-card__clock">
-          {clockDisplay && (
-            <div>{halfdayClockStr ? (workSeg?.type === 'field' ? '외근 ' : '근무 ') : ''}{clockDisplay}</div>
-          )}
-          {halfdayClockStr && (
-            <div>{TYPE_LABEL[halfdaySeg!.type] ?? '반차'} {halfdayClockStr}</div>
-          )}
-        </div>
-      )}
+      <div className="day-card__right">
+        <span className="day-card__time">{timeDisplay}</span>
+        {typeLabel && <span className="day-card__label">{typeLabel}</span>}
+        {showLunchBadge && <span className="day-card__lunch-badge">휴게 1h 제외</span>}
+        {(clockDisplay || halfdayClockStr) && (
+          <div className="day-card__clock">
+            {clockDisplay && (
+              <div>{halfdayClockStr ? (workSeg?.type === 'field' ? '외근 ' : '근무 ') : ''}{clockDisplay}</div>
+            )}
+            {halfdayClockStr && (
+              <div>{TYPE_LABEL[halfdaySeg!.type] ?? '반차'} {halfdayClockStr}</div>
+            )}
+          </div>
+        )}
+      </div>
     </button>
   )
 }

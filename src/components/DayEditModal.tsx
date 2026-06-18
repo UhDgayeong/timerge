@@ -252,6 +252,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal__handle" />
         <div className="modal__header">
           <h2 className="modal__title">{formatDateTitle(day.date)}</h2>
           <button className="modal__close" onClick={onClose} aria-label="닫기">

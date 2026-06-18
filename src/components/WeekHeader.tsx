@@ -58,15 +58,23 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
       <div className="week-header__range">{weekRangeLabel(week.startDate, week.endDate)}</div>
 
       <div className="week-header__main">
-        <span className="week-header__accumulated">{formatMinutes(totalRecognizedMinutes)}</span>
-        <span className="week-header__sep"> / 목표 </span>
-        <span className="week-header__goal">{formatMinutes(goalMinutes)}</span>
-        {!isOvertime && goalMinutes - totalRecognizedMinutes > 0 && (
-          <>
-            <span className="week-header__sep"> · 남은 </span>
-            <span className="week-header__remaining">{formatMinutes(goalMinutes - totalRecognizedMinutes)}</span>
-          </>
-        )}
+        {(() => {
+          const fmt = formatMinutes(totalRecognizedMinutes)
+          const numPart = fmt.replace(/[^0-9:]/g, '').trim() || fmt
+          const unitPart = fmt.replace(numPart, '').trim()
+          return (
+            <>
+              <span className="week-header__accumulated">{numPart}</span>
+              {unitPart && <span className="week-header__unit">{unitPart}</span>}
+            </>
+          )
+        })()}
+        <span className="week-header__sep">
+          목표 <strong className="week-header__goal">{formatMinutes(goalMinutes)}</strong>
+          {!isOvertime && goalMinutes - totalRecognizedMinutes > 0 && (
+            <> · 남은 <strong className="week-header__remaining">{formatMinutes(goalMinutes - totalRecognizedMinutes)}</strong></>
+          )}
+        </span>
       </div>
 
       <div className="week-header__progress">

@@ -5,6 +5,14 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — 카드 그림자 클리핑: overflow-y:auto + padding 분리 적용
+
+**결정**: `overflow-y: auto` 요소에 `padding` 단축 표기로 `max()+var()` 혼합 시 파싱 실패(computed 0px). `padding-left`/`padding-right`/`padding-bottom` 개별 속성으로 분리해 적용.
+
+**Why**: CSS 파싱 실패는 무음(fallback 없이 0)으로 처리되어 그림자 클리핑이 재현됨. 단축 표기 안에 `max()`, `calc()`, `var()` 여러 함수가 중첩되면 일부 엔진에서 전체 선언을 무시.
+
+**How to apply**: `overflow-y: auto` 스크롤 컨테이너에 복잡한 값이 있는 padding은 단축 표기 대신 개별 속성으로 선언.
+
 ## 2026-06-18 — 설정 화면 요일별 목표 입력 방식: input[type=time] → TimePicker pill
 
 **결정**: `<input type="time">` native 입력을 제거하고, DayEditModal과 동일한 `time-pill` 버튼 + `TimePicker` 컴포넌트 방식으로 교체.

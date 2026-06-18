@@ -9,7 +9,7 @@ import {
   reassignWeeksOnDefault,
   saveSettings,
 } from '../db/index'
-import { parseClock, formatClock, recognizedFromSegments } from '../domain/calc'
+import { parseClock, formatClock } from '../domain/calc'
 
 interface Props {
   onClose: () => void
@@ -111,22 +111,6 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
     }
   }
 
-  /** 해당 요일의 출퇴근 규칙으로 인정시간 미리보기 */
-  function wdPreview(wd: number): string {
-    const t = wdTimes[wd] ?? { start: '', end: '' }
-    if (!t.start || !t.end) return ''
-    try {
-      const mins = recognizedFromSegments(
-        [{ type: 'work', startMin: parseClock(t.start), endMin: parseClock(t.end) }],
-        60,
-      )
-      const h = Math.floor(mins / 60)
-      const m = mins % 60
-      return m === 0 ? `${h}시간` : `${h}시간 ${m}분`
-    } catch {
-      return ''
-    }
-  }
 
   async function handleSaveGoal() {
     const h = Number(hours)
@@ -254,7 +238,6 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <div className="settings__weekdays">
           {WEEKDAYS.map(({ wd, label }) => {
             const t = wdTimes[wd] ?? { start: '', end: '' }
-            const preview = wdPreview(wd)
             return (
               <div className="settings__wd-row" key={wd}>
                 <span className="settings__wd-label">{label}</span>
@@ -275,18 +258,16 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
                   <span>{t.end || '종료'}</span>
                   <span className="time-pill__chevron" />
                 </button>
-                {preview && <span className="settings__wd-preview">{preview}</span>}
-                {(t.start || t.end) && (
-                  <button
-                    className="settings__wd-clear"
-                    onClick={() =>
-                      setWdTimes((prev) => ({ ...prev, [wd]: { start: '', end: '' } }))
-                    }
-                    title="이 요일 목표 삭제"
-                  >
-                    ×
-                  </button>
-                )}
+                <button
+                  className={`settings__wd-clear${!(t.start || t.end) ? ' settings__wd-clear--hidden' : ''}`}
+                  onClick={() =>
+                    setWdTimes((prev) => ({ ...prev, [wd]: { start: '', end: '' } }))
+                  }
+                  title="이 요일 목표 삭제"
+                  tabIndex={!(t.start || t.end) ? -1 : undefined}
+                >
+                  ×
+                </button>
               </div>
             )
           })}

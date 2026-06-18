@@ -629,6 +629,29 @@ body {
   background: rgba(255,255,255,.78);
 }
 
+/* ── Custom checkbox ── */
+.modal__checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1.6px solid var(--text-faint);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  background-size: 14px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.modal__checkbox:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13l4 4L19 7' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+}
+
 /* ── Modal (bottom sheet) ── */
 .modal-backdrop {
   position: fixed;
@@ -813,11 +836,11 @@ body {
 }
 
 .modal__preview {
-  font-size: 0.875rem;
-  color: var(--text-dim);
-  padding: 0.6rem 0;
-  border-top: 1px solid var(--glass-border);
-  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0.35rem 0;
+  margin-bottom: 1.125rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -837,12 +860,16 @@ body {
 
 .btn {
   flex: 1;
-  padding: 0.75rem;
+  height: 54px;
+  padding: 0 1rem;
   border-radius: 16px;
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn--primary {
@@ -1171,7 +1198,7 @@ body {
   display: block;
   font-size: 0.875rem;
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.625rem;
   color: var(--text);
 }
 
@@ -1182,14 +1209,17 @@ body {
 }
 
 .modal__plan-input {
-  width: 5rem;
-  padding: 0.6rem;
-  border: 1px solid var(--input-border);
-  border-radius: 10px;
-  font-size: 1rem;
-  text-align: right;
-  background: var(--input-bg);
+  width: 7.5rem;
+  height: 46px;
+  padding: 0 1rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 13px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  background: var(--glass);
   color: var(--text);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 .modal__plan-unit {

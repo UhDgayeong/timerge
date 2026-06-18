@@ -263,6 +263,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
         <label className="modal__holiday">
           <input
             type="checkbox"
+            className="modal__checkbox"
             checked={isHoliday}
             onChange={(e) => setIsHoliday(e.target.checked)}
           />
@@ -332,6 +333,8 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
                     <label className="seg-row__lunch">
                       <input
                         type="checkbox"
+                        className="modal__checkbox"
+                        style={{ width: '20px', height: '20px', borderRadius: '6px' }}
                         checked={seg.lunchExcluded}
                         onChange={(e) =>
                           updateSegment(idx, { lunchExcluded: e.target.checked })

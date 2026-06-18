@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — TimePicker 분 선택 단위: 5분 → 1분
+
+**결정**: `MINS` 배열을 12개(5분 간격) → 60개(1분 간격)로 변경. `parse`에서 `Math.round(m / 5) % 12` → `m` 직접 사용. `format`에서 `mIdx * 5` → `mIdx`. `onScroll` max 11 → 59.
+
+**이유**: 5분 단위는 FLEX 화면에서 정확한 시각(예: 9:03, 18:37 등)을 입력할 수 없음. 1분 단위로 변경해 실제 출퇴근 기록과 일치.
+
+**관련 파일**: `src/components/TimePicker.tsx`
+
+---
+
 ## 2026-06-18 — Android 터치 하이라이트·텍스트 선택 제거
 
 **결정**: `* { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }` 전역 적용. `*:focus { outline: none }` + `*:focus-visible { outline: 2px solid var(--accent) }` 로 키보드 접근성 유지.

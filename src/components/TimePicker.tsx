@@ -10,20 +10,20 @@ interface Props {
 const ITEM_H = 44
 const AMPMS = ['오전', '오후']
 const HOURS = Array.from({ length: 12 }, (_, i) => i + 1)
-const MINS = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'))
+const MINS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
 
 function parse(hhmm: string): { aIdx: number; hIdx: number; mIdx: number } {
   if (!hhmm) return { aIdx: 0, hIdx: 8, mIdx: 0 } // 오전 9:00 default
   const [h, m] = hhmm.split(':').map(Number)
   const aIdx = h < 12 ? 0 : 1
   const hour12 = h % 12 || 12
-  return { aIdx, hIdx: hour12 - 1, mIdx: Math.round(m / 5) % 12 }
+  return { aIdx, hIdx: hour12 - 1, mIdx: m }
 }
 
 function format(aIdx: number, hIdx: number, mIdx: number): string {
   const h12 = hIdx + 1
   const h = aIdx === 0 ? (h12 === 12 ? 0 : h12) : (h12 === 12 ? 12 : h12 + 12)
-  return `${String(h).padStart(2, '0')}:${String(mIdx * 5).padStart(2, '0')}`
+  return `${String(h).padStart(2, '0')}:${String(mIdx).padStart(2, '0')}`
 }
 
 export default function TimePicker({ label, value, onConfirm, onCancel }: Props) {
@@ -97,7 +97,7 @@ export default function TimePicker({ label, value, onConfirm, onCancel }: Props)
             <div
               ref={minRef}
               className="picker-card__col"
-              onScroll={() => onScroll(minRef, 11, setMIdx)}
+              onScroll={() => onScroll(minRef, 59, setMIdx)}
             >
               {MINS.map((it) => (
                 <div key={it} className="picker-card__item picker-card__item--num">{it}</div>

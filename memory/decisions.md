@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — 설정 화면 요일별 목표 입력 방식: input[type=time] → TimePicker pill
+
+**결정**: `<input type="time">` native 입력을 제거하고, DayEditModal과 동일한 `time-pill` 버튼 + `TimePicker` 컴포넌트 방식으로 교체.
+
+**이유**: native time input은 WebView에서 `--:--` 빈 상태, 플레이스홀더 불가, chevron 불가 등 디자인 일치가 구조적으로 불가능. DayEditModal에 이미 동일 패턴이 구현되어 있어 재사용이 자연스러움.
+
+**관련 파일**: `src/components/SettingsView.tsx`, `src/index.css` (`.settings__wd-time`, `.settings__wd-time--empty`)
+
+---
+
 ## 2026-06-18 — TimePicker 분 선택 단위: 5분 → 1분
 
 **결정**: `MINS` 배열을 12개(5분 간격) → 60개(1분 간격)로 변경. `parse`에서 `Math.round(m / 5) % 12` → `m` 직접 사용. `format`에서 `mIdx * 5` → `mIdx`. `onScroll` max 11 → 59.

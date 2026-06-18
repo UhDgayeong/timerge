@@ -70,6 +70,7 @@ metadata:
 - [x] **수동 테마 전환 (라이트/다크)** — 설정 화면에 "화면 테마" 섹션 추가. `localStorage` + `data-theme` 속성으로 OS 설정 override. 기본값 라이트.
 - [x] **Android 터치 하이라이트·텍스트 선택 제거** — `-webkit-tap-highlight-color: transparent` + `user-select: none` 전역 적용. 클릭/롱프레스 시 파란 영역 표시 및 텍스트 선택 컨텍스트메뉴 제거.
 - [x] **TimePicker 분 단위 1분으로 변경** — 기존 5분 단위(12개 항목) → 1분 단위(60개 항목). MINS 배열·parse·format·onScroll max 수정.
+- [x] **설정 화면 디자인 정합 (PhoneScreen.dc.html 기준)** — 요일별 목표 `<input type="time">` → TimePicker pill 버튼으로 교체. 데이터 카드 이모지→SVG chevron(accent색). 폰트 굵기 전역 교정(hint 500→700, 보조 텍스트 600→700). 블롭 opacity 상향(blob1·2 .5, blob3 .45).
 
 ## 다음 작업 (우선순위 순)
 

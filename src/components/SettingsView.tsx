@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import AuthSection from './AuthSection'
+import TimePicker from './TimePicker'
 import type { BackupData } from '../db/index'
 import {
   exportBackup,
@@ -67,6 +68,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
   // 요일별 목표: 요일→출퇴근 시각 문자열 ('' = 규칙 없음)
   const [wdTimes, setWdTimes] = useState<Record<number, { start: string; end: string }>>({})
 
+  const [activePicker, setActivePicker] = useState<{ wd: number; field: 'start' | 'end' } | null>(null)
   const [status, setStatus] = useState('')
   const [busy, setBusy] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -256,23 +258,23 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
             return (
               <div className="settings__wd-row" key={wd}>
                 <span className="settings__wd-label">{label}</span>
-                <input
-                  className="settings__input settings__wd-time"
-                  type="time"
-                  value={t.start}
-                  onChange={(e) =>
-                    setWdTimes((prev) => ({ ...prev, [wd]: { ...t, start: e.target.value } }))
-                  }
-                />
+                <button
+                  type="button"
+                  className={`settings__wd-time${!t.start ? ' settings__wd-time--empty' : ''}`}
+                  onClick={() => setActivePicker({ wd, field: 'start' })}
+                >
+                  <span>{t.start || '시작'}</span>
+                  <span className="time-pill__chevron" />
+                </button>
                 <span className="settings__wd-tilde">~</span>
-                <input
-                  className="settings__input settings__wd-time"
-                  type="time"
-                  value={t.end}
-                  onChange={(e) =>
-                    setWdTimes((prev) => ({ ...prev, [wd]: { ...t, end: e.target.value } }))
-                  }
-                />
+                <button
+                  type="button"
+                  className={`settings__wd-time${!t.end ? ' settings__wd-time--empty' : ''}`}
+                  onClick={() => setActivePicker({ wd, field: 'end' })}
+                >
+                  <span>{t.end || '종료'}</span>
+                  <span className="time-pill__chevron" />
+                </button>
                 {preview && <span className="settings__wd-preview">{preview}</span>}
                 {(t.start || t.end) && (
                   <button
@@ -302,15 +304,17 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <h3 className="settings__section-title">데이터</h3>
         <p className="settings__hint">모든 기록을 JSON 파일로 백업하거나 복원합니다.</p>
         <div className="settings__row settings__row--data">
-          <button className="btn btn--ghost settings__data-btn" onClick={handleBackup} disabled={busy}>
-            ⬇ 백업 내려받기
+          <button className="settings__data-btn" onClick={handleBackup} disabled={busy}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+            백업 내려받기
           </button>
           <button
-            className="btn btn--ghost settings__data-btn"
+            className="settings__data-btn"
             onClick={() => fileRef.current?.click()}
             disabled={busy}
           >
-            ⬆ 복원하기
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15" /></svg>
+            복원하기
           </button>
           <input
             ref={fileRef}
@@ -329,6 +333,19 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
 
       {status && <p className="settings__status">{status}</p>}
       </div>
+
+      {activePicker && (
+        <TimePicker
+          label={activePicker.field === 'start' ? '시작 시간' : '종료 시간'}
+          value={wdTimes[activePicker.wd]?.[activePicker.field] ?? ''}
+          onConfirm={(val) => {
+            const { wd, field } = activePicker
+            setWdTimes((prev) => ({ ...prev, [wd]: { ...prev[wd], [field]: val } }))
+            setActivePicker(null)
+          }}
+          onCancel={() => setActivePicker(null)}
+        />
+      )}
     </div>
   )
 }

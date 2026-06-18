@@ -237,7 +237,7 @@ body {
   top: 12vh; left: -60px;
   width: 220px; height: 220px;
   background: var(--blob1);
-  opacity: .45;
+  opacity: .5;
   filter: blur(40px);
   animation: floaty 11s ease-in-out infinite;
 }
@@ -245,7 +245,7 @@ body {
   top: 45vh; right: -60px;
   width: 240px; height: 240px;
   background: var(--blob2);
-  opacity: .42;
+  opacity: .5;
   filter: blur(44px);
   animation: floaty 14s ease-in-out infinite reverse;
 }
@@ -253,7 +253,7 @@ body {
   bottom: 8vh; left: 20px;
   width: 200px; height: 200px;
   background: var(--blob3);
-  opacity: .38;
+  opacity: .45;
   filter: blur(40px);
   animation: floaty 13s ease-in-out infinite;
 }
@@ -419,7 +419,7 @@ body {
 
 .week-header__range {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   margin-bottom: 8px;
   position: relative;
@@ -450,7 +450,7 @@ body {
 
 .week-header__sep {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   margin-left: 8px;
 }
@@ -502,7 +502,7 @@ body {
 
 .week-header__avg {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   position: relative;
 }
@@ -513,7 +513,7 @@ body {
 
 .week-header__planned {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   margin-top: 0.2rem;
   position: relative;
@@ -602,7 +602,7 @@ body {
 }
 
 .day-card__date-dow {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
 }
 
@@ -634,7 +634,7 @@ body {
 
 .day-card__time {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
 }
 
@@ -654,7 +654,7 @@ body {
 
 .day-card__label {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   background: var(--glass-strong);
   padding: 0.1rem 0.45rem;
@@ -1048,7 +1048,7 @@ body {
 
 .settings__hint {
   font-size: 0.8125rem;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.5;
   color: var(--text-dim);
   margin: 0 0 1rem;
@@ -1103,7 +1103,7 @@ body {
 
 .settings__unit {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-dim);
   flex: 1;
 }
@@ -1126,7 +1126,8 @@ body {
 
 .settings__data-btn {
   flex: 1;
-  padding: 0.7rem 0.5rem;
+  height: 50px;
+  padding: 0 0.5rem;
   font-size: 0.875rem;
   font-weight: 700;
   border-radius: 14px;
@@ -1137,7 +1138,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .settings__status {
@@ -1238,7 +1239,6 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .settings__wd-label {
@@ -1252,14 +1252,21 @@ body {
 .settings__wd-time {
   flex: 1;
   height: 44px;
-  min-width: 7rem;
   padding: 0 13px;
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   background: var(--glass-strong);
   color: var(--text);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.settings__wd-time--empty {
+  color: var(--text-faint);
 }
 
 .settings__wd-tilde {

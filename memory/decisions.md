@@ -5,6 +5,14 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — 설정 화면 OS 뒤로가기 처리
+
+**결정**: Android `backButton` + iOS `popstate` 이벤트 두 갈래로 처리. 설정 진입 시 `history.pushState()`로 히스토리 엔트리 추가 → iOS 엣지 스와이프가 `popstate` 발생 → `setView('week')`. Android는 Capacitor `CapApp.addListener('backButton', ...)`. 두 리스너 모두 `useEffect([view])`에서 등록/해제.  
+**이유**: SPA라 네이티브 네비게이션 스택이 없음. iOS WKWebView는 히스토리 엔트리가 있어야 엣지 스와이프가 동작. Android Capacitor `backButton` 이벤트는 기본적으로 앱 종료 동작을 하므로 명시적으로 가로채야 함.  
+**관련 파일**: `src/App.tsx`
+
+---
+
 ## 2026-06-18 — UI 리디자인 2차: PhoneScreen.dc.html 기반 글래스 시스템
 
 **결정**: CSS 변수 시스템 전면 교체 (`--text-primary` 등 → `--text/--glass/--accent` 등 디자인 파일 그대로). 기존 컴포넌트 하위호환을 위해 alias 변수 추가. `input[type=time]` 완전 제거 → 커스텀 휠 스크롤 피커(TimePicker.tsx) 구현. OCR 버튼 `position:fixed` → inline.  

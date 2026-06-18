@@ -26,6 +26,16 @@ function applySafeAreaBottom() {
 export default function App() {
   const [view, setView] = useState<'week' | 'settings'>('week')
 
+  function goToSettings() {
+    // iOS 엣지 스와이프 뒤로가기를 위해 히스토리 엔트리 추가
+    history.pushState({ view: 'settings' }, '')
+    setView('settings')
+  }
+
+  function goToWeek() {
+    setView('week')
+  }
+
   useEffect(() => {
     if (Capacitor.isNativePlatform()) applySafeAreaBottom()
 
@@ -58,6 +68,27 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    // iOS: 왼쪽 엣지 스와이프 뒤로가기 (popstate)
+    const handlePopState = () => {
+      if (view === 'settings') setView('week')
+    }
+    window.addEventListener('popstate', handlePopState)
+
+    // Android: 하드웨어/제스처 뒤로가기
+    let backHandle: { remove: () => void } | null = null
+    if (Capacitor.isNativePlatform()) {
+      CapApp.addListener('backButton', () => {
+        if (view === 'settings') setView('week')
+      }).then(handle => { backHandle = handle })
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      backHandle?.remove()
+    }
+  }, [view])
+
   return (
     <>
       <div className="app-blob app-blob--1" aria-hidden="true" />
@@ -70,7 +101,7 @@ export default function App() {
               <span className="app-header__title">Timerge</span>
               <button
                 className="app-header__settings"
-                onClick={() => setView('settings')}
+                onClick={goToSettings}
                 aria-label="설정"
               >
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -84,7 +115,7 @@ export default function App() {
             </div>
           </>
         ) : (
-          <SettingsView onClose={() => setView('week')} />
+          <SettingsView onClose={goToWeek} />
         )}
       </main>
     </>

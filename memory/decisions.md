@@ -5,6 +5,14 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — UI 리디자인 2차: PhoneScreen.dc.html 기반 글래스 시스템
+
+**결정**: CSS 변수 시스템 전면 교체 (`--text-primary` 등 → `--text/--glass/--accent` 등 디자인 파일 그대로). 기존 컴포넌트 하위호환을 위해 alias 변수 추가. `input[type=time]` 완전 제거 → 커스텀 휠 스크롤 피커(TimePicker.tsx) 구현. OCR 버튼 `position:fixed` → inline.  
+**이유**: 디자인 파일(PhoneScreen.dc.html, 7.9KB)은 직접 읽기 가능. offline 버전(500KB+)은 Base64 이미지로 읽기 불가. `--sheet-solid` 변수가 picker fade gradient에 필수 — 없으면 위아래 페이드가 배경을 비침.  
+**관련 파일**: `src/index.css`, `src/App.tsx`, `src/components/TimePicker.tsx`, `src/components/DayEditModal.tsx`, `src/components/DayCard.tsx`, `src/components/WeekHeader.tsx`
+
+---
+
 ## 2026-06-17 — 글래스 리디자인 1차: 퍼플 팔레트
 
 **결정**: 파랑(#1677ff) → 퍼플(#6D4BFF) 전체 교체. WeekHeader를 다크 네이비 단색 → 글래스 카드(backdrop-filter blur, CSS 변수 --wh-*)로 전환. 라이트/다크 모두 별도 변수 세트 사용.  

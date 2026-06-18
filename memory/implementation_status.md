@@ -64,11 +64,11 @@ metadata:
 - [x] **갤럭시 폴드 하단 시스템 UI 겹침 수정 (이슈 #8)** — 3단 방어: ① `MainActivity.java`에 `WindowCompat.setDecorFitsSystemWindows(false)` 명시 ② `App.tsx`에 JS probe로 `env(safe-area-inset-bottom)` 실측 후 `--sab` CSS 변수 주입 (Android에서 0이면 56px fallback) ③ CSS 전체를 `var(--sab)` 기반으로 교체. 바텀시트 저장 버튼은 완전 해결. 설정 화면은 스크롤 끝까지 내리면 잘리지 않음 (사용자 수용).
 
 - [x] **글래스 리디자인 1차** — 퍼플 팔레트(#6D4BFF), WeekHeader 글래스 카드(backdrop-filter), 프로그레스 바, 오늘 카드 퍼플 그라디언트, 타이틀/네비/버튼 스타일 갱신. 디자인과 완전히 일치하진 않아 추후 재수정 예정.
+- [x] **UI 리디자인 2차** — PhoneScreen.dc.html 기반 글래스 모피즘 전면 적용. CSS 변수 시스템 교체(--text/--glass/--accent 등), 그라디언트 배경 + blob 애니메이션, 모든 카드/버튼/모달/설정 글래스 스타일. 커스텀 체크박스, 커스텀 휠 시간 선택기(TimePicker) 구현.
 
 ## 다음 작업 (우선순위 순)
 
-1. **UI 리디자인 2차** — Claude Design 파일 기반으로 세부 수정 (현재 1차는 방향만 맞춤, 디테일 미일치)
-2. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
-3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
-4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+1. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
+2. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
+3. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+4. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

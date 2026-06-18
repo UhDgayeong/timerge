@@ -68,6 +68,7 @@ metadata:
 - [x] **설정 화면 OS 뒤로가기** — Android 하드웨어/제스처 뒤로가기(`backButton` Capacitor 이벤트) + iOS 엣지 스와이프(`history.pushState` + `popstate`) 처리. Android 실기기 확인.
 - [x] **폰트 변경: Pretendard → IBM Plex Sans KR** — `@fontsource/ibm-plex-sans-kr` 로컬 번들 방식으로 적용 (Capacitor `file://` 환경 대응). `src/main.tsx`에서 400/500/600/700 weight import.
 - [x] **수동 테마 전환 (라이트/다크)** — 설정 화면에 "화면 테마" 섹션 추가. `localStorage` + `data-theme` 속성으로 OS 설정 override. 기본값 라이트.
+- [x] **Android 터치 하이라이트·텍스트 선택 제거** — `-webkit-tap-highlight-color: transparent` + `user-select: none` 전역 적용. 클릭/롱프레스 시 파란 영역 표시 및 텍스트 선택 컨텍스트메뉴 제거.
 
 ## 다음 작업 (우선순위 순)
 

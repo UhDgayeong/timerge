@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-18 — Android 터치 하이라이트·텍스트 선택 제거
+
+**결정**: `* { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }` 전역 적용. `*:focus { outline: none }` + `*:focus-visible { outline: 2px solid var(--accent) }` 로 키보드 접근성 유지.
+
+**이유**: Android WebView(갤럭시)에서 버튼/카드 터치 시 파란 반투명 영역이 덮임 — `-webkit-tap-highlight-color` 기본값이 파란색. 롱프레스 시 텍스트 선택 컨텍스트메뉴(복사/모두선택/공유)가 뜨는 것도 네이티브 앱처럼 보이지 않음. 데스크톱 브라우저에서는 이 속성이 무의미해 사이드이펙트 없음. input에서 텍스트 선택이 막힐 경우 `input, textarea { user-select: text }` 예외 추가 예정.
+
+**관련 파일**: `src/index.css`
+
+---
+
 ## 2026-06-18 — 폰트: IBM Plex Sans KR 로컬 번들 적용
 
 **결정**: `@fontsource/ibm-plex-sans-kr` npm 패키지로 로컬 번들링. `src/main.tsx`에서 400/500/600/700 weight CSS import.

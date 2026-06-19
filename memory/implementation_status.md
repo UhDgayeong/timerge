@@ -89,13 +89,13 @@ metadata:
 ## 다음 작업 (우선순위 순)
 
 1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
-2. **웹 배포 및 URL 생성** — 데스크톱(웹)으로 다른 사람이 이용할 수 있도록 배포. Vercel 또는 GitHub Pages 활용 검토.
-3. **Google 로그인 OAuth 화면 URL 개선** — 로그인 시 `tsizysmfcpxhxunalxoe.supabase.co` 가 OAuth 화면에 노출되는 문제. 커스텀 도메인(Supabase Pro) 또는 Google OAuth 앱 이름 설정으로 해결.
-4. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정.
+2. **웹 배포 및 URL 생성** — 데스크톱(웹)으로 다른 사람이 이용할 수 있도록 배포. Vercel 또는 GitHub Pages 활용 검토. (이슈 #11)
+3. **Google 로그인 OAuth 화면 URL 개선** — 로그인 시 `tsizysmfcpxhxunalxoe.supabase.co` 가 OAuth 화면에 노출되는 문제. 커스텀 도메인(Supabase Pro) 또는 Google OAuth 앱 이름 설정으로 해결. (이슈 #12)
+4. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정. (이슈 #13)
 5. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
-6. **Android 뒤로가기 앱 종료 처리** — 홈 화면에서 시스템 뒤로가기 버튼 누르면 앱 종료. "뒤로가기 2회 클릭 시 종료" 패턴 적용 검토.
-7. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체.
-8. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토.
+6. **Android 뒤로가기 앱 종료 처리** — 홈 화면에서 시스템 뒤로가기 버튼 누르면 앱 종료. "뒤로가기 2회 클릭 시 종료" 패턴 적용 검토. (이슈 #14)
+7. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16)
+8. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
 9. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
 10. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
 11. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

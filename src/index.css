@@ -670,6 +670,12 @@ body {
   gap: 2px;
 }
 
+.day-card__time-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .day-card__time {
   font-size: 0.875rem;
   font-weight: 700;

@@ -400,6 +400,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
         <TimePicker
           label={activePicker.field === 'start' ? '시작 시간' : '종료 시간'}
           value={segments[activePicker.segIdx]?.[activePicker.field] ?? ''}
+          defaultMeridiem={activePicker.field === 'start' ? 'am' : 'pm'}
           onConfirm={(val) => {
             updateSegment(activePicker.segIdx, { [activePicker.field]: val })
             setActivePicker(null)

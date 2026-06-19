@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 interface Props {
   label: string
   value: string   // "HH:MM" 24h, or ""
+  defaultMeridiem?: 'am' | 'pm'
   onConfirm: (value: string) => void
   onCancel: () => void
 }
@@ -12,8 +13,8 @@ const AMPMS = ['오전', '오후']
 const HOURS = Array.from({ length: 12 }, (_, i) => i + 1)
 const MINS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
 
-function parse(hhmm: string): { aIdx: number; hIdx: number; mIdx: number } {
-  if (!hhmm) return { aIdx: 0, hIdx: 8, mIdx: 0 } // 오전 9:00 default
+function parse(hhmm: string, defaultMeridiem: 'am' | 'pm' = 'am'): { aIdx: number; hIdx: number; mIdx: number } {
+  if (!hhmm) return { aIdx: defaultMeridiem === 'pm' ? 1 : 0, hIdx: 8, mIdx: 0 }
   const [h, m] = hhmm.split(':').map(Number)
   const aIdx = h < 12 ? 0 : 1
   const hour12 = h % 12 || 12
@@ -26,8 +27,8 @@ function format(aIdx: number, hIdx: number, mIdx: number): string {
   return `${String(h).padStart(2, '0')}:${String(mIdx).padStart(2, '0')}`
 }
 
-export default function TimePicker({ label, value, onConfirm, onCancel }: Props) {
-  const init = parse(value)
+export default function TimePicker({ label, value, defaultMeridiem = 'am', onConfirm, onCancel }: Props) {
+  const init = parse(value, defaultMeridiem)
   const [aIdx, setAIdx] = useState(init.aIdx)
   const [hIdx, setHIdx] = useState(init.hIdx)
   const [mIdx, setMIdx] = useState(init.mIdx)

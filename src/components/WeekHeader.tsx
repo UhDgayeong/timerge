@@ -73,7 +73,7 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
         <span className="week-header__sep">
           목표 <strong className="week-header__goal">{formatMinutes(goalMinutes)}</strong>
           {!isOvertime && goalMinutes - totalRecognizedMinutes > 0 && (
-            <> · 남은 <strong className="week-header__remaining">{formatMinutes(goalMinutes - totalRecognizedMinutes)}</strong></>
+            <> · 남은 시간 <strong className="week-header__remaining">{formatMinutes(goalMinutes - totalRecognizedMinutes)}</strong></>
           )}
         </span>
       </div>

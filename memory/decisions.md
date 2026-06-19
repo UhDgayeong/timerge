@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-19 — 바텀시트 애니메이션: will-change + backdrop-filter 동시 사용 불가
+
+**결론**: `will-change: transform`과 `backdrop-filter`는 WebKit(Capacitor iOS/Android 포함)에서 동시에 작동하지 않음. `will-change: transform`이 별도 GPU 컴포지팅 레이어를 만들면 그 레이어는 뒤에 있는 픽셀을 "볼 수" 없어서 `backdrop-filter`가 blur 대신 빈 배경을 필터링함 → 애니메이션 중 불투명 하양이다가 끝나면 젖빛 유리로 바뀌는 색상 플래시 발생.
+
+**최종 결정**: `will-change` 제거, `backdrop-filter`는 항상 유지, animation은 easing 커브만 개선 (`0.2s ease` → `0.36s cubic-bezier(0.32, 0.72, 0, 1)`). native sheet와 유사한 감속 커브로 체감 부드러움 확보.
+
+**관련 파일**: `src/index.css` (`.modal` 셀렉터)
+
+---
+
 ## 2026-06-19 — 화면 전환 슬라이드: position:absolute 두 뷰 동시 유지 방식
 
 **결정**: 홈↔설정 전환을 조건부 렌더 대신 두 뷰를 동시에 DOM에 유지하고 `position:absolute; inset:0`으로 겹쳐 쌓은 뒤 `transform:translateX()`로 슬라이드.

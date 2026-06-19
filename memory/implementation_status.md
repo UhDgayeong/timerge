@@ -80,6 +80,7 @@ metadata:
 - [x] **홈 화면 '남은' → '남은 시간' 문구 수정** — WeekHeader.tsx
 - [x] **DayCard 뱃지 인라인 배치** — 근무·연차·반차 등 타입 라벨을 시간 왼쪽에 배치 ("근무 8시간" 형식)
 - [x] **'휴게 1h 제외' 뱃지 제거** — DayCard에서 완전 삭제
+- [x] **바텀시트 애니메이션 easing 개선** — `0.2s ease` → `0.36s cubic-bezier(0.32, 0.72, 0, 1)`. will-change + backdrop-filter 동시 사용 불가(WebKit 레이어 격리) 확인 → easing 커브만 개선으로 결론.
 
 ## 다음 작업 (우선순위 순)
 

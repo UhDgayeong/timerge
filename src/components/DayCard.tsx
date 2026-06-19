@@ -97,7 +97,7 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
           {typeLabel && <span className="day-card__label">{typeLabel}</span>}
           <span className="day-card__time">{timeDisplay}</span>
         </div>
-        {showLunchBadge && <span className="day-card__lunch-badge">휴게 1h 제외</span>}
+
         {(clockDisplay || halfdayClockStr) && (
           <div className="day-card__clock">
             {clockDisplay && (

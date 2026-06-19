@@ -1,4 +1,4 @@
-import { effectiveTarget, formatClock, formatMinutes, isWeekend, wasLunchDeducted } from '../domain/calc'
+import { effectiveTarget, formatClock, formatMinutes, isWeekend } from '../domain/calc'
 import type { DayRecord, Settings } from '../domain/types'
 
 interface Props {
@@ -34,15 +34,12 @@ export default function DayCard({ day, isToday, settings, onClick }: Props) {
   else cardClass += ' day-card--pending'
 
   let timeDisplay: string
-  let showLunchBadge = false
   if (day.isHoliday) {
     timeDisplay = '0:00'
   } else if (day.recognizedMinutes != null) {
     timeDisplay = formatMinutes(day.recognizedMinutes)
-    showLunchBadge = wasLunchDeducted(day.segments)
   } else if (fixedTarget != null) {
     timeDisplay = formatMinutes(fixedTarget)
-    showLunchBadge = true
   } else if (weekend) {
     timeDisplay = '-'
   } else {

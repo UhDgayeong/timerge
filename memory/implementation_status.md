@@ -70,13 +70,15 @@ metadata:
 - [x] **수동 테마 전환 (라이트/다크)** — 설정 화면에 "화면 테마" 섹션 추가. `localStorage` + `data-theme` 속성으로 OS 설정 override. 기본값 라이트.
 - [x] **Android 터치 하이라이트·텍스트 선택 제거** — `-webkit-tap-highlight-color: transparent` + `user-select: none` 전역 적용. 클릭/롱프레스 시 파란 영역 표시 및 텍스트 선택 컨텍스트메뉴 제거.
 - [x] **TimePicker 분 단위 1분으로 변경** — 기존 5분 단위(12개 항목) → 1분 단위(60개 항목). MINS 배열·parse·format·onScroll max 수정.
+- [x] **TimePicker 페이드 그라데이션 개선** — 단색 오버레이(--sheet-solid) 방식 제거 → picker-card__cols에 mask-image 알파 마스킹 적용. glass 배경과 어긋나 각진 사각형처럼 보이던 문제 해결.
 - [x] **설정 화면 디자인 정합 (PhoneScreen.dc.html 기준)** — 요일별 목표 `<input type="time">` → TimePicker pill 버튼으로 교체. 데이터 카드 이모지→SVG chevron(accent색). 폰트 굵기 전역 교정(hint 500→700, 보조 텍스트 600→700). 블롭 opacity 상향(blob1·2 .5, blob3 .45).
 - [x] **설정 화면 UI 소개선** — 요일별 목표 행: "6시간" preview 텍스트 제거 + 입력 없는 요일도 X 버튼 공간 예약(`visibility: hidden`)으로 흰 박스 끝 지점 통일. `auth-section__desc` 폰트 굵기 700·크기·마진을 `settings__hint`와 통일.
 - [x] **카드 그림자 클리핑 수정** — `overflow-y: auto` 컨테이너가 `overflow-x`도 non-visible로 강제해 `box-shadow`가 직선으로 잘리던 문제. `.app`의 `padding: 0 1rem`을 `.app__scroll`·`.app-header`로 이동. `.settings`의 `overflow: hidden` 제거, `padding-left/right: 1rem`을 `.settings__scroll`에 개별 속성으로 적용(단축 표기 내 `max()+var()` 파싱 실패 우회).
 
 ## 다음 작업 (우선순위 순)
 
-1. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업)
-2. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
-3. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-4. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
+2. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
+3. **커스텀 도메인** — Supabase Pro 전환 시 Google OAuth 화면의 URL 정리
+4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

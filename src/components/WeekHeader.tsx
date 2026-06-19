@@ -60,8 +60,9 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
       <div className="week-header__main">
         {(() => {
           const fmt = formatMinutes(totalRecognizedMinutes)
-          const numPart = fmt.replace(/[^0-9:]/g, '').trim() || fmt
-          const unitPart = fmt.replace(numPart, '').trim()
+          const match = fmt.match(/^(\d+)(.*)/)
+          const numPart = match ? match[1] : fmt
+          const unitPart = match ? match[2].trim() : ''
           return (
             <>
               <span className="week-header__accumulated">{numPart}</span>

@@ -1601,6 +1601,8 @@ body {
   display: flex;
   height: 100%;
   z-index: 2;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
 }
 
 .picker-card__col {

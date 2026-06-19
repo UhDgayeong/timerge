@@ -105,8 +105,6 @@ export default function TimePicker({ label, value, onConfirm, onCancel }: Props)
             </div>
           </div>
 
-          <div className="picker-card__fade picker-card__fade--top" />
-          <div className="picker-card__fade picker-card__fade--bottom" />
         </div>
 
         <div className="picker-card__actions">

@@ -5,6 +5,30 @@ metadata:
   type: project
 ---
 
+## 2026-06-19 — 화면 전환 슬라이드: position:absolute 두 뷰 동시 유지 방식
+
+**결정**: 홈↔설정 전환을 조건부 렌더 대신 두 뷰를 동시에 DOM에 유지하고 `position:absolute; inset:0`으로 겹쳐 쌓은 뒤 `transform:translateX()`로 슬라이드.
+
+**구조**: `.app { overflow:hidden }` → `.view-slide--home`(항상 translateX(0)) + `.view-slide--settings`(비활성=translateX(100%), 활성=translateX(0)). CSS `transition: 0.32s cubic-bezier(0.4,0,0.2,1)`.
+
+**설정 패널 배경 필수**: 설정 카드가 glass(backdrop-filter)라 뒤의 홈 화면이 비침 → `.view-slide--settings { background: var(--bg) }`로 홈 완전 차단.
+
+**관련 파일**: `src/App.tsx`, `src/index.css`
+
+---
+
+## 2026-06-19 — 주 이동 슬라이드: key re-mount + @keyframes, overflow:hidden은 week-view에 추가 금지
+
+**결정**: 주 이동 시 `week-content` div에 `key={slideKey}`(증가 카운터)를 부여해 React가 re-mount하도록 유도 → CSS `@keyframes`(translateX ±100%→0) 자동 재생.
+
+**overflow:hidden 추가 금지**: 슬라이드 clip을 위해 `.week-view { overflow:hidden }`을 추가하면 카드 box-shadow가 직선으로 잘리는 버그 재발(이전 이슈와 동일 패턴). `.app__scroll`의 `overflow-y:auto`가 이미 horizontal paint overflow를 clip하므로 불필요. transform 기반 이동은 layout overflow를 만들지 않아 스크롤바도 생기지 않음.
+
+**터치 스와이프**: `onTouchStart`/`onTouchEnd`로 dx/dy 측정 → `|dx| > |dy| && |dx| > 48px`이면 이전/다음 주 이동. 세로 스크롤과 구분.
+
+**관련 파일**: `src/components/WeekView.tsx`, `src/index.css`
+
+---
+
 ## 2026-06-18 — 카드 그림자 클리핑: overflow-y:auto + padding 분리 적용
 
 **결정**: `overflow-y: auto` 요소에 `padding` 단축 표기로 `max()+var()` 혼합 시 파싱 실패(computed 0px). `padding-left`/`padding-right`/`padding-bottom` 개별 속성으로 분리해 적용.

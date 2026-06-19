@@ -267,6 +267,29 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 1;
+  overflow: hidden;
+}
+
+/* ── View slide transition ── */
+.view-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view-slide--home {
+  transform: translateX(0);
+}
+
+.view-slide--settings {
+  transform: translateX(100%);
+  background: var(--bg);
+}
+.view-slide--settings.view-slide--active {
+  transform: translateX(0);
 }
 
 .app__scroll {

@@ -76,6 +76,10 @@ metadata:
 - [x] **카드 그림자 클리핑 수정** — `overflow-y: auto` 컨테이너가 `overflow-x`도 non-visible로 강제해 `box-shadow`가 직선으로 잘리던 문제. `.app`의 `padding: 0 1rem`을 `.app__scroll`·`.app-header`로 이동. `.settings`의 `overflow: hidden` 제거, `padding-left/right: 1rem`을 `.settings__scroll`에 개별 속성으로 적용(단축 표기 내 `max()+var()` 파싱 실패 우회).
 - [x] **화면 전환 슬라이드 효과** — 홈↔설정: `.app`에 `overflow:hidden`, 두 뷰를 `position:absolute`로 동시 유지, CSS `transform:translateX(±100%/0)` + `transition`. 설정 패널에 `background:var(--bg)` 적용(glass 투명성으로 홈 화면 비침 방지). 주 이동: CSS `@keyframes` + React `key` re-mount로 트리거 (`translateX(±100%→0)`). `overflow:hidden`을 `.week-view`에 추가했다가 카드 그림자 재클리핑 → 제거(`.app__scroll`의 `overflow-y:auto`가 이미 clip 처리). 터치 스와이프(48px 이상, 세로 < 가로일 때) → 이전/다음 주 이동.
 - [x] **WeekHeader 누적시간 숫자 파싱 버그 수정** — `formatMinutes`가 반환하는 "32시간 35분"에서 `/[^0-9:]/g` 가 "3235"를 추출, `replace`가 원문에서 실패해 "3235 32시간 35분"으로 중복 표시되던 버그. `^(\d+)(.*)`로 앞쪽 숫자만 분리하도록 수정. 지난 주 이동 시에만 재현(단일 단위 값은 우연히 동작했기 때문).
+- [x] **TimePicker 기본 오전/오후 분리** — `defaultMeridiem` prop 추가. 시작 시간은 오전, 종료 시간은 오후가 기본값. 저장된 값 있으면 그대로 유지.
+- [x] **홈 화면 '남은' → '남은 시간' 문구 수정** — WeekHeader.tsx
+- [x] **DayCard 뱃지 인라인 배치** — 근무·연차·반차 등 타입 라벨을 시간 왼쪽에 배치 ("근무 8시간" 형식)
+- [x] **'휴게 1h 제외' 뱃지 제거** — DayCard에서 완전 삭제
 
 ## 다음 작업 (우선순위 순)
 

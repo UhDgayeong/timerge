@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { addDays, currentWeekMonday } from '../db/index'
 import { useWeekData } from '../hooks/useWeekData'
 import type { DayRecord } from '../domain/types'
@@ -21,6 +21,8 @@ export default function WeekView() {
   const [showOcr, setShowOcr] = useState(false)
   const [slideKey, setSlideKey] = useState(0)
   const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null)
+  const touchStartX = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
 
   const isCurrentWeek = monday === thisMonday
 
@@ -42,8 +44,25 @@ export default function WeekView() {
     setMonday(thisMonday)
   }
 
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null || touchStartY.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    const dy = e.changedTouches[0].clientY - touchStartY.current
+    touchStartX.current = null
+    touchStartY.current = null
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48) {
+      if (dx < 0) goToNextWeek()
+      else goToPrevWeek()
+    }
+  }
+
   return (
-    <div className="week-view">
+    <div className="week-view" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <nav className="week-nav">
         <button
           className="week-nav__btn"

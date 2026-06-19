@@ -348,20 +348,24 @@ body {
 }
 
 /* ── Week content slide animation ── */
+.week-view {
+  overflow: hidden;
+}
+
 @keyframes week-slide-from-right {
-  from { transform: translateX(40px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }
 @keyframes week-slide-from-left {
-  from { transform: translateX(-40px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }
 
 .week-content--slide-right {
-  animation: week-slide-from-right 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: week-slide-from-right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .week-content--slide-left {
-  animation: week-slide-from-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: week-slide-from-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── WeekNav ── */

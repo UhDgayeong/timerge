@@ -2,7 +2,6 @@ import { useState } from 'react'
 import TimePicker from './TimePicker'
 import type { DayRecord, Segment, SegmentType, Settings } from '../domain/types'
 import {
-  effectiveFixedTarget,
   formatMinutes,
   isWeekend,
   parseClock,
@@ -80,21 +79,11 @@ function formatDateTitle(dateStr: string): string {
   return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일 (${DOW[d.getUTCDay()]})`
 }
 
-/** 분 → 시간 문자열(입력칸용). null/0이면 '' */
-function minToHoursStr(min: number | null): string {
-  return min != null ? String(min / 60) : ''
-}
-
-/** 시간 문자열 → 분(정수). 빈칸·잘못된 값이면 null */
-function hoursStrToMin(s: string): number | null {
-  const t = s.trim()
-  if (!t) return null
-  const h = Number(t)
-  if (!Number.isFinite(h) || h <= 0) return null
-  return Math.round(h * 60)
-}
-
 export default function DayEditModal({ day, settings, onClose, onSaved }: Props) {
+  // 요일 규칙을 state 초기값에 쓰기 위해 hooks보다 먼저 계산
+  const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
+  const wdRule = settings.weekdayTargets?.[wd] ?? null
+
   const [isHoliday, setIsHoliday] = useState(day.isHoliday)
   const [holidayName, setHolidayName] = useState(day.holidayName ?? '')
   const [segments, setSegments] = useState<EditSegment[]>(
@@ -102,21 +91,32 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
       ? day.segments.map(toEditSegment)
       : [{ type: 'work', start: '', end: '', lunchExcluded: true }],
   )
-  // 계획 목표(요일 규칙 또는 이번 주 수동값)를 시간 문자열로 프리필
-  const [targetHours, setTargetHours] = useState(
-    minToHoursStr(effectiveFixedTarget(day, settings)),
+  // 계획 목표: 요일 규칙의 출퇴근 시각으로 프리필 (이번 주만 해제 상태면 빈값)
+  const [targetStart, setTargetStart] = useState(
+    day.fixedTargetManual ? '' : (wdRule?.startMin != null ? minToClock(wdRule.startMin) : ''),
+  )
+  const [targetEnd, setTargetEnd] = useState(
+    day.fixedTargetManual ? '' : (wdRule?.endMin != null ? minToClock(wdRule.endMin) : ''),
   )
   const [saving, setSaving] = useState(false)
   const [activePicker, setActivePicker] = useState<{ segIdx: number; field: 'start' | 'end' } | null>(null)
+  const [activePlanPicker, setActivePlanPicker] = useState<'start' | 'end' | null>(null)
 
   const isWeekday = !isWeekend(day.date)
-  const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
-  const wdRule = settings.weekdayTargets?.[wd] ?? null
   // 요일 규칙의 인정시간(분). 출퇴근 시각 → recognizedFromSegments로 계산
   const ruleMinutes =
     wdRule?.startMin != null
       ? recognizedFromSegments(
           [{ type: 'work', startMin: wdRule.startMin, endMin: wdRule.endMin }],
+          settings.lunchMinutes,
+        )
+      : null
+
+  // 계획 시간 범위로 계산한 목표 인정시간
+  const planRecognized =
+    targetStart && targetEnd
+      ? recognizedFromSegments(
+          [{ type: 'work', startMin: parseClock(targetStart), endMin: parseClock(targetEnd), lunchExcluded: true }],
           settings.lunchMinutes,
         )
       : null
@@ -198,7 +198,7 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
       } else {
         // 실적 없음 → 계획 목표(이번 주 한정 override) 적용
         if (day.isHoliday) await setHolidayOverride(day.date, false)
-        const entered = isWeekday ? hoursStrToMin(targetHours) : null
+        const entered = isWeekday ? planRecognized : null
         let fixedTargetMinutes: number | null
         let fixedTargetManual: boolean
         if (entered === ruleMinutes) {
@@ -363,22 +363,41 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
             {isWeekday && !hasInput && (
               <div className="modal__plan">
                 <label className="modal__plan-label">이 날 목표시간 (계획)</label>
-                <div className="modal__plan-row">
-                  <input
-                    className="modal__plan-input"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step={0.5}
-                    placeholder="미정"
-                    value={targetHours}
-                    onChange={(e) => setTargetHours(e.target.value)}
-                  />
-                  <span className="modal__plan-unit">시간</span>
+                <div className="seg-row" style={{ marginTop: '8px' }}>
+                  <button
+                    type="button"
+                    className={`time-pill${!targetStart ? ' time-pill--empty' : ''}`}
+                    onClick={() => setActivePlanPicker('start')}
+                  >
+                    <span>{targetStart || '--:--'}</span>
+                    <span className="time-pill__chevron" />
+                  </button>
+                  <span className="seg-row__tilde">~</span>
+                  <button
+                    type="button"
+                    className={`time-pill${!targetEnd ? ' time-pill--empty' : ''}`}
+                    onClick={() => setActivePlanPicker('end')}
+                  >
+                    <span>{targetEnd || '--:--'}</span>
+                    <span className="time-pill__chevron" />
+                  </button>
+                  {(targetStart || targetEnd) && (
+                    <button
+                      type="button"
+                      className="seg-row__remove"
+                      onClick={() => { setTargetStart(''); setTargetEnd('') }}
+                      aria-label="계획 지우기"
+                    >
+                      −
+                    </button>
+                  )}
                 </div>
+                {planRecognized != null && (
+                  <p className="modal__plan-hint">목표 인정시간: {formatMinutes(planRecognized)}</p>
+                )}
                 <p className="modal__plan-hint">
                   {ruleMinutes != null
-                    ? `요일 규칙: ${formatMinutes(ruleMinutes)} · 비우면 이번 주만 해제`
+                    ? `요일 규칙: ${formatMinutes(ruleMinutes)} · 시각을 비우면 이번 주만 해제`
                     : '실적을 입력하면 목표는 무시됩니다'}
                 </p>
               </div>
@@ -406,6 +425,19 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
             setActivePicker(null)
           }}
           onCancel={() => setActivePicker(null)}
+        />
+      )}
+      {activePlanPicker && (
+        <TimePicker
+          label={activePlanPicker === 'start' ? '목표 출근 시각' : '목표 퇴근 시각'}
+          value={activePlanPicker === 'start' ? targetStart : targetEnd}
+          defaultMeridiem={activePlanPicker === 'start' ? 'am' : 'pm'}
+          onConfirm={(val) => {
+            if (activePlanPicker === 'start') setTargetStart(val)
+            else setTargetEnd(val)
+            setActivePlanPicker(null)
+          }}
+          onCancel={() => setActivePlanPicker(null)}
         />
       )}
     </div>

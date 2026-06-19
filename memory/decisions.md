@@ -5,6 +5,20 @@ metadata:
   type: project
 ---
 
+## 2026-06-19 — 계획 목표 입력: 숫자(시간) → 출퇴근 시각 피커로 전환
+
+**결정**: DayEditModal의 "이 날 목표시간 (계획)" 입력을 `<input type="number">` (N시간) 방식에서 TimePicker 2개(출근~퇴근)로 교체. 저장값은 기존과 동일하게 `fixedTargetMinutes`(분 정수).
+
+**이유**: 숫자 입력은 "9:20~16:30"처럼 세밀한 출퇴근 시각 기반 목표 설정 불가. 사용자가 요일 규칙(예: 09:30~16:30)에서 출근만 10분 앞당기는 경우를 표현할 수 없음. 출퇴근 시각으로 입력 받으면 `(퇴근-출근)-점심`으로 인정시간을 자동 계산하므로 더 직관적.
+
+**초기값**: `day.fixedTargetManual=true`(이번 주 해제 상태)면 빈값, 아니면 요일 규칙의 `startMin`/`endMin`으로 프리필.
+
+**제한**: 이전에 숫자로 저장된 `fixedTargetMinutes` override는 시각으로 역변환 불가 → 재오픈 시 규칙 시각으로 프리필됨(사용자가 재조정 필요).
+
+**관련 파일**: `src/components/DayEditModal.tsx`
+
+---
+
 ## 2026-06-19 — 바텀시트 애니메이션: will-change + backdrop-filter 동시 사용 불가
 
 **결론**: `will-change: transform`과 `backdrop-filter`는 WebKit(Capacitor iOS/Android 포함)에서 동시에 작동하지 않음. `will-change: transform`이 별도 GPU 컴포지팅 레이어를 만들면 그 레이어는 뒤에 있는 픽셀을 "볼 수" 없어서 `backdrop-filter`가 blur 대신 빈 배경을 필터링함 → 애니메이션 중 불투명 하양이다가 끝나면 젖빛 유리로 바뀌는 색상 플래시 발생.

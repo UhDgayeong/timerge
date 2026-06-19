@@ -348,10 +348,6 @@ body {
 }
 
 /* ── Week content slide animation ── */
-.week-view {
-  overflow: hidden;
-}
-
 @keyframes week-slide-from-right {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }

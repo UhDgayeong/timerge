@@ -347,6 +347,23 @@ body {
   color: var(--text-dim);
 }
 
+/* ── Week content slide animation ── */
+@keyframes week-slide-from-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes week-slide-from-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.week-content--slide-right {
+  animation: week-slide-from-right 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.week-content--slide-left {
+  animation: week-slide-from-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* ── WeekNav ── */
 .week-nav {
   display: flex;

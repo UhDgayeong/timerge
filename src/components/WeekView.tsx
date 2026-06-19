@@ -19,15 +19,35 @@ export default function WeekView() {
   const { data, loading, reload } = useWeekData(monday)
   const [editDay, setEditDay] = useState<DayRecord | null>(null)
   const [showOcr, setShowOcr] = useState(false)
+  const [slideKey, setSlideKey] = useState(0)
+  const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null)
 
   const isCurrentWeek = monday === thisMonday
+
+  function goToPrevWeek() {
+    setSlideDir('left')
+    setSlideKey((k) => k + 1)
+    setMonday((m) => addDays(m, -7))
+  }
+
+  function goToNextWeek() {
+    setSlideDir('right')
+    setSlideKey((k) => k + 1)
+    setMonday((m) => addDays(m, 7))
+  }
+
+  function goToToday() {
+    setSlideDir(monday > thisMonday ? 'left' : 'right')
+    setSlideKey((k) => k + 1)
+    setMonday(thisMonday)
+  }
 
   return (
     <div className="week-view">
       <nav className="week-nav">
         <button
           className="week-nav__btn"
-          onClick={() => setMonday((m) => addDays(m, -7))}
+          onClick={goToPrevWeek}
           aria-label="이전 주"
         >
           ‹
@@ -35,13 +55,13 @@ export default function WeekView() {
         {isCurrentWeek ? (
           <span className="week-nav__label">이번 주</span>
         ) : (
-          <button className="week-nav__today" onClick={() => setMonday(thisMonday)}>
+          <button className="week-nav__today" onClick={goToToday}>
             오늘로
           </button>
         )}
         <button
           className="week-nav__btn"
-          onClick={() => setMonday((m) => addDays(m, 7))}
+          onClick={goToNextWeek}
           aria-label="다음 주"
         >
           ›
@@ -51,7 +71,10 @@ export default function WeekView() {
       {loading || !data ? (
         <div className="week-view__loading">불러오는 중...</div>
       ) : (
-        <>
+        <div
+          key={slideKey}
+          className={`week-content${slideDir ? ` week-content--slide-${slideDir}` : ''}`}
+        >
           <WeekHeader
             week={data.week}
             summary={data.summary}
@@ -103,7 +126,7 @@ export default function WeekView() {
               }}
             />
           )}
-        </>
+        </div>
       )}
     </div>
   )

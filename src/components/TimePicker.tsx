@@ -32,10 +32,16 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
   const [aIdx, setAIdx] = useState(init.aIdx)
   const [hIdx, setHIdx] = useState(init.hIdx)
   const [mIdx, setMIdx] = useState(init.mIdx)
+  const [closing, setClosing] = useState(false)
 
   const ampmRef = useRef<HTMLDivElement>(null)
   const hourRef = useRef<HTMLDivElement>(null)
   const minRef = useRef<HTMLDivElement>(null)
+
+  function dismiss(cb: () => void) {
+    setClosing(true)
+    setTimeout(cb, 180)
+  }
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -57,7 +63,7 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
   }
 
   return (
-    <div className="picker-overlay" onClick={onCancel}>
+    <div className={`picker-overlay${closing ? ' picker-overlay--closing' : ''}`} onClick={() => dismiss(onCancel)}>
       <div className="picker-card" onClick={(e) => e.stopPropagation()}>
         <div className="picker-card__label">{label}</div>
 
@@ -109,8 +115,8 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
         </div>
 
         <div className="picker-card__actions">
-          <button className="btn btn--ghost" style={{ flex: 1 }} onClick={onCancel}>취소</button>
-          <button className="btn btn--primary" style={{ flex: 1 }} onClick={() => onConfirm(format(aIdx, hIdx, mIdx))}>확인</button>
+          <button className="btn btn--ghost" style={{ flex: 1 }} onClick={() => dismiss(onCancel)}>취소</button>
+          <button className="btn btn--primary" style={{ flex: 1 }} onClick={() => dismiss(() => onConfirm(format(aIdx, hIdx, mIdx)))}>확인</button>
         </div>
       </div>
     </div>

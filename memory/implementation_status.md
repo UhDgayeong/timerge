@@ -82,6 +82,9 @@ metadata:
 - [x] **'휴게 1h 제외' 뱃지 제거** — DayCard에서 완전 삭제
 - [x] **바텀시트 애니메이션 easing 개선** — `0.2s ease` → `0.36s cubic-bezier(0.32, 0.72, 0, 1)`. will-change + backdrop-filter 동시 사용 불가(WebKit 레이어 격리) 확인 → easing 커브만 개선으로 결론.
 - [x] **일별 계획 목표 입력: 숫자(시간) → 출퇴근 시각 피커** — DayEditModal "이 날 목표시간 (계획)" 섹션을 TimePicker 기반 시각 범위(출근~퇴근)로 교체. 요일 규칙 시각 프리필, `(퇴근-출근)-60분`으로 목표 인정시간 라이브 계산 표시, −버튼으로 미정 처리.
+- [x] **설정 화면 상태 메시지 → 스낵바로 교체** — `.settings__status` 인라인 텍스트를 `position: fixed` 토스트(`settings__snackbar`)로 교체. 3초 후 자동 소거(`showStatus()` 헬퍼 + `useRef` 타이머). 문구도 존댓말로 개선.
+- [x] **TimePicker 닫기 애니메이션** — 취소/확인 버튼 클릭 시 `closing` state → CSS `picker-overlay--closing` 클래스로 0.18s fade+scale out 후 콜백 실행.
+- [x] **바텀시트 하단 여백 웹 환경 수정** — `.modal`의 `padding-bottom`을 `max(36px, calc(22px + var(--sab, 0px)))`으로 변경. `var(--sab)`에 `, 0px` fallback이 없으면 JS `requestAnimationFrame` 실행 전 `max()` 전체가 무효(0px)가 되는 CSS 파싱 문제 수정. 웹에서도 최소 36px 여백 보장.
 
 ## 다음 작업 (우선순위 순)
 

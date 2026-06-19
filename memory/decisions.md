@@ -5,6 +5,18 @@ metadata:
   type: project
 ---
 
+## 2026-06-19 — CSS var() fallback 없이 max() 사용 시 0px 문제
+
+**결정**: `--sab` 등 JS로 뒤늦게 주입되는 CSS 변수를 `max()` 안에서 사용할 때는 반드시 `var(--sab, 0px)` 형태로 fallback을 명시.
+
+**이유**: `var(--sab)` (fallback 없음)는 CSS 파서가 해당 커스텀 속성을 아직 정의 전이면 "guaranteed-invalid value"가 됨. `max(36px, calc(22px + invalid))`는 전체 선언이 무효 → `padding-bottom: 0px`으로 처리됨. JS `requestAnimationFrame`이 실행되기 전 첫 렌더에서 이 문제가 발생.
+
+**How to apply**: CSS `max()` / `calc()` 안의 CSS 변수는 항상 `, 0px` 또는 적절한 fallback을 붙인다.
+
+**관련 파일**: `src/index.css` (`.modal padding-bottom`, `.settings__scroll padding-bottom`)
+
+---
+
 ## 2026-06-19 — 계획 목표 입력: 숫자(시간) → 출퇴근 시각 피커로 전환
 
 **결정**: DayEditModal의 "이 날 목표시간 (계획)" 입력을 `<input type="number">` (N시간) 방식에서 TimePicker 2개(출근~퇴근)로 교체. 저장값은 기존과 동일하게 `fixedTargetMinutes`(분 정수).

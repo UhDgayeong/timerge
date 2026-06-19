@@ -72,6 +72,13 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
   const [status, setStatus] = useState('')
   const [busy, setBusy] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function showStatus(msg: string) {
+    if (statusTimerRef.current) clearTimeout(statusTimerRef.current)
+    setStatus(msg)
+    statusTimerRef.current = setTimeout(() => setStatus(''), 3000)
+  }
 
   useEffect(() => {
     getSettings().then((s) => {
@@ -95,7 +102,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
       const t = wdTimes[wd] ?? { start: '', end: '' }
       if (!t.start && !t.end) continue
       if (!t.start || !t.end) {
-        setStatus('출근·퇴근 시각을 모두 입력하세요')
+        showStatus('출근·퇴근 시각을 모두 입력해 주세요')
         return
       }
       targets[wd] = { startMin: parseClock(t.start), endMin: parseClock(t.end) }
@@ -105,7 +112,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
       const settings = await getSettings()
       await saveSettings({ ...settings, weekdayTargets: targets })
       const count = Object.keys(targets).length
-      setStatus(count > 0 ? `요일 목표 ${count}개 저장됨` : '요일 목표 모두 해제됨')
+      showStatus(count > 0 ? '요일별 목표가 저장되었습니다.' : '요일별 목표가 모두 해제되었습니다.')
     } finally {
       setBusy(false)
     }
@@ -115,7 +122,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
   async function handleSaveGoal() {
     const h = Number(hours)
     if (!Number.isFinite(h) || h <= 0) {
-      setStatus('올바른 시간을 입력하세요')
+      showStatus('올바른 시간을 입력해 주세요')
       return
     }
     const newDefault = Math.round(h * 60)
@@ -126,10 +133,10 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
       const moved =
         originalDefault != null ? await reassignWeeksOnDefault(originalDefault, newDefault) : 0
       setOriginalDefault(newDefault)
-      setStatus(
+      showStatus(
         moved > 0
-          ? `저장됨 · 기존 ${moved}개 주에도 적용`
-          : '저장됨 · 새로 만드는 주부터 적용',
+          ? `기본 목표가 저장되었습니다. (기존 ${moved}개 주에도 적용)`
+          : '기본 목표가 저장되었습니다.',
       )
     } finally {
       setBusy(false)
@@ -140,7 +147,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
     setBusy(true)
     try {
       downloadJson(await exportBackup())
-      setStatus('백업 파일을 내려받았습니다')
+      showStatus('백업 파일을 내려받았습니다.')
     } finally {
       setBusy(false)
     }
@@ -155,20 +162,19 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
     try {
       const parsed = JSON.parse(await file.text())
       if (!isBackupData(parsed)) {
-        setStatus('백업 파일 형식이 올바르지 않습니다')
+        showStatus('백업 파일 형식이 올바르지 않습니다.')
         return
       }
       const ok = window.confirm(
         '백업을 복원하면 같은 날짜·주의 현재 기록을 덮어씁니다. 계속할까요?',
       )
       if (!ok) {
-        setStatus('')
         return
       }
       await importBackup(parsed)
-      setStatus('복원 완료 — 주간 화면으로 돌아가면 반영됩니다')
+      showStatus('복원이 완료되었습니다. 주간 화면으로 돌아가면 반영됩니다.')
     } catch {
-      setStatus('파일을 읽지 못했습니다 (JSON 아님)')
+      showStatus('파일을 읽지 못했습니다. (JSON 아님)')
     } finally {
       setBusy(false)
     }
@@ -312,8 +318,13 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <AuthSection />
       </section>
 
-      {status && <p className="settings__status">{status}</p>}
       </div>
+
+      {status && (
+        <div className="settings__snackbar" role="status" aria-live="polite">
+          {status}
+        </div>
+      )}
 
       {activePicker && (
         <TimePicker

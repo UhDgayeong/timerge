@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { App as CapApp } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import SettingsView from './components/SettingsView'
@@ -6,6 +6,7 @@ import WeekView from './components/WeekView'
 import { onAuthStateChange } from './services/auth'
 import { supabase } from './lib/supabase'
 import { syncAll } from './services/sync'
+import { consumeBackHandler } from './lib/backHandler'
 
 function applySafeAreaBottom() {
   // CSS env(safe-area-inset-bottom) 실제 값을 probe해서 --sab 변수로 주입.
@@ -33,6 +34,9 @@ function getInitialTheme(): Theme {
 export default function App() {
   const [view, setView] = useState<'week' | 'settings'>('week')
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [showExitToast, setShowExitToast] = useState(false)
+  const exitArmedRef = useRef(false)
+  const exitToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function handleThemeChange(t: Theme) {
     setTheme(t)
@@ -98,13 +102,30 @@ export default function App() {
     let backHandle: { remove: () => void } | null = null
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('backButton', () => {
-        if (view === 'settings') setView('week')
+        if (consumeBackHandler()) return
+        if (view === 'settings') {
+          setView('week')
+          return
+        }
+        // 홈 화면: 뒤로가기 2회 클릭 시 종료 (1회는 안내 토스트만 표시)
+        if (exitArmedRef.current) {
+          CapApp.exitApp()
+          return
+        }
+        exitArmedRef.current = true
+        setShowExitToast(true)
+        if (exitToastTimerRef.current) clearTimeout(exitToastTimerRef.current)
+        exitToastTimerRef.current = setTimeout(() => {
+          exitArmedRef.current = false
+          setShowExitToast(false)
+        }, 2000)
       }).then(handle => { backHandle = handle })
     }
 
     return () => {
       window.removeEventListener('popstate', handlePopState)
       backHandle?.remove()
+      if (exitToastTimerRef.current) clearTimeout(exitToastTimerRef.current)
     }
   }, [view])
 
@@ -136,6 +157,9 @@ export default function App() {
           <SettingsView onClose={goToWeek} theme={theme} onThemeChange={handleThemeChange} />
         </div>
       </main>
+      {showExitToast && (
+        <div className="app__exit-toast">뒤로가기를 한 번 더 누르면 종료됩니다!</div>
+      )}
     </>
   )
 }

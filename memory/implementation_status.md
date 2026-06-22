@@ -85,6 +85,7 @@ metadata:
 - [x] **설정 화면 상태 메시지 → 스낵바로 교체** — `.settings__status` 인라인 텍스트를 `position: fixed` 토스트(`settings__snackbar`)로 교체. 3초 후 자동 소거(`showStatus()` 헬퍼 + `useRef` 타이머). 문구 '-습니다' 체 통일. 배경 `--sheet-solid`(불투명) + 녹색 30% 테두리로 뒤 요소 겹침 문제 해결.
 - [x] **TimePicker 닫기 애니메이션** — 취소/확인 버튼 클릭 시 `closing` state → CSS `picker-overlay--closing` 클래스로 0.18s fade+scale out 후 콜백 실행.
 - [x] **바텀시트 하단 여백 웹 환경 수정** — `.modal`의 `padding-bottom`을 `max(36px, calc(22px + var(--sab, 0px)))`으로 변경. `var(--sab)`에 `, 0px` fallback이 없으면 JS `requestAnimationFrame` 실행 전 `max()` 전체가 무효(0px)가 되는 CSS 파싱 문제 수정. 웹에서도 최소 36px 여백 보장.
+- [x] **Android 뒤로가기 앱 종료 처리 (이슈 #14)** — 홈 화면에서 뒤로가기 1회 시 "뒤로가기를 한 번 더 누르면 종료됩니다!" 토스트, 2초 내 재입력 시 `CapApp.exitApp()`. `src/lib/backHandler.ts`에 오버레이 우선 처리 스택 추가 — 바텀시트/TimePicker가 열려 있을 때 뒤로가기는 시트만 닫고 종료 로직으로 전파되지 않음 (DayEditModal·OcrImportModal·TimePicker가 마운트 시 각자의 close를 스택에 등록, 가장 마지막에 등록된 것이 우선).
 
 ## 다음 작업 (우선순위 순)
 
@@ -93,9 +94,8 @@ metadata:
 3. **Google 로그인 OAuth 화면 URL 개선** — 로그인 시 `tsizysmfcpxhxunalxoe.supabase.co` 가 OAuth 화면에 노출되는 문제. 커스텀 도메인(Supabase Pro) 또는 Google OAuth 앱 이름 설정으로 해결. (이슈 #12)
 4. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정. (이슈 #13)
 5. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
-6. **Android 뒤로가기 앱 종료 처리** — 홈 화면에서 시스템 뒤로가기 버튼 누르면 앱 종료. "뒤로가기 2회 클릭 시 종료" 패턴 적용 검토. (이슈 #14)
-7. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16)
-8. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
-9. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
-10. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-11. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+6. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16)
+7. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
+8. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
+9. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+10. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

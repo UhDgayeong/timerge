@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DayRecord } from '../domain/types'
 import { formatMinutes } from '../domain/calc'
 import { addDays, setHolidayOverride, upsertDay } from '../db/index'
 import { mergeOcrResults, ocrImage, parseFlexText } from '../services/flexOcr'
 import type { OcrDay } from '../services/flexOcr'
+import { pushBackHandler } from '../lib/backHandler'
 
 interface Props {
   monday: string
@@ -46,6 +47,8 @@ function parseHhMm(s: string): number | null {
 }
 
 export default function OcrImportModal({ monday, days, onClose, onSaved }: Props) {
+  useEffect(() => pushBackHandler(onClose), [onClose])
+
   const fileRef = useRef<HTMLInputElement>(null)
   const [phase, setPhase] = useState<'upload' | 'processing' | 'review'>('upload')
   const [files, setFiles] = useState<File[]>([])

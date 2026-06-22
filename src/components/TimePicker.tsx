@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { pushBackHandler } from '../lib/backHandler'
 
 interface Props {
   label: string
@@ -42,6 +43,8 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
     setClosing(true)
     setTimeout(cb, 180)
   }
+
+  useEffect(() => pushBackHandler(() => dismiss(onCancel)), [onCancel])
 
   useEffect(() => {
     requestAnimationFrame(() => {

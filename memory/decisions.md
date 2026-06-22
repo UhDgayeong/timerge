@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-22 — Android 뒤로가기: 오버레이 우선 처리를 전역 스택으로 구현
+
+**결정**: 뒤로가기 종료 처리(이슈 #14)를 추가하면서, 바텀시트(DayEditModal·OcrImportModal)와 TimePicker가 열려 있을 때는 뒤로가기가 시트를 닫아야 하고 종료 토스트/종료로 이어지면 안 됨. 각 오버레이 컴포넌트의 state를 App.tsx가 알 필요 없이 처리하기 위해 `src/lib/backHandler.ts`에 전역 콜백 스택(`pushBackHandler` / `consumeBackHandler`)을 도입. 오버레이는 마운트 시 자신의 close 함수를 스택에 push, 언마운트 시 pop. `App.tsx`의 `backButton` 리스너는 `consumeBackHandler()`를 가장 먼저 호출 — true면(오버레이가 있어서 닫혔으면) 종료/네비게이션 로직을 건너뜀.
+
+**이유**: WeekView/SettingsView/DayEditModal에 모달 state가 각각 분산되어 있어, App.tsx가 모든 모달 state를 끌어올리거나 prop으로 내려받지 않고도 "지금 뒤로가기를 가로챌 오버레이가 있는가"를 알아야 했음. 스택 방식이면 DayEditModal 안에서 TimePicker가 열린 중첩 상황도 자연히 처리됨(나중에 mount된 TimePicker가 스택 맨 위라 먼저 소비).
+
+**관련 파일**: `src/lib/backHandler.ts`(신규), `src/App.tsx`, `src/components/DayEditModal.tsx`, `src/components/OcrImportModal.tsx`, `src/components/TimePicker.tsx`
+
+---
+
 ## 2026-06-19 — CSS var() fallback 없이 max() 사용 시 0px 문제
 
 **결정**: `--sab` 등 JS로 뒤늦게 주입되는 CSS 변수를 `max()` 안에서 사용할 때는 반드시 `var(--sab, 0px)` 형태로 fallback을 명시.

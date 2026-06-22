@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TimePicker from './TimePicker'
 import type { DayRecord, Segment, SegmentType, Settings } from '../domain/types'
 import {
@@ -8,6 +8,7 @@ import {
   recognizedFromSegments,
 } from '../domain/calc'
 import { setHolidayOverride, upsertDay } from '../db/index'
+import { pushBackHandler } from '../lib/backHandler'
 
 interface Props {
   day: DayRecord
@@ -83,6 +84,8 @@ export default function DayEditModal({ day, settings, onClose, onSaved }: Props)
   // 요일 규칙을 state 초기값에 쓰기 위해 hooks보다 먼저 계산
   const wd = new Date(`${day.date}T00:00:00Z`).getUTCDay()
   const wdRule = settings.weekdayTargets?.[wd] ?? null
+
+  useEffect(() => pushBackHandler(onClose), [onClose])
 
   const [isHoliday, setIsHoliday] = useState(day.isHoliday)
   const [holidayName, setHolidayName] = useState(day.holidayName ?? '')

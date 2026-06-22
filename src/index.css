@@ -1201,6 +1201,24 @@ body {
   pointer-events: none;
 }
 
+.app__exit-toast {
+  position: fixed;
+  bottom: calc(32px + var(--sab, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--sheet-solid);
+  border: 1.5px solid color-mix(in srgb, var(--text) 16%, transparent);
+  border-radius: 24px;
+  padding: 0.6rem 1.2rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+
 /* ── Auth Section ── */
 .auth-section {
   display: flex;

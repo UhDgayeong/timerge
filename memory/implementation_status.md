@@ -86,6 +86,7 @@ metadata:
 - [x] **TimePicker 닫기 애니메이션** — 취소/확인 버튼 클릭 시 `closing` state → CSS `picker-overlay--closing` 클래스로 0.18s fade+scale out 후 콜백 실행.
 - [x] **바텀시트 하단 여백 웹 환경 수정** — `.modal`의 `padding-bottom`을 `max(36px, calc(22px + var(--sab, 0px)))`으로 변경. `var(--sab)`에 `, 0px` fallback이 없으면 JS `requestAnimationFrame` 실행 전 `max()` 전체가 무효(0px)가 되는 CSS 파싱 문제 수정. 웹에서도 최소 36px 여백 보장.
 - [x] **Android 뒤로가기 앱 종료 처리 (이슈 #14)** — 홈 화면에서 뒤로가기 1회 시 "뒤로가기를 한 번 더 누르면 종료됩니다!" 토스트, 2초 내 재입력 시 `CapApp.exitApp()`. `src/lib/backHandler.ts`에 오버레이 우선 처리 스택 추가 — 바텀시트/TimePicker가 열려 있을 때 뒤로가기는 시트만 닫고 종료 로직으로 전파되지 않음 (DayEditModal·OcrImportModal·TimePicker가 마운트 시 각자의 close를 스택에 등록, 가장 마지막에 등록된 것이 우선).
+- [x] **`currentWeekMonday()` 타임존 버그 수정** — 로컬 시간으로 월요일을 계산한 뒤 `toISOString()`(UTC 변환)으로 문자열화하던 방식은 KST 자정~오전 9시 사이에 날짜가 하루 당겨져 요일 순서가 밀릴 수 있는 잠재 버그. `getFullYear/getMonth/getDate` 로컬 조합으로 수정. 신고된 실제 사례(폴드 폰에서 일~토 순서로 표시)는 기기가 오랫동안 인터넷에 연결되지 않아 시계 자체가 틀어졌던 것이 원인으로 확인됨 — 코드 버그는 아니었지만 잠재 위험은 실재해 수정 유지.
 
 ## 다음 작업 (우선순위 순)
 

@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-22 — `currentWeekMonday()` 타임존 버그: 근본원인이 기기 시계여도 수정 유지
+
+**결정**: 폴드 폰에서 주간 카드가 일~토 순서로 표시되는 신고를 분석하다, `db/index.ts`의 `currentWeekMonday()`가 로컬 시간으로 월요일을 계산한 뒤 `toISOString()`(UTC 변환)으로 문자열화하는 것을 발견. KST 자정~오전 9시 사이엔 로컬 날짜와 UTC 날짜가 달라 결과가 하루 당겨질 수 있는 코드 버그였음. 이후 사용자가 실제 원인은 기기가 오랫동안 인터넷 미연결로 시계 자체가 틀어졌던 것이라고 확인 — 시계 보정 전후 모두 정상 순서로 표시됨. 그럼에도 코드 수정(`getFullYear/getMonth/getDate` 로컬 조합)은 되돌리지 않고 유지하기로 결정.
+
+**이유**: 신고된 증상의 직접 원인은 아니었지만, 코드 자체에 자정 근처 시간대(KST 00~09시)에서 재현 가능한 잠재 버그가 실재함. 이미 같은 파일/화면에서 `WeekView.tsx`의 `localTodayStr()`은 이 패턴을 올바르게 구현해뒀던 것과 비교해도 비일관적이었음.
+
+**관련 파일**: `src/db/index.ts` (`currentWeekMonday()`)
+
+---
+
 ## 2026-06-22 — Android 뒤로가기: 오버레이 우선 처리를 전역 스택으로 구현
 
 **결정**: 뒤로가기 종료 처리(이슈 #14)를 추가하면서, 바텀시트(DayEditModal·OcrImportModal)와 TimePicker가 열려 있을 때는 뒤로가기가 시트를 닫아야 하고 종료 토스트/종료로 이어지면 안 됨. 각 오버레이 컴포넌트의 state를 App.tsx가 알 필요 없이 처리하기 위해 `src/lib/backHandler.ts`에 전역 콜백 스택(`pushBackHandler` / `consumeBackHandler`)을 도입. 오버레이는 마운트 시 자신의 close 함수를 스택에 push, 언마운트 시 pop. `App.tsx`의 `backButton` 리스너는 `consumeBackHandler()`를 가장 먼저 호출 — true면(오버레이가 있어서 닫혔으면) 종료/네비게이션 로직을 건너뜀.

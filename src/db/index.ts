@@ -65,7 +65,12 @@ export function currentWeekMonday(): string {
   const now = new Date()
   const dow = now.getDay() || 7 // 일=7
   now.setDate(now.getDate() - (dow - 1))
-  return now.toISOString().slice(0, 10)
+  // toISOString()은 UTC로 변환하므로 자정~UTC오프셋 시간대(KST면 00~09시)에
+  // 로컬 날짜와 하루 차이가 나 요일이 밀린다 → 로컬 컴포넌트로 직접 조합
+  const yyyy = now.getFullYear()
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const dd = String(now.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
 }
 
 /** 월요일 날짜로부터 일요일 날짜 */

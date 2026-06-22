@@ -87,16 +87,16 @@ metadata:
 - [x] **바텀시트 하단 여백 웹 환경 수정** — `.modal`의 `padding-bottom`을 `max(36px, calc(22px + var(--sab, 0px)))`으로 변경. `var(--sab)`에 `, 0px` fallback이 없으면 JS `requestAnimationFrame` 실행 전 `max()` 전체가 무효(0px)가 되는 CSS 파싱 문제 수정. 웹에서도 최소 36px 여백 보장.
 - [x] **Android 뒤로가기 앱 종료 처리 (이슈 #14)** — 홈 화면에서 뒤로가기 1회 시 "뒤로가기를 한 번 더 누르면 종료됩니다!" 토스트, 2초 내 재입력 시 `CapApp.exitApp()`. `src/lib/backHandler.ts`에 오버레이 우선 처리 스택 추가 — 바텀시트/TimePicker가 열려 있을 때 뒤로가기는 시트만 닫고 종료 로직으로 전파되지 않음 (DayEditModal·OcrImportModal·TimePicker가 마운트 시 각자의 close를 스택에 등록, 가장 마지막에 등록된 것이 우선).
 - [x] **`currentWeekMonday()` 타임존 버그 수정** — 로컬 시간으로 월요일을 계산한 뒤 `toISOString()`(UTC 변환)으로 문자열화하던 방식은 KST 자정~오전 9시 사이에 날짜가 하루 당겨져 요일 순서가 밀릴 수 있는 잠재 버그. `getFullYear/getMonth/getDate` 로컬 조합으로 수정. 신고된 실제 사례(폴드 폰에서 일~토 순서로 표시)는 기기가 오랫동안 인터넷에 연결되지 않아 시계 자체가 틀어졌던 것이 원인으로 확인됨 — 코드 버그는 아니었지만 잠재 위험은 실재해 수정 유지.
+- [x] **웹 배포 및 공개 URL 생성 (이슈 #11)** — Vercel로 배포. `vercel link`로 프로젝트 연결(GitHub 자동 연동은 실패했으나 CLI 직접 배포라 무관), `VITE_GOOGLE_CALENDAR_API_KEY`/`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`를 production+preview env로 등록 후 `vercel --prod`. 배포 URL: https://timerge.vercel.app. Supabase Auth → URL Configuration에 Site URL(`https://timerge.vercel.app`, 와일드카드 불가) + Redirect URLs(`https://timerge.vercel.app/**`, `com.timerge.app://`) 등록 필요 — 웹 Google 로그인 실기기 확인 완료.
 
 ## 다음 작업 (우선순위 순)
 
 1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
-2. **웹 배포 및 URL 생성** — 데스크톱(웹)으로 다른 사람이 이용할 수 있도록 배포. Vercel 또는 GitHub Pages 활용 검토. (이슈 #11)
-3. **Google 로그인 OAuth 화면 URL 개선** — 로그인 시 `tsizysmfcpxhxunalxoe.supabase.co` 가 OAuth 화면에 노출되는 문제. 커스텀 도메인(Supabase Pro) 또는 Google OAuth 앱 이름 설정으로 해결. (이슈 #12)
-4. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정. (이슈 #13)
-5. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
-6. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16)
-7. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
-8. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
-9. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-10. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+2. **Google 로그인 OAuth 화면 URL 개선** — 로그인 시 `tsizysmfcpxhxunalxoe.supabase.co` 가 OAuth 화면에 노출되는 문제. 커스텀 도메인(Supabase Pro) 또는 Google OAuth 앱 이름 설정으로 해결. (이슈 #12)
+3. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정. (이슈 #13)
+4. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
+5. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16)
+6. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
+7. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
+8. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+9. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)

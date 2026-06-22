@@ -5,6 +5,18 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — 웹 배포: Vercel 선택 + Supabase URL Configuration 정리
+
+**결정**: 웹 배포 플랫폼으로 GitHub Pages 대신 Vercel 선택. CLI(`npx vercel`)로 직접 배포(GitHub 레포 자동 연동은 실패했지만 CLI 배포는 git 연동 불필요라 무관). `VITE_GOOGLE_CALENDAR_API_KEY`/`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`를 Vercel production+preview 환경변수로 등록 후 `vercel --prod`. 배포 URL: https://timerge.vercel.app (이슈 #11 클로즈)
+
+**이유**: GitHub Pages는 완전 무료·레포 종속이지만 (1) Vite 빌드타임 env 주입을 GitHub Actions secrets 워크플로로 직접 구성해야 하고 (2) 서브패스 배포(`<repo>.github.io/timerge/`)라 `vite.config.ts` base 경로 + OAuth 리다이렉트 경로 보정이 추가로 필요함. `src/services/auth.ts`가 웹에서 `window.location.origin`을 OAuth `redirectTo`로 그대로 쓰므로, 루트 도메인을 기본 제공하는 Vercel이 설정 마찰이 적었음.
+
+**Supabase Auth URL Configuration 함정**: Site URL 필드는 와일드카드를 허용하지 않음(`https://timerge.vercel.app/**`로 잘못 입력했다가 `https://timerge.vercel.app`로 수정). Redirect URLs 목록에는 와일드카드 허용 — `https://timerge.vercel.app/**` + 기존 `com.timerge.app://`(네이티브) 둘 다 등록. 웹 Google 로그인 실기기 확인 완료.
+
+**관련 파일**: `.vercel/project.json`(gitignore됨), `src/services/auth.ts`
+
+---
+
 ## 2026-06-22 — `currentWeekMonday()` 타임존 버그: 근본원인이 기기 시계여도 수정 유지
 
 **결정**: 폴드 폰에서 주간 카드가 일~토 순서로 표시되는 신고를 분석하다, `db/index.ts`의 `currentWeekMonday()`가 로컬 시간으로 월요일을 계산한 뒤 `toISOString()`(UTC 변환)으로 문자열화하는 것을 발견. KST 자정~오전 9시 사이엔 로컬 날짜와 UTC 날짜가 달라 결과가 하루 당겨질 수 있는 코드 버그였음. 이후 사용자가 실제 원인은 기기가 오랫동안 인터넷 미연결로 시계 자체가 틀어졌던 것이라고 확인 — 시계 보정 전후 모두 정상 순서로 표시됨. 그럼에도 코드 수정(`getFullYear/getMonth/getDate` 로컬 조합)은 되돌리지 않고 유지하기로 결정.

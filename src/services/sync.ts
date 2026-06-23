@@ -186,6 +186,8 @@ async function syncSettings(uid: string) {
       weekday_targets: local.weekdayTargets,
       core_time_start: local.coreTimeStart,
       core_time_end: local.coreTimeEnd,
+      share_token: local.shareToken ?? null,
+      share_display_name: local.shareDisplayName ?? null,
       updated_at: localUpdatedAt || Date.now(),
     })
   } else {
@@ -197,6 +199,8 @@ async function syncSettings(uid: string) {
       weekdayTargets: remote.weekday_targets,
       coreTimeStart: remote.core_time_start,
       coreTimeEnd: remote.core_time_end,
+      shareToken: remote.share_token ?? null,
+      shareDisplayName: remote.share_display_name ?? null,
     }
     await saveSettings(merged)
   }

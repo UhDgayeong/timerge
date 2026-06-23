@@ -21,7 +21,7 @@ export interface HolidayCacheEntry {
   syncedAt: number
 }
 
-type SettingsRecord = Settings & { id: 1 }
+type SettingsRecord = Settings & { id: 1; updatedAt: number }
 
 class TimergeDB extends Dexie {
   weeks!: Table<WeekRecord>
@@ -177,13 +177,13 @@ export async function getSettings(): Promise<Settings> {
   const record = await db.settings.get(1)
   if (!record) return { ...DEFAULTS }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id, ...settings } = record
+  const { id: _id, updatedAt: _updatedAt, ...settings } = record
   // 구버전 레코드에 없는 필드(weekdayTargets 등)는 DEFAULTS로 보강
   return { ...DEFAULTS, ...settings }
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {
-  await db.settings.put({ ...settings, id: 1 })
+  await db.settings.put({ ...settings, id: 1, updatedAt: Date.now() })
 }
 
 // ── JSON 백업/복원 ────────────────────────────────────────────────

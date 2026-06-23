@@ -70,6 +70,10 @@ export interface Settings {
   /** 계산엔 영향 없음. 안내 표시용 */
   coreTimeStart: string
   coreTimeEnd: string
+  /** 공유 링크 토큰. 없으면 아직 발급 안 함 */
+  shareToken?: string | null
+  /** 공유 화면에 표시할 이름. 없으면 구글 계정 이름으로 대체(서버에서 처리) */
+  shareDisplayName?: string | null
 }
 
 export const DEFAULTS: Settings = {

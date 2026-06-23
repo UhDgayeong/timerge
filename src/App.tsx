@@ -3,10 +3,11 @@ import { App as CapApp } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import SettingsView from './components/SettingsView'
 import WeekView from './components/WeekView'
-import { onAuthStateChange } from './services/auth'
+import { getUser, onAuthStateChange } from './services/auth'
 import { supabase } from './lib/supabase'
 import { syncAll } from './services/sync'
 import { consumeBackHandler } from './lib/backHandler'
+import { ensureShareToken, shareUrl } from './services/share'
 import logoMark from './assets/logo-mark.svg'
 
 function applySafeAreaBottom() {
@@ -36,8 +37,26 @@ export default function App() {
   const [view, setView] = useState<'week' | 'settings'>('week')
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
   const [showExitToast, setShowExitToast] = useState(false)
+  const [shareToast, setShareToast] = useState<string | null>(null)
   const exitArmedRef = useRef(false)
   const exitToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  async function handleShare() {
+    try {
+      const user = await getUser()
+      if (!user) {
+        setShareToast('로그인 후 이용할 수 있어요.')
+        return
+      }
+      const token = await ensureShareToken()
+      await navigator.clipboard.writeText(shareUrl(token))
+      setShareToast('공유 링크가 복사되었습니다.')
+    } catch {
+      setShareToast('링크 복사에 실패했습니다.')
+    } finally {
+      setTimeout(() => setShareToast(null), 2500)
+    }
+  }
 
   function handleThemeChange(t: Theme) {
     setTheme(t)
@@ -142,16 +161,28 @@ export default function App() {
               <img src={logoMark} alt="" className="app-header__logo" />
               <span className="app-header__title">Timerge</span>
             </span>
-            <button
-              className="app-header__settings"
-              onClick={goToSettings}
-              aria-label="설정"
-            >
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
+            <div className="app-header__actions">
+              <button
+                className="app-header__share"
+                onClick={handleShare}
+                aria-label="공유"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              </button>
+              <button
+                className="app-header__settings"
+                onClick={goToSettings}
+                aria-label="설정"
+              >
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+              </button>
+            </div>
           </header>
           <div className="app__scroll">
             <WeekView />
@@ -164,6 +195,7 @@ export default function App() {
       {showExitToast && (
         <div className="app__exit-toast">뒤로가기를 한 번 더 누르면 종료됩니다!</div>
       )}
+      {shareToast && <div className="app__exit-toast">{shareToast}</div>}
     </>
   )
 }

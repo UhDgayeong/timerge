@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import AuthSection from './AuthSection'
+import ShareSection from './ShareSection'
 import TimePicker from './TimePicker'
 import type { BackupData } from '../db/index'
 import {
@@ -317,6 +318,8 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <h3 className="settings__section-title">계정 및 동기화</h3>
         <AuthSection />
       </section>
+
+      <ShareSection />
 
       </div>
 

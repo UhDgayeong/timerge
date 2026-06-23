@@ -7,6 +7,7 @@ import { onAuthStateChange } from './services/auth'
 import { supabase } from './lib/supabase'
 import { syncAll } from './services/sync'
 import { consumeBackHandler } from './lib/backHandler'
+import logoMark from './assets/logo-mark.svg'
 
 function applySafeAreaBottom() {
   // CSS env(safe-area-inset-bottom) 실제 값을 probe해서 --sab 변수로 주입.
@@ -137,7 +138,10 @@ export default function App() {
       <main className="app">
         <div className="view-slide view-slide--home">
           <header className="app-header">
-            <span className="app-header__title">Timerge</span>
+            <span className="app-header__brand">
+              <img src={logoMark} alt="" className="app-header__logo" />
+              <span className="app-header__title">Timerge</span>
+            </span>
             <button
               className="app-header__settings"
               onClick={goToSettings}

@@ -89,15 +89,15 @@ metadata:
 - [x] **`currentWeekMonday()` 타임존 버그 수정** — 로컬 시간으로 월요일을 계산한 뒤 `toISOString()`(UTC 변환)으로 문자열화하던 방식은 KST 자정~오전 9시 사이에 날짜가 하루 당겨져 요일 순서가 밀릴 수 있는 잠재 버그. `getFullYear/getMonth/getDate` 로컬 조합으로 수정. 신고된 실제 사례(폴드 폰에서 일~토 순서로 표시)는 기기가 오랫동안 인터넷에 연결되지 않아 시계 자체가 틀어졌던 것이 원인으로 확인됨 — 코드 버그는 아니었지만 잠재 위험은 실재해 수정 유지.
 - [x] **웹 배포 및 공개 URL 생성 (이슈 #11)** — Vercel로 배포. `vercel link`로 프로젝트 연결(GitHub 자동 연동은 실패했으나 CLI 직접 배포라 무관), `VITE_GOOGLE_CALENDAR_API_KEY`/`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`를 production+preview env로 등록 후 `vercel --prod`. 배포 URL: https://timerge.vercel.app. Supabase Auth → URL Configuration에 Site URL(`https://timerge.vercel.app`, 와일드카드 불가) + Redirect URLs(`https://timerge.vercel.app/**`, `com.timerge.app://`) 등록 필요 — 웹 Google 로그인 실기기 확인 완료.
 - [x] **Google OAuth 동의 화면 브랜딩 (이슈 #12, 부분 해결)** — Google Cloud Console "브랜딩"에서 앱 이름(Timerge)·로고(`app-icon-rounded.png` 120×120 리사이즈)·홈페이지·승인된 도메인(`timerge.vercel.app`) 등록. 권한 동의 화면은 해결됐으나 "계정 선택" 화면의 Supabase URL 노출은 Google이 redirect_uri 호스트를 항상 표시하는 구조적 한계로 미해결 (Supabase Pro 커스텀 도메인 필요, 보류). 자세한 내용은 `decisions.md` 2026-06-23 항목 참고.
+- [x] **앱 아이콘 커스텀 이미지로 교체 (이슈 #16)** — `@capacitor/assets` 패키지 설치, `assets/icon.png`(1024×1024, `~/Downloads/brand/app-icon.png` 원본)을 소스로 `npx capacitor-assets generate --android --ios` 실행. Android(legacy+adaptive+round, 전 dpi)·iOS(AppIcon-512@2x) 아이콘 전부 교체. 같은 명령이 스플래시 화면도 같이 덮어써서 splash 관련 변경분은 전부 revert(아이콘 작업 범위 외). `npm run build && npx cap sync` 완료(iOS는 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` 필요 — CocoaPods가 기본 LANG에서 유니코드 정규화 에러 발생).
 
 ## 다음 작업 (우선순위 순)
 
 1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
 2. **iOS Google 로그인 불안정 문제 확인** — 아이폰 실기기에서 Google 로그인이 잘 안 되는 현상 원인 파악 및 수정. (이슈 #13)
 3. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
-4. **앱 아이콘 이미지 변경** — 현재 기본 아이콘을 Timerge 브랜드에 맞는 커스텀 아이콘으로 교체. (이슈 #16) — `~/Downloads/brand/`에 디자인된 아이콘(`app-icon.png`, `app-icon-rounded.png` 등) 이미 준비됨.
-5. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
-6. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
-7. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-8. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
-9. **(보류) Google 로그인 계정 선택 화면 Supabase URL 노출** — Supabase Pro 커스텀 도메인 적용 시 재검토 (이슈 #12 클로즈됨, 필요시 재오픈)
+4. **공유 기능** — 내 근무 기록 현황을 지인과 공유하는 기능. URL 공유(조회 전용 페이지) 또는 앱 내 친구 초대 방식 검토. (이슈 #15)
+5. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
+6. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+7. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+8. **(보류) Google 로그인 계정 선택 화면 Supabase URL 노출** — Supabase Pro 커스텀 도메인 적용 시 재검토 (이슈 #12 클로즈됨, 필요시 재오픈)

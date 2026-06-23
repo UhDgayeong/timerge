@@ -5,6 +5,20 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — 앱 아이콘 교체: `@capacitor/assets`로 생성, splash 변경분은 revert (이슈 #16)
+
+**결정**: `@capacitor/assets`(devDependency) 설치 → `assets/icon.png`(1024×1024, `~/Downloads/brand/app-icon.png` 풀-블리드 정사각형 원본, 라운드 처리 없는 버전)을 소스로 `npx capacitor-assets generate --android --ios` 실행. Android(legacy+adaptive+round 전 dpi)·iOS(`AppIcon-512@2x.png`) 둘 다 갱신.
+
+**이유**: `app-icon.png`(정사각형, OS가 자체 마스킹)과 `app-icon-rounded.png`(이미 라운드 처리됨) 두 버전이 있었는데, OS가 어차피 자체적으로 모양을 적용하므로(Android adaptive icon, iOS 자동 라운드) 풀-블리드 정사각형 원본을 소스로 쓰는 게 표준 방식. 라운드 버전은 OS 마스킹이 없는 곳(Google OAuth 브랜딩 로고 등)에 이미 따로 쓰임.
+
+**함정**: `capacitor-assets generate`는 인자 없이 실행하면 PWA(`www/manifest.json`)까지 같이 생성을 시도해 에러로 전체가 실패함 — `--android --ios`로 플랫폼을 명시해야 함. 또한 아이콘 소스만 지정해도 **스플래시 화면까지 같이 덮어씀**(흰 배경에 아이콘 중앙 배치하는 기본 스플래시로 교체) — 아이콘만 바꾸고 싶을 때는 생성 후 `git status`로 스플래시 관련 변경(`drawable*/splash.png`, `Splash.imageset/*`, 신규 night/land 변형 디렉터리)을 찾아 전부 revert 필요. PWA 전용 webp 아이콘도 `icons/`에 별도 생성되는데 프로젝트가 PWA가 아니라 삭제.
+
+**환경 이슈**: `npx cap sync ios`에서 `pod install`이 기본 셸 LANG(POSIX/C)일 때 CocoaPods가 유니코드 정규화 에러로 실패함. `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npx cap sync ios`로 해결 — 코드 문제가 아니라 로컬 셸 환경 설정 문제.
+
+**관련 파일**: `assets/icon.png`(신규, 소스), `android/app/src/main/res/mipmap-*/ic_launcher*.png`, `ios/App/App/Assets.xcassets/AppIcon.appiconset/`, `package.json`(`@capacitor/assets` 추가)
+
+---
+
 ## 2026-06-23 — Google OAuth Supabase URL 노출: 부분 해결로 클로즈 (이슈 #12)
 
 **결정**: Google Cloud Console "브랜딩"에서 앱 이름(Timerge)·로고·홈페이지(https://timerge.vercel.app)·승인된 도메인(timerge.vercel.app) 등록 완료. 이로써 OAuth 권한 동의 화면(스코프 설명 화면)은 Supabase URL 대신 Timerge로 표시됨. 다만 로그인 첫 화면인 "계정 선택" 화면에는 여전히 `tsizysmfcpxhxunalxoe.supabase.co (으)로 이동`이 노출되는데, 이는 Google이 OAuth `redirect_uri`의 실제 호스트를 보안/투명성 목적으로 항상 표시하는 영역이라 브랜딩으로 가릴 수 없음. 완전 해결에는 Supabase Custom Domain(Pro 플랜, $25/월~)으로 자체 도메인을 redirect_uri로 써야 함 — 비용 대비 우선순위가 낮다고 판단해 보류하고 이슈를 부분 해결로 클로즈.

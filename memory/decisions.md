@@ -5,6 +5,14 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — iOS Google 로그인 "애플리케이션을 열 수 없습니다" 에러 수정
+
+**결정**: `ios/App/App/Info.plist`에 `CFBundleURLTypes`(스킴 `com.timerge.app`) 등록을 추가.
+
+**이유**: Google OAuth 로그인 완료 후 Supabase가 `com.timerge.app://`로 리디렉션하는데, iOS Info.plist에 이 커스텀 URL 스킴이 등록돼 있지 않아 OS가 처리할 앱을 찾지 못해 "문제가 발생했습니다. 애플리케이션을 열 수 없습니다" 에러가 발생(이슈 #13). `src/App.tsx`의 `appUrlOpen` 리스너와 Supabase 대시보드 Redirect URLs(`com.timerge.app://`)는 이미 정상이었음 — 누락된 건 네이티브 쪽 스킴 등록뿐. 코드 수정만으로는 적용되지 않고 Xcode 재빌드·재설치가 필요(인증서 문제로 Bucky 컴퓨터에서 진행).
+
+---
+
 ## 2026-06-23 — 퇴근 역산 배너 위치 이동 + "확정 데이터만" 조건 추가
 
 **결정**: 마지막 근무일 "출근 → 퇴근 가능" 역산 배너를 홈 상단 `WeekHeader`에서 해당 날짜의 `DayCard`로 이동. 추가로, 마지막 근무일을 제외한 나머지 모든 근무가능일이 `recognizedMinutes`(실적)로 확정된 경우에만 이 배너를 표시하도록 조건 강화. 그 외(이전 평일 중 미확정 존재)에는 단순히 해당 날짜에 "HH:MM 출근"만 표시.

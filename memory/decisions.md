@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — 홈 헤더 로고: 워드마크 PNG 대신 마크 SVG + 기존 텍스트 조합
+
+**결정**: `~/Downloads/brand/logo-color.png`(마크+"Timerge" 텍스트 통합 이미지) 대신 `logo-mark.svg`(시계 아이콘만)를 `src/assets/logo-mark.svg`로 가져와 기존 그라디언트 "Timerge" 텍스트 왼쪽에 작게 배치. 아이콘 추가 후 텍스트가 상대적으로 커 보여 폰트 크기를 1.5625rem → 1.1875rem으로 축소.
+
+**이유**: `logo-color.png`는 "Timerge" 글자 부분이 고정 네이비 색이라 다크모드 배경에서 거의 안 보일 위험이 있었음. `logo-mark.svg`는 색이 고정 퍼플 그라디언트(`#9d7dff~#5a32e6`)라 텍스트 색에 의존하지 않고, 앱 아이콘과 동일 자산이라 양쪽 모드에서 이미 검증됨 — 별도 다크모드용 로고를 새로 만들 필요 없음. 헤더 텍스트는 다크모드 대응이 이미 돼 있는 기존 그라디언트 스타일을 그대로 살리는 쪽이 PNG 워드마크 전체 교체보다 안전.
+
+**관련 파일**: `src/assets/logo-mark.svg`(신규), `src/App.tsx`(`app-header__brand` 래퍼), `src/index.css`(`.app-header__logo`, `.app-header__title` 폰트 크기)
+
+---
+
 ## 2026-06-23 — 앱 아이콘 교체: `@capacitor/assets`로 생성, splash 변경분은 revert (이슈 #16)
 
 **결정**: `@capacitor/assets`(devDependency) 설치 → `assets/icon.png`(1024×1024, `~/Downloads/brand/app-icon.png` 풀-블리드 정사각형 원본, 라운드 처리 없는 버전)을 소스로 `npx capacitor-assets generate --android --ios` 실행. Android(legacy+adaptive+round 전 dpi)·iOS(`AppIcon-512@2x.png`) 둘 다 갱신.

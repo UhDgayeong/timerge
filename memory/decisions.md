@@ -5,6 +5,22 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — 공유 기능: URL 단방향 공유 + 보안/인프라 결정
+
+**결정**: 근무 현황 공유는 "이번 주(실시간) + 무기한 토큰(언제든 재발급) + 표시 이름은 구글 계정 이름 기본값"으로 구현(이슈 #15). DB 보안은 `weeks`/`days` 테이블에 공개 RLS를 추가하지 않고, `get_shared_week(token)` SECURITY DEFINER 함수 하나만 anon에 EXECUTE 권한을 부여하는 방식 채택 — 공격 표면을 함수 1개로 최소화.
+
+**이유**: A안(URL 조회 전용) vs B안(앱 내 친구 초대)을 검토했고, B안은 양쪽 다 로그인 전제 + RLS에 사용자 간 read 정책을 새로 설계해야 해 무겁다고 판단해 A안 채택. "과거 주 탐색 가능"보다 "이번 주 실시간"이 공유 의도(현재 상황 보여주기)에 더 맞고 구현도 단순함. 표시 이름은 구글 OAuth로 이미 `full_name`/`name` 메타데이터를 갖고 있어 별도 입력 없이 기본값으로 쓸 수 있음(설정에서 override 가능).
+
+**디버깅 중 발견한 두 가지 기존 버그**(공유 기능과 무관하게 존재):
+1. **설정 동기화 무한 덮어쓰기 버그**: `src/db/index.ts`의 `saveSettings()`가 `updatedAt`을 한 번도 기록하지 않아, `syncSettings()`의 `localUpdatedAt`이 항상 0으로 평가됨 → 최초 1회 이후로는 로컬에서 바꾼 설정이 "서버가 더 최신"으로 오판되어 매번 덮어써지고 서버로 올라가지 못함. `SettingsRecord`에 `updatedAt: number` 추가하고 `saveSettings`에서 `Date.now()` 기록하도록 수정.
+2. **Supabase 테이블 GRANT 누락**: Free tier 프로젝트가 비활성 후 일시정지→복원되는 과정에서 `authenticated` 롤의 `weeks`/`days`/`holiday_overrides`/`settings` 테이블 GRANT(SELECT/INSERT/UPDATE/DELETE)가 초기화되어 모든 클라우드 동기화가 403으로 막혀 있었음(RLS 정책과는 별개 레이어). `grant select, insert, update, delete on ... to authenticated;` 재실행으로 해결. **Free tier 특성상 재발 가능성 있음 — 동기화가 갑자기 안 될 때 가장 먼저 확인할 것.**
+
+**OG 미리보기(카톡 공유 시 문구)**: `vercel.json`에 `/share/:token` → `/api/share?token=:token` rewrite 추가, `api/share.js`(Vercel Serverless Function)가 `get_shared_week` RPC로 표시 이름을 가져와 동적으로 `<title>`/`og:title`/`og:description`을 주입한 뒤 정적 `index.html`을 그대로 반환(원본 SPA 마운트 깨지지 않음). 시도 중 알게 된 점: rewrite destination에 동적 세그먼트(`/api/share/:token`)와 파일시스템 동적 라우트(`api/share/[token].js`)를 같이 쓰면 Vercel이 함수를 라우팅에 연결하지 못하고 정적 `index.html` fallback만 응답하는 문제가 있었음 — 함수를 평평한 파일(`api/share.js`)로 두고 쿼리스트링(`?token=`)으로 전달하는 방식으로 우회.
+
+**관련 파일**: `src/services/share.ts`, `src/components/ShareSection.tsx`, `src/components/SharedWeekView.tsx`, `src/db/index.ts`, `api/share.js`, `vercel.json`, `memory/share-feature.sql`, `memory/fix-table-grants.sql`, `memory/fix-shared-week-date-type.sql`
+
+---
+
 ## 2026-06-23 — iOS Google 로그인 "애플리케이션을 열 수 없습니다" 에러 수정
 
 **결정**: `ios/App/App/Info.plist`에 `CFBundleURLTypes`(스킴 `com.timerge.app`) 등록을 추가.

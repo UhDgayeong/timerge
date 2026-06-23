@@ -91,6 +91,7 @@ metadata:
 - [x] **Google OAuth 동의 화면 브랜딩 (이슈 #12, 부분 해결)** — Google Cloud Console "브랜딩"에서 앱 이름(Timerge)·로고(`app-icon-rounded.png` 120×120 리사이즈)·홈페이지·승인된 도메인(`timerge.vercel.app`) 등록. 권한 동의 화면은 해결됐으나 "계정 선택" 화면의 Supabase URL 노출은 Google이 redirect_uri 호스트를 항상 표시하는 구조적 한계로 미해결 (Supabase Pro 커스텀 도메인 필요, 보류). 자세한 내용은 `decisions.md` 2026-06-23 항목 참고.
 - [x] **홈 헤더에 로고 마크 추가** — `~/Downloads/brand/logo-mark.svg`를 `src/assets/logo-mark.svg`로 복사, "Timerge" 텍스트 왼쪽에 아이콘으로 배치(`app-header__brand` flex 래퍼). 마크 자체가 고정 퍼플 그라디언트라 라이트/다크 모드 둘 다 그대로 잘 보임(워드마크 PNG의 고정 네이비 텍스트와 달리 별도 다크 버전 불필요). 아이콘 추가 후 "Timerge" 텍스트 폰트 크기 1.5625rem → 1.1875rem으로 축소(아이콘과 균형).
 - [x] **앱 아이콘 커스텀 이미지로 교체 (이슈 #16)** — `@capacitor/assets` 패키지 설치, `assets/icon.png`(1024×1024, `~/Downloads/brand/app-icon.png` 원본)을 소스로 `npx capacitor-assets generate --android --ios` 실행. Android(legacy+adaptive+round, 전 dpi)·iOS(AppIcon-512@2x) 아이콘 전부 교체. 같은 명령이 스플래시 화면도 같이 덮어써서 splash 관련 변경분은 전부 revert(아이콘 작업 범위 외). `npm run build && npx cap sync` 완료(iOS는 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` 필요 — CocoaPods가 기본 LANG에서 유니코드 정규화 에러 발생).
+- [x] **TimePicker 데스크톱 마우스 드래그 스크롤 추가** — 휠 스크롤 외 좌클릭 드래그(상/하)로 휠 이동 가능. `pointerType === 'mouse'`로 한정(터치는 기존 네이티브 스크롤 유지). 드래그 중 `cursor: grab/grabbing`. 드래그가 카드 밖에서 release되면 뒤따르는 click이 "바깥 클릭"으로 오인되어 picker와 바텀시트가 동시에 닫히던 버그 2건 함께 수정 — 자세한 내용은 `decisions.md` 참고.
 
 ## 다음 작업 (우선순위 순)
 

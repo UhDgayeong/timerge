@@ -65,8 +65,52 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
     setter(idx)
   }
 
+  function onDragStart(ref: React.RefObject<HTMLDivElement>, e: React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== 'mouse') return
+    if (!ref.current) return
+    const el: HTMLDivElement = ref.current
+    e.preventDefault()
+    const startY = e.clientY
+    const startScrollTop = el.scrollTop
+    let dragged = false
+    el.style.scrollSnapType = 'none'
+    el.style.cursor = 'grabbing'
+
+    function onMove(ev: PointerEvent) {
+      if (Math.abs(ev.clientY - startY) > 3) dragged = true
+      el.scrollTop = startScrollTop - (ev.clientY - startY)
+    }
+    function onUp() {
+      el.style.scrollSnapType = ''
+      el.style.cursor = ''
+      const idx = Math.round(el.scrollTop / ITEM_H)
+      el.scrollTo({ top: idx * ITEM_H, behavior: 'smooth' })
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+
+      // 드래그가 카드 경계를 벗어나 release되면 뒤따르는 click이
+      // 바깥 클릭으로 오인되어 picker를 닫아버리므로 한 번만 흡수한다
+      if (dragged) {
+        const swallowClick = (ev: MouseEvent) => {
+          ev.stopPropagation()
+          ev.preventDefault()
+        }
+        window.addEventListener('click', swallowClick, { capture: true, once: true })
+        setTimeout(() => window.removeEventListener('click', swallowClick, { capture: true } as EventListenerOptions), 0)
+      }
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+  }
+
   return (
-    <div className={`picker-overlay${closing ? ' picker-overlay--closing' : ''}`} onClick={() => dismiss(onCancel)}>
+    <div
+      className={`picker-overlay${closing ? ' picker-overlay--closing' : ''}`}
+      onClick={(e) => {
+        e.stopPropagation()
+        dismiss(onCancel)
+      }}
+    >
       <div className="picker-card" onClick={(e) => e.stopPropagation()}>
         <div className="picker-card__label">{label}</div>
 
@@ -86,6 +130,7 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
               className="picker-card__col"
               style={{ flex: '0 0 30%' }}
               onScroll={() => onScroll(ampmRef, 1, setAIdx)}
+              onPointerDown={(e) => onDragStart(ampmRef, e)}
             >
               {AMPMS.map((it) => (
                 <div key={it} className="picker-card__item">{it}</div>
@@ -96,6 +141,7 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
               ref={hourRef}
               className="picker-card__col"
               onScroll={() => onScroll(hourRef, 11, setHIdx)}
+              onPointerDown={(e) => onDragStart(hourRef, e)}
             >
               {HOURS.map((it) => (
                 <div key={it} className="picker-card__item picker-card__item--num">{it}</div>
@@ -108,6 +154,7 @@ export default function TimePicker({ label, value, defaultMeridiem = 'am', onCon
               ref={minRef}
               className="picker-card__col"
               onScroll={() => onScroll(minRef, 59, setMIdx)}
+              onPointerDown={(e) => onDragStart(minRef, e)}
             >
               {MINS.map((it) => (
                 <div key={it} className="picker-card__item picker-card__item--num">{it}</div>

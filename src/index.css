@@ -1726,6 +1726,7 @@ body {
   padding: 88px 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  cursor: grab;
 }
 
 .picker-card__col::-webkit-scrollbar { display: none; }

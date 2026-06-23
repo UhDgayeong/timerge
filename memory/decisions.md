@@ -5,6 +5,20 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — TimePicker 데스크톱 드래그 스크롤 추가 + 드래그발(發) 클릭 흡수 패턴
+
+**결정**: 데스크톱 웹에서 TimePicker 휠 조작성 개선을 위해 마우스 좌클릭 드래그로 스크롤하는 기능을 추가(`pointerType === 'mouse'`로 한정, 터치는 기존 네이티브 스크롤 유지). 숫자 클릭→키보드 입력 방식은 보류(디자인 언어 이질감 + IME/검증 비용 대비 효용 낮다고 판단, 드래그만으로 충분할 것으로 예상).
+
+구현 중 발견된 버그 2건도 함께 수정:
+1. `picker-overlay`(어두운 배경) 클릭 시 `onClick`에 `stopPropagation()`이 없어서, 클릭 이벤트가 부모 `DayEditModal`의 `modal-backdrop onClick={onClose}`까지 전파되어 TimePicker와 바텀시트가 동시에 닫히던 버그.
+2. (본 기능 추가로 노출) 드래그 거리가 휠 영역의 실제 높이를 초과해 pointerup이 카드 경계 밖(어두운 배경)에서 발생하면, 그 직후 브라우저가 발생시키는 `click` 이벤트가 "바깥 클릭"으로 오인되어 picker가 닫혀버리던 버그. 드래그 시작 시 이동 거리를 추적해 3px 초과 시 `dragged` 플래그를 세우고, pointerup 처리 후 `window`에 캡처 단계 1회용 `click` 리스너를 달아 그 다음 click 이벤트의 `stopPropagation`/`preventDefault`로 흡수.
+
+**이유**: React의 `stopPropagation()`은 synthetic 이벤트의 React-tree 버블만 막을 뿐, 네이티브 DOM 트리에서 이미 일어난 버블링이나 별도로 발생하는 `click` 이벤트 자체를 막지 못함. 드래그 후 마우스 위치가 어디든 의도된 제스처(스크롤)였다면 그 직후의 클릭은 "닫기 의도"가 아니므로, 클릭 자체를 흡수하는 게 좌표 기반 판정보다 안전함.
+
+**관련 파일**: `src/components/TimePicker.tsx`(onDragStart, picker-overlay onClick), `src/index.css`(`.picker-card__col` cursor: grab)
+
+---
+
 ## 2026-06-23 — 홈 헤더 로고: 워드마크 PNG 대신 마크 SVG + 기존 텍스트 조합
 
 **결정**: `~/Downloads/brand/logo-color.png`(마크+"Timerge" 텍스트 통합 이미지) 대신 `logo-mark.svg`(시계 아이콘만)를 `src/assets/logo-mark.svg`로 가져와 기존 그라디언트 "Timerge" 텍스트 왼쪽에 작게 배치. 아이콘 추가 후 텍스트가 상대적으로 커 보여 폰트 크기를 1.5625rem → 1.1875rem으로 축소.

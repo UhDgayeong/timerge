@@ -330,6 +330,7 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <TimePicker
           label={activePicker.field === 'start' ? '시작 시간' : '종료 시간'}
           value={wdTimes[activePicker.wd]?.[activePicker.field] ?? ''}
+          defaultMeridiem={activePicker.field === 'start' ? 'am' : 'pm'}
           onConfirm={(val) => {
             const { wd, field } = activePicker
             setWdTimes((prev) => ({ ...prev, [wd]: { ...prev[wd], [field]: val } }))

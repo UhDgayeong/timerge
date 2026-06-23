@@ -93,6 +93,8 @@ metadata:
 - [x] **앱 아이콘 커스텀 이미지로 교체 (이슈 #16)** — `@capacitor/assets` 패키지 설치, `assets/icon.png`(1024×1024, `~/Downloads/brand/app-icon.png` 원본)을 소스로 `npx capacitor-assets generate --android --ios` 실행. Android(legacy+adaptive+round, 전 dpi)·iOS(AppIcon-512@2x) 아이콘 전부 교체. 같은 명령이 스플래시 화면도 같이 덮어써서 splash 관련 변경분은 전부 revert(아이콘 작업 범위 외). `npm run build && npx cap sync` 완료(iOS는 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` 필요 — CocoaPods가 기본 LANG에서 유니코드 정규화 에러 발생).
 - [x] **TimePicker 데스크톱 마우스 드래그 스크롤 추가** — 휠 스크롤 외 좌클릭 드래그(상/하)로 휠 이동 가능. `pointerType === 'mouse'`로 한정(터치는 기존 네이티브 스크롤 유지). 드래그 중 `cursor: grab/grabbing`. 드래그가 카드 밖에서 release되면 뒤따르는 click이 "바깥 클릭"으로 오인되어 picker와 바텀시트가 동시에 닫히던 버그 2건 함께 수정 — 자세한 내용은 `decisions.md` 참고.
 
+- [x] **TimePicker 기본 시각 9시/6시로 변경** — 종료 시각 기본값을 오후 9:00 → 오후 6:00으로 변경(`parse()`에서 `defaultMeridiem`이 'pm'일 때 `hIdx: 5`로 분기). 설정 화면 요일별 목표 카드(`SettingsView.tsx`)에 빠져있던 `defaultMeridiem` prop도 추가(기존엔 시작/종료 둘 다 오전 9시로 뜨던 버그).
+
 ## 다음 작업 (우선순위 순)
 
 1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).

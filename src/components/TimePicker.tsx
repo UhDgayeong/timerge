@@ -15,7 +15,7 @@ const HOURS = Array.from({ length: 12 }, (_, i) => i + 1)
 const MINS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
 
 function parse(hhmm: string, defaultMeridiem: 'am' | 'pm' = 'am'): { aIdx: number; hIdx: number; mIdx: number } {
-  if (!hhmm) return { aIdx: defaultMeridiem === 'pm' ? 1 : 0, hIdx: 8, mIdx: 0 }
+  if (!hhmm) return { aIdx: defaultMeridiem === 'pm' ? 1 : 0, hIdx: defaultMeridiem === 'pm' ? 5 : 8, mIdx: 0 }
   const [h, m] = hhmm.split(':').map(Number)
   const aIdx = h < 12 ? 0 : 1
   const hour12 = h % 12 || 12

@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { addDays, currentWeekMonday } from '../db/index'
 import { useWeekData } from '../hooks/useWeekData'
+import { calcLastDayDeparture, effectiveFixedTarget, isWorkableDay, lastWorkableDay } from '../domain/calc'
 import type { DayRecord } from '../domain/types'
 import DayCard from './DayCard'
 import DayEditModal from './DayEditModal'
@@ -101,15 +102,39 @@ export default function WeekView() {
             settings={data.settings}
           />
           <div className="day-list">
-            {data.days.map((day) => (
-              <DayCard
-                key={day.id}
-                day={day}
-                isToday={day.date === today}
-                settings={data.settings}
-                onClick={() => setEditDay(day)}
-              />
-            ))}
+            {(() => {
+              const lastDay = lastWorkableDay(data.days)
+              // 마지막 근무일을 제외한 나머지 근무가능일이 모두 실적(recognizedMinutes) 입력된 상태여야
+              // remainingMinutes가 추정이 아닌 확정값이 되어 퇴근 역산이 의미를 가진다.
+              const priorDaysConfirmed =
+                lastDay != null &&
+                data.days
+                  .filter((d) => d.id !== lastDay.id && isWorkableDay(d))
+                  .every((d) => d.recognizedMinutes != null)
+              return data.days.map((day) => {
+                let departureInfo = null
+                if (lastDay != null && day.id === lastDay.id && priorDaysConfirmed) {
+                  // remainingMinutes = goal - recognized - totalFixed (마지막 날 고정목표 포함).
+                  // 퇴근 역산은 "마지막 날에 얼마나 일해야 하나"이므로, 마지막 날 자신의 고정목표를 다시 더한다.
+                  const lastDayFixed = effectiveFixedTarget(lastDay, data.settings) ?? 0
+                  departureInfo = calcLastDayDeparture(
+                    lastDay,
+                    data.summary.remainingMinutes + lastDayFixed,
+                    data.settings.lunchMinutes,
+                  )
+                }
+                return (
+                  <DayCard
+                    key={day.id}
+                    day={day}
+                    isToday={day.date === today}
+                    settings={data.settings}
+                    onClick={() => setEditDay(day)}
+                    departureInfo={departureInfo}
+                  />
+                )
+              })
+            })()}
           </div>
           <div className="week-view__ocr-row">
             <button className="btn--ocr" onClick={() => setShowOcr(true)}>

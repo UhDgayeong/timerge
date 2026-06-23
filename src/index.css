@@ -569,20 +569,55 @@ body {
   position: relative;
 }
 
-.week-header__departure {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  margin-top: 0.35rem;
-  background: var(--accent-soft);
-  border-radius: 8px;
-  padding: 0.3rem 0.6rem;
-  display: inline-block;
-  position: relative;
+.week-header__help {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
 }
 
-.week-header__departure strong {
-  color: var(--text);
+.week-header__help-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--track);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.week-header__help-bubble {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: 240px;
+  background: var(--text);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.45;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+
+.week-header__help-bubble p {
+  margin: 0;
+}
+
+.week-header__help-bubble p + p {
+  margin-top: 0.45rem;
+}
+
+.week-header__help-bubble strong {
+  color: var(--accent);
 }
 
 /* ── DayList ── */
@@ -595,8 +630,9 @@ body {
 /* ── DayCard ── */
 .day-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
   padding: 16px 18px;
   border-radius: 18px;
   background: var(--glass);
@@ -610,6 +646,13 @@ body {
   text-align: left;
   font: inherit;
   transition: background 0.15s, transform 0.05s;
+}
+
+.day-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .day-card:hover {
@@ -740,6 +783,25 @@ body {
   font-size: 0.75rem;
   color: var(--text-dim);
   text-align: right;
+}
+
+.day-card__clock--planned {
+  font-style: italic;
+  color: var(--text-faint);
+}
+
+.day-card__departure {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  align-self: flex-start;
+}
+
+.day-card__departure strong {
+  color: var(--text);
 }
 
 /* ── OCR button (inline) ── */

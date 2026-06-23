@@ -5,6 +5,16 @@ metadata:
   type: project
 ---
 
+## 2026-06-23 — Google OAuth Supabase URL 노출: 부분 해결로 클로즈 (이슈 #12)
+
+**결정**: Google Cloud Console "브랜딩"에서 앱 이름(Timerge)·로고·홈페이지(https://timerge.vercel.app)·승인된 도메인(timerge.vercel.app) 등록 완료. 이로써 OAuth 권한 동의 화면(스코프 설명 화면)은 Supabase URL 대신 Timerge로 표시됨. 다만 로그인 첫 화면인 "계정 선택" 화면에는 여전히 `tsizysmfcpxhxunalxoe.supabase.co (으)로 이동`이 노출되는데, 이는 Google이 OAuth `redirect_uri`의 실제 호스트를 보안/투명성 목적으로 항상 표시하는 영역이라 브랜딩으로 가릴 수 없음. 완전 해결에는 Supabase Custom Domain(Pro 플랜, $25/월~)으로 자체 도메인을 redirect_uri로 써야 함 — 비용 대비 우선순위가 낮다고 판단해 보류하고 이슈를 부분 해결로 클로즈.
+
+**이유**: "승인된 도메인" 필드에 `vercel.app`만 입력하면 "퍼블릭 서픽스 도메인이라 최상위 비공개 도메인이어야 함" 에러 발생 — `timerge.vercel.app` 풀 서브도메인으로 입력해야 통과됨. 동의 화면 브랜딩과 계정 선택 화면은 Google 내부적으로 서로 다른 레이어라, 브랜딩만으로는 후자를 못 고친다는 점을 실측으로 확인.
+
+**관련 파일**: 없음 (Google Cloud Console 설정만, 코드 변경 없음)
+
+---
+
 ## 2026-06-23 — 웹 배포: Vercel 선택 + Supabase URL Configuration 정리
 
 **결정**: 웹 배포 플랫폼으로 GitHub Pages 대신 Vercel 선택. CLI(`npx vercel`)로 직접 배포(GitHub 레포 자동 연동은 실패했지만 CLI 배포는 git 연동 불필요라 무관). `VITE_GOOGLE_CALENDAR_API_KEY`/`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`를 Vercel production+preview 환경변수로 등록 후 `vercel --prod`. 배포 URL: https://timerge.vercel.app (이슈 #11 클로즈)

@@ -31,7 +31,9 @@ export default async function handler(req, res) {
   const title = displayName
     ? `Timerge - ${displayName}님의 이번 주 근무 현황`
     : 'Timerge - 근무 현황 공유'
-  const description = '읽기 전용으로 공유된 근무 현황을 확인해보세요.'
+  const description = displayName
+    ? `${displayName}님이 공유한 근무 현황을 확인해 보세요.`
+    : '공유된 근무 현황을 확인해 보세요.'
   const pageUrl = `${origin}/share/${token}`
 
   const indexRes = await fetch(`${origin}/index.html`)

@@ -5,6 +5,25 @@ metadata:
   type: project
 ---
 
+## 2026-06-24 — 네이티브 앱 자동 배포: OTA(self-hosted) + APK는 Vercel Blob
+
+**결정**: 동료들에게 "그때그때 최신 버전" 배포하는 문제를 두 레이어로 분리해서 해결.
+1. **JS/CSS 변경 → OTA**: `@capgo/capacitor-updater`(self-hosted 모드, **클라우드 계정 불필요**)를 도입. `capacitor.config.ts`에 `autoUpdate: true` + `directUpdate: 'onLaunch'`, `updateUrl: https://timerge.vercel.app/api/updates`. `api/updates.js`(Vercel 서버리스 함수)가 클라이언트가 보낸 `version_name`과 `public/ota/latest.json`(빌드 시 `dist/ota/`로 복사됨)을 비교해 다르면 zip+체크섬 정보를 응답. `npm run ota:publish`로 빌드 결과를 zip화해 `public/ota/`에 생성(이전 zip은 자동 삭제 — git 히스토리에는 여전히 누적되지만 작업 디렉토리는 깔끔하게 유지).
+2. **네이티브 코드 변경(플러그인 추가 등) → APK 직접 배포**: Android 디버그 APK를 Vercel Blob(Public)에 업로드(`npm run apk:publish`, 고정 파일명 `timerge.apk`로 매번 덮어써서 다운로드 URL 불변). 설정 화면에 "Android APK 다운로드" 버튼 추가.
+
+**이유**: Capgo 클라우드는 영구 무료 플랜이 없음(14일 트라이얼 후 최소 $12/월) — "무료/안 복잡하면" 조건에 안 맞아 self-hosted 모드로 전환. OTA는 JS 레벨 변경만 가능(App Store/Play 정책상 허용되는 영역)하고 네이티브 코드 변경은 원천적으로 재설치가 필요하므로, 두 채널을 분리해 운영하는 게 맞음. APK(25MB)는 OTA zip(9MB)보다 커서 git에 매 릴리스 커밋하면 히스토리가 더 빨리 불어나므로 git 대신 Vercel Blob(별도 객체 스토리지, git에 안 쌓임)을 선택.
+
+**삽질 기록**:
+- `@capgo/capacitor-updater` 최신 버전은 Capacitor 8 요구 — 이 프로젝트는 Capacitor 7이라 `7.45.10`(`peerDependencies: "@capacitor/core": ">=7.0.0"`)으로 핀.
+- `capacitor.config.ts`의 `autoUpdate`는 **boolean**, 문자열(`'onLaunch'` 등)은 별도 필드 `directUpdate`의 값 — 처음에 둘을 혼동해서 `autoUpdate: 'onLaunch'`로 잘못 씀. `PluginsConfig`가 인덱스 시그니처(`[key:string]: any`)라 `tsc`가 이 실수를 잡아주지 못함 — 플러그인 옵션은 타입체크를 신뢰하면 안 됨, `node_modules`의 `.d.ts`를 직접 확인해야 함.
+- `vercel env pull`을 환경 지정 없이 실행하면 기본값이 "development" 환경이라, 거기 연결 안 된 기존 `VITE_GOOGLE_CALENDAR_API_KEY`/`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`가 빈 문자열로 `.env.local`을 덮어써버림(Vercel이 "Sensitive" 타입으로 저장한 값은 CLI/대시보드로 다시 읽어올 수 없어 원본 소스(Google Cloud Console, Supabase 대시보드)에서 재복사해야 함). **`vercel env pull` 쓸 때는 반드시 `--environment=production`(또는 필요한 환경) 명시할 것.**
+- `@vercel/blob`의 `put()`은 `.env.local`에 `VERCEL_OIDC_TOKEN`이 있으면 명시한 `BLOB_READ_WRITE_TOKEN`보다 OIDC를 우선 사용해버려 인증 에러 발생 — `put()` 호출 시 `token: process.env.BLOB_READ_WRITE_TOKEN`을 명시적으로 넘겨야 함.
+- `<a className="btn btn--primary">`가 버튼처럼 안 보이고 밑줄 텍스트로 렌더링되는 문제 — 브라우저 기본 `a:link` 규칙(가상클래스 포함 셀렉터)이 단일 클래스 셀렉터보다 specificity가 높아 `color`/`text-decoration`을 덮어씀. `a.btn { text-decoration: none }` / `a.btn--primary { color: #fff }` 별도 규칙으로 해결.
+
+**관련 파일**: `capacitor.config.ts`, `src/main.tsx`, `api/updates.js`, `scripts/publish-ota.mjs`, `scripts/publish-apk.mjs`, `src/components/SettingsView.tsx`, `src/index.css`
+
+---
+
 ## 2026-06-23 — 공유 기능: URL 단방향 공유 + 보안/인프라 결정
 
 **결정**: 근무 현황 공유는 "이번 주(실시간) + 무기한 토큰(언제든 재발급) + 표시 이름은 구글 계정 이름 기본값"으로 구현(이슈 #15). DB 보안은 `weeks`/`days` 테이블에 공개 RLS를 추가하지 않고, `get_shared_week(token)` SECURITY DEFINER 함수 하나만 anon에 EXECUTE 권한을 부여하는 방식 채택 — 공격 표면을 함수 1개로 최소화.

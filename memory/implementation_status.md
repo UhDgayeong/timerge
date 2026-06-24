@@ -101,13 +101,16 @@ metadata:
 - [x] **목표(예정) vs 실적 시간 시각적 구분** — 아직 실적 없는 날의 시간 텍스트는 이탤릭+연한 색 + "목표" 접미사(`day-card__clock--planned`). 타입 배지도 실적 없으면 "근무 예정"처럼 ' 예정' 접미사 추가.
 - [x] **iOS Google 로그인 불안정 문제 수정 (이슈 #13)** — `ios/App/App/Info.plist`에 `CFBundleURLTypes`(`com.timerge.app` 스킴)가 누락되어 있었음. iOS가 OAuth 콜백 리디렉션(`com.timerge.app://`)을 처리할 앱을 찾지 못해 "애플리케이션을 열 수 없습니다" 에러 발생. Supabase Redirect URLs 쪽은 이미 정상 등록되어 있었음 (코드 문제만). Bucky 컴퓨터에서 인증서로 재빌드·재설치 필요.
 - [x] **근무 현황 읽기 전용 공유 링크 (이슈 #15 클로즈)** — 설정/홈 우상단에서 토큰 발급 → `/share/:token` 공개 페이지(로그인 불필요). `get_shared_week` SECURITY DEFINER RPC 1개만 anon 공개, `weeks`/`days` 테이블 자체는 비공개 유지. 표시 이름은 구글 계정 이름 기본값(설정에서 override 가능). 카카오톡 등으로 링크 공유 시 `api/share.js`(Vercel 서버리스 함수)가 동적으로 `og:title`("Timerge - OO님의 이번 주 근무 현황")을 주입해 개인화된 미리보기 제공. 작업 중 두 가지 기존 버그도 함께 수정: ① 설정 동기화가 `updatedAt` 미기록으로 로컬 변경분이 서버에 영구히 반영 안 되던 문제, ② Supabase free tier 일시정지·복원 과정에서 `authenticated` 롤 테이블 GRANT가 초기화되어 전체 클라우드 동기화가 403으로 막혀 있던 문제. 자세한 내용은 `decisions.md` 참고.
+- [x] **네이티브 앱 자동 배포: OTA + APK 다운로드** — `@capgo/capacitor-updater`(self-hosted, 7.45.10 — Capacitor 7 호환) 도입해 JS/CSS 변경은 앱 재실행 시 자동 적용(`api/updates.js` + `public/ota/`, `npm run ota:publish`). 네이티브 코드 변경(플러그인 추가 등) 시엔 Android 디버그 APK를 Vercel Blob에 업로드해 설정 화면 "앱 다운로드" 섹션에서 받게 함(`npm run apk:publish`, 고정 URL `https://1i5qr0ad3ln9ogvr.public.blob.vercel-storage.com/timerge.apk`). v0.2.0으로 배포 완료, `/api/updates`·`/ota/latest.json` 라이브 확인됨. 자세한 내용·삽질 기록은 `decisions.md` 2026-06-24 참고.
 
 ## 다음 작업 (우선순위 순)
 
-1. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
-2. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
-3. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
-4. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
-5. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
-6. **(보류) Google 로그인 계정 선택 화면 Supabase URL 노출** — Supabase Pro 커스텀 도메인 적용 시 재검토 (이슈 #12 클로즈됨, 필요시 재오픈)
-7. **(모니터링) Supabase free tier 테이블 GRANT 재발 가능성** — 프로젝트가 비활성으로 일시정지→복원될 때 `authenticated` 롤의 테이블 권한이 다시 초기화될 수 있음. 동기화가 갑자기 안 되면 `memory/fix-table-grants.sql` 먼저 재실행해서 확인.
+1. **iPhone에서 이번 네이티브 빌드 실기기 테스트** — `npm run cap:ios`로 Xcode 빌드 후 직접 설치해 OTA 플러그인 정상 동작(특히 `notifyAppReady` 호출 누락 시 10초 후 자동 롤백 안 되는지) 확인 필요. 사용자가 진행 중.
+2. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
+3. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.
+4. **앱 스토어 제출** — Apple/Google 개발자 계정, 스크린샷, 개인정보처리방침 준비 (이슈 #6, iOS 개발자 동료와 협업). Apple 로그인 구현 후 진행.
+5. **카카오 로그인** — 비즈앱 심사 통과 후 재활성화
+6. **OCR 정확도 개선** — 클라우드 OCR 전환 여부 검토 (DESIGN.md §6.3)
+7. **(보류) Google 로그인 계정 선택 화면 Supabase URL 노출** — Supabase Pro 커스텀 도메인 적용 시 재검토 (이슈 #12 클로즈됨, 필요시 재오픈)
+8. **(모니터링) Supabase free tier 테이블 GRANT 재발 가능성** — 프로젝트가 비활성으로 일시정지→복원될 때 `authenticated` 롤의 테이블 권한이 다시 초기화될 수 있음. 동기화가 갑자기 안 되면 `memory/fix-table-grants.sql` 먼저 재실행해서 확인.
+9. **(모니터링) git 히스토리 용량 증가** — `public/ota/*.zip`(릴리스당 ~9MB)을 매번 git에 커밋하는 구조라 릴리스가 누적되면 repo clone 속도·용량에 영향. 너무 커지면 OTA zip도 Blob으로 옮기는 걸 재검토.

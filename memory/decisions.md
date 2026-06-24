@@ -5,6 +5,18 @@ metadata:
   type: project
 ---
 
+## 2026-06-24 — OTA 업데이트가 앱에 반영 안 되던 버그: package.json 버전 미상향
+
+**증상**: `npm run ota:publish` → 커밋 → `vercel --prod` 배포까지 정상 수행했고 `/ota/latest.json`의 checksum도 바뀌었는데, 앱을 재실행해도 변경사항(DayCard "근무 중" 표시)이 반영 안 됨.
+
+**원인**: `scripts/publish-ota.mjs`는 `package.json`의 `version`을 OTA 매니페스트의 `version` 필드로 사용한다(스크립트 상단 주석에 "호출 전에 버전을 올려둘 것"이라고 명시돼 있었으나 실제 작업 시 누락됨). 이번 OTA 기능 도입(같은 날) 이후 `version`을 한 번도 올리지 않아 계속 `"0.2.0"`으로 고정 — `api/updates.js`는 `manifest.version === currentVersion`(클라이언트가 보낸 현재 설치 버전)이면 빈 객체 `{}`("업데이트 없음")를 응답하므로, zip 파일 내용·checksum이 바뀌어도 서버가 애초에 업데이트가 있다고 알려주지 않음. 빌드/배포는 전부 성공했기 때문에 에러 없이 조용히 실패하는 형태라 원인 파악이 늦어짐.
+
+**해결**: `package.json` version을 `0.2.0` → `0.2.1`로 상향 후 `ota:publish` 재실행·재배포. `CLAUDE.md` 작업 종료 프로토콜에 "OTA 발행 전 버전 상향" 단계 + 배포 후 `curl .../ota/latest.json`로 버전 확인하는 검증 단계 추가.
+
+**교훈**: 이런 종류의 "버전 문자열 비교로 업데이트 여부 판단" 구조는 버전을 안 올려도 스크립트가 에러를 내지 않고 그냥 똑같은 latest.json을 다시 써버리므로, 휴먼 체크리스트만으로는 또 빠뜨릴 수 있음 — 다음에 또 재발하면 `publish-ota.mjs`가 직접 `package.json` version을 patch 자동 증가시키도록 바꾸는 것을 고려.
+
+---
+
 ## 2026-06-24 — 네이티브 앱 자동 배포: OTA(self-hosted) + APK는 Vercel Blob
 
 **결정**: 동료들에게 "그때그때 최신 버전" 배포하는 문제를 두 레이어로 분리해서 해결.

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { effectiveTarget, formatClock, formatMinutes, isWeekend } from '../domain/calc'
 import type { DayRecord, Settings } from '../domain/types'
 
@@ -34,11 +35,40 @@ export default function DayCard({ day, isToday, settings, onClick, departureInfo
   else if (fixedTarget != null) cardClass += ' day-card--fixed'
   else cardClass += ' day-card--pending'
 
+  // 출퇴근 시각: 실적 세그먼트(완전 입력) > 요일 규칙(예정). 출근만 입력된 부분 실적은 별도 처리.
+  const workSeg = day.segments.find((s) => s.type === 'work' || s.type === 'field')
+  const halfdaySeg = day.segments.find(
+    (s) => s.type === 'halfday-am' || s.type === 'halfday-pm' || s.type === 'halfday',
+  )
+
+  const isPartialClockIn =
+    day.recognizedMinutes == null && workSeg?.startMin != null && workSeg?.endMin == null
+
+  const showElapsed = isToday && departureInfo == null && isPartialClockIn
+
+  const [, tick] = useState(0)
+  useEffect(() => {
+    if (!showElapsed) return
+    const id = setInterval(() => tick((t) => t + 1), 30_000)
+    return () => clearInterval(id)
+  }, [showElapsed])
+
+  const elapsedStr = showElapsed
+    ? (() => {
+        const now = new Date()
+        const nowMin = now.getHours() * 60 + now.getMinutes()
+        const elapsed = nowMin - workSeg!.startMin!
+        return elapsed >= 0 ? formatMinutes(elapsed) : null
+      })()
+    : null
+
   let timeDisplay: string
   if (day.isHoliday) {
     timeDisplay = '0:00'
   } else if (day.recognizedMinutes != null) {
     timeDisplay = formatMinutes(day.recognizedMinutes)
+  } else if (showElapsed) {
+    timeDisplay = elapsedStr ?? '미정'
   } else if (fixedTarget != null) {
     timeDisplay = formatMinutes(fixedTarget)
   } else if (weekend) {
@@ -51,20 +81,13 @@ export default function DayCard({ day, isToday, settings, onClick, departureInfo
   const types = [...new Set(day.segments.map((s) => TYPE_LABEL[s.type] ?? s.type))]
   const typeLabel = day.isHoliday
     ? day.holidayName ?? '공휴일'
-    : types.length > 0
-      ? types.join('+') + (day.recognizedMinutes == null ? ' 예정' : '')
-      : fixedTarget != null
-        ? '예정'
-        : ''
-
-  // 출퇴근 시각: 실적 세그먼트(완전 입력) > 요일 규칙(예정). 출근만 입력된 부분 실적은 별도 처리.
-  const workSeg = day.segments.find((s) => s.type === 'work' || s.type === 'field')
-  const halfdaySeg = day.segments.find(
-    (s) => s.type === 'halfday-am' || s.type === 'halfday-pm' || s.type === 'halfday',
-  )
-
-  const isPartialClockIn =
-    day.recognizedMinutes == null && workSeg?.startMin != null && workSeg?.endMin == null
+    : showElapsed
+      ? (workSeg?.type === 'field' ? '외근' : '근무') + ' 중'
+      : types.length > 0
+        ? types.join('+') + (day.recognizedMinutes == null ? ' 예정' : '')
+        : fixedTarget != null
+          ? '예정'
+          : ''
 
   const isPlannedPreview = day.recognizedMinutes == null && !isPartialClockIn && target?.startMin != null
 

@@ -102,6 +102,7 @@ metadata:
 - [x] **iOS Google 로그인 불안정 문제 수정 (이슈 #13)** — `ios/App/App/Info.plist`에 `CFBundleURLTypes`(`com.timerge.app` 스킴)가 누락되어 있었음. iOS가 OAuth 콜백 리디렉션(`com.timerge.app://`)을 처리할 앱을 찾지 못해 "애플리케이션을 열 수 없습니다" 에러 발생. Supabase Redirect URLs 쪽은 이미 정상 등록되어 있었음 (코드 문제만). Bucky 컴퓨터에서 인증서로 재빌드·재설치 필요.
 - [x] **근무 현황 읽기 전용 공유 링크 (이슈 #15 클로즈)** — 설정/홈 우상단에서 토큰 발급 → `/share/:token` 공개 페이지(로그인 불필요). `get_shared_week` SECURITY DEFINER RPC 1개만 anon 공개, `weeks`/`days` 테이블 자체는 비공개 유지. 표시 이름은 구글 계정 이름 기본값(설정에서 override 가능). 카카오톡 등으로 링크 공유 시 `api/share.js`(Vercel 서버리스 함수)가 동적으로 `og:title`("Timerge - OO님의 이번 주 근무 현황")을 주입해 개인화된 미리보기 제공. 작업 중 두 가지 기존 버그도 함께 수정: ① 설정 동기화가 `updatedAt` 미기록으로 로컬 변경분이 서버에 영구히 반영 안 되던 문제, ② Supabase free tier 일시정지·복원 과정에서 `authenticated` 롤 테이블 GRANT가 초기화되어 전체 클라우드 동기화가 403으로 막혀 있던 문제. 자세한 내용은 `decisions.md` 참고.
 - [x] **네이티브 앱 자동 배포: OTA + APK 다운로드** — `@capgo/capacitor-updater`(self-hosted, 7.45.10 — Capacitor 7 호환) 도입해 JS/CSS 변경은 앱 재실행 시 자동 적용(`api/updates.js` + `public/ota/`, `npm run ota:publish`). 네이티브 코드 변경(플러그인 추가 등) 시엔 Android 디버그 APK를 Vercel Blob에 업로드해 설정 화면 "앱 다운로드" 섹션에서 받게 함(`npm run apk:publish`, 고정 URL `https://1i5qr0ad3ln9ogvr.public.blob.vercel-storage.com/timerge.apk`). v0.2.0으로 배포 완료, `/api/updates`·`/ota/latest.json` 라이브 확인됨. 자세한 내용·삽질 기록은 `decisions.md` 2026-06-24 참고.
+- [x] **오늘 출근만 입력 시 실시간 근무중 표시** — `DayCard.tsx`: 오늘 날짜 + 출근 시각만 저장(퇴근 미입력)된 경우, 우상단 타입 배지가 "근무 예정" 대신 "근무 중"으로, 시간 텍스트("미정")는 출근 시각부터 경과한 시간(`formatMinutes` 재사용, 1시간 미만은 분만 표기)으로 바뀌며 30초마다 갱신. 좌하단 기존 "HH:MM 출근" pill은 그대로 유지.
 
 ## 다음 작업 (우선순위 순)
 

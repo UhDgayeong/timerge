@@ -1111,6 +1111,14 @@ body {
   box-shadow: 0 10px 26px var(--accent-glow);
 }
 
+a.btn {
+  text-decoration: none;
+}
+
+a.btn--primary {
+  color: #fff;
+}
+
 .btn--ghost {
   background: var(--glass);
   border: 1px solid var(--glass-border);

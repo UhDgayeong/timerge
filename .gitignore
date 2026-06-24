@@ -19,3 +19,4 @@ dist-ssr
 # Android Studio IDE 로컬 상태 (기기별로 다름)
 /android/.idea/
 .vercel
+.env*

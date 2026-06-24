@@ -319,6 +319,19 @@ export default function SettingsView({ onClose, theme, onThemeChange }: Props) {
         <AuthSection />
       </section>
 
+      <section className="settings__section">
+        <h3 className="settings__section-title">앱 다운로드</h3>
+        <p className="settings__hint">
+          Android 최신 빌드를 받습니다. 출처를 알 수 없는 앱 설치를 허용해야 설치할 수 있습니다.
+        </p>
+        <a
+          className="btn btn--primary settings__apk-download"
+          href="https://1i5qr0ad3ln9ogvr.public.blob.vercel-storage.com/timerge.apk"
+        >
+          Android APK 다운로드
+        </a>
+      </section>
+
       <ShareSection />
 
       </div>

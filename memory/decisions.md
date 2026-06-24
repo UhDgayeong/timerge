@@ -5,6 +5,22 @@ metadata:
   type: project
 ---
 
+## 2026-06-24 — 공유 링크 버그 2건: capacitor://localhost 노출 + Supabase GRANT 재발
+
+**증상 1**: 설정 화면 맨 아래 공유 카드, 홈 화면 우상단 공유 아이콘 둘 다 동작은 했지만 "재발급" 후 복사된 링크가 `capacitor://localhost/share/<token>` 형태로 나옴 — 받는 사람 브라우저에서 절대 열리지 않는 주소.
+
+**원인 1**: `src/services/share.ts`의 `shareUrl()`이 `window.location.origin`을 사용. 웹에서는 `https://timerge.vercel.app`이지만 네이티브 앱(Capacitor WebView)에서는 origin이 `capacitor://localhost`라서 그대로 링크에 박힘.
+
+**해결 1**: `shareUrl()`을 `window.location.origin` 대신 고정 상수 `PUBLIC_ORIGIN = 'https://timerge.vercel.app'`를 쓰도록 변경. 공유 링크처럼 "외부에서 열릴" URL은 항상 origin이 아니라 고정된 배포 도메인을 써야 한다는 원칙 — 네이티브 래핑 앱에서 `window.location.origin`을 쓰는 코드는 전부 의심해볼 것.
+
+**증상 2 (관련 증상)**: 같은 시점에 헤더 공유 버튼은 "링크 복사에 실패했습니다." 토스트를 띄움. 원인을 추적하니 `memory/implementation_status.md`의 "(모니터링) Supabase free tier 테이블 GRANT 재발 가능성" 항목이 실제로 다시 발생한 것으로 추정 — `ensureShareToken()→syncAll()`이 403으로 throw. `memory/fix-table-grants.sql`을 Supabase SQL Editor에서 재실행해 해결.
+
+**부수 수정**: `ShareSection.tsx`의 `handleCopy`/`handleRegenerate`/`handleSaveName` 세 핸들러 모두 `try/finally`만 있고 `catch`가 없어서, 에러가 나도 토스트 없이 완전히 조용히 실패했음(버그 진단 단계에서 "버튼이 안 보인다"로 잘못 보고된 원인 중 하나). 세 핸들러 모두 `catch`에서 실패 토스트를 띄우도록 추가.
+
+**배포**: 0.2.1 → 0.2.2, `vercel --prod` + `ota:publish` 둘 다 수행, `/ota/latest.json` version 일치 확인.
+
+---
+
 ## 2026-06-24 — OTA 업데이트가 앱에 반영 안 되던 버그: package.json 버전 미상향
 
 **증상**: `npm run ota:publish` → 커밋 → `vercel --prod` 배포까지 정상 수행했고 `/ota/latest.json`의 checksum도 바뀌었는데, 앱을 재실행해도 변경사항(DayCard "근무 중" 표시)이 반영 안 됨.

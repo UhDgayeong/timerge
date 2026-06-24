@@ -35,6 +35,8 @@ export default function ShareSection() {
       setToken(t)
       await navigator.clipboard.writeText(shareUrl(t))
       showStatus('링크가 복사되었습니다.')
+    } catch {
+      showStatus('링크 복사에 실패했습니다.')
     } finally {
       setBusy(false)
     }
@@ -47,6 +49,8 @@ export default function ShareSection() {
       const t = await regenerateShareToken()
       setToken(t)
       showStatus('새 링크가 발급되었습니다.')
+    } catch {
+      showStatus('링크 발급에 실패했습니다.')
     } finally {
       setBusy(false)
     }
@@ -57,6 +61,8 @@ export default function ShareSection() {
     try {
       await setShareDisplayName(displayName)
       showStatus('표시 이름이 저장되었습니다.')
+    } catch {
+      showStatus('저장에 실패했습니다.')
     } finally {
       setBusy(false)
     }

@@ -28,8 +28,10 @@ export async function setShareDisplayName(name: string): Promise<void> {
   await syncAll()
 }
 
+const PUBLIC_ORIGIN = 'https://timerge.vercel.app'
+
 export function shareUrl(token: string): string {
-  return `${window.location.origin}/share/${token}`
+  return `${PUBLIC_ORIGIN}/share/${token}`
 }
 
 export interface SharedDay {

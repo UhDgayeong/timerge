@@ -5,6 +5,18 @@ metadata:
   type: project
 ---
 
+## 2026-06-24 — 홈 카드 우상단 그림자 아티팩트: backdrop-filter+box-shadow 요소의 overflow:hidden 클리핑 실패
+
+**증상**: 네이티브 앱(iOS)에서만 홈 화면 상단 카드 우상단(? 안내 버튼 근처)에 불필요한 그림자가 보임. 웹 프리뷰에서는 재현 안 됨.
+
+**원인**: `.week-header`에 accent 글로우 블롭(`::before`, `position:absolute; top:-30px; right:-20px; filter:blur(20px)`)을 두고 같은 요소의 `overflow:hidden`으로 클리핑하던 구조. 그런데 `.week-header`는 동시에 `box-shadow`와 `backdrop-filter`도 갖고 있음 — iOS WKWebView에서 `backdrop-filter` + `box-shadow`가 함께 있는 요소는 컴포지팅 레이어가 분리되어 `overflow:hidden`이 그 안의 블러된 pseudo-element를 안정적으로 클리핑하지 못하는 경우가 있음(블롭이 모서리 둥근 테두리 밖으로 새어나가 그림자처럼 보임).
+
+**해결**: 글로우를 `.week-header`의 `::before`가 아니라 별도의 자식 div `.week-header__glow`(자체 `overflow:hidden; border-radius:inherit`)로 분리. 클리핑을 담당하는 레이어와 box-shadow/backdrop-filter를 가진 레이어를 분리하면 WKWebView 컴포지팅 문제를 피할 수 있음. **앞으로 글래스 카드에 글로우/블러 장식을 추가할 때는 box-shadow나 backdrop-filter를 가진 요소 자신에게 `overflow:hidden`으로 직접 클리핑시키지 말 것** — 항상 별도의 absolute 자식 래퍼에서 클리핑.
+
+**관련 파일**: `src/index.css`(.week-header, .week-header__glow), `src/components/WeekHeader.tsx`
+
+---
+
 ## 2026-06-24 — 공유 링크 버그 2건: capacitor://localhost 노출 + Supabase GRANT 재발
 
 **증상 1**: 설정 화면 맨 아래 공유 카드, 홈 화면 우상단 공유 아이콘 둘 다 동작은 했지만 "재발급" 후 복사된 링크가 `capacitor://localhost/share/<token>` 형태로 나옴 — 받는 사람 브라우저에서 절대 열리지 않는 주소.

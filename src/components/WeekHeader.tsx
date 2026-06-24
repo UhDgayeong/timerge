@@ -58,6 +58,7 @@ export default function WeekHeader({ week, summary, days, settings }: Props) {
 
   return (
     <div className="week-header">
+      <div className="week-header__glow" />
       <div className="week-header__help" ref={helpRef}>
         <button
           type="button"

@@ -479,11 +479,21 @@ body {
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow);
   position: relative;
-  overflow: hidden;
 }
 
-/* accent glow blob 안에 */
-.week-header::before {
+/* 글로우 블롭을 별도 클리핑 레이어로 분리 — iOS WKWebView에서
+   backdrop-filter + box-shadow가 같은 요소에 있으면 overflow:hidden 클리핑이
+   깨져 블러된 블롭이 모서리 밖으로 새어나가 그림자처럼 보이는 문제 회피 */
+.week-header__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.week-header__glow::before {
   content: '';
   position: absolute;
   top: -30px; right: -20px;
@@ -492,7 +502,6 @@ body {
   background: var(--accent);
   opacity: .18;
   filter: blur(20px);
-  pointer-events: none;
 }
 
 .week-header__range {

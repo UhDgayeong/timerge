@@ -105,6 +105,7 @@ metadata:
 - [x] **오늘 출근만 입력 시 실시간 근무중 표시** — `DayCard.tsx`: 오늘 날짜 + 출근 시각만 저장(퇴근 미입력)된 경우, 우상단 타입 배지가 "근무 예정" 대신 "근무 중"으로, 시간 텍스트("미정")는 출근 시각부터 경과한 시간(`formatMinutes` 재사용, 1시간 미만은 분만 표기)으로 바뀌며 30초마다 갱신. 좌하단 기존 "HH:MM 출근" pill은 그대로 유지.
 - [x] **OTA 업데이트 미반영 버그 수정** — `package.json` version을 OTA 발행 전에 올리지 않아 `api/updates.js`가 계속 "업데이트 없음"으로 응답하던 버그. 0.2.0 → 0.2.1로 상향 후 재발행·재배포, `/api/updates` 응답으로 정상화 확인. `CLAUDE.md` 프로토콜에 버전 상향 필수 단계 + 배포 후 검증 단계 추가. 자세한 내용은 `decisions.md` 2026-06-24 참고.
 - [x] **공유 기능 버그 2건 수정 (0.2.2)** — ① Supabase `authenticated` 롤 테이블 GRANT가 (예상대로) 재초기화되어 공유 토큰 발급이 403으로 실패하던 문제 → `memory/fix-table-grants.sql` 재실행으로 해결. ② `shareUrl()`이 `window.location.origin`을 사용해 네이티브 앱에서 발급한 링크가 `capacitor://localhost/share/...` 형태로 나가던 버그 → 고정된 `https://timerge.vercel.app` 오리진 사용으로 수정. 부수적으로 `ShareSection.tsx`의 `handleCopy`/`handleRegenerate`/`handleSaveName`에 `catch`가 없어 에러 시 무반응으로 실패하던 문제도 수정(토스트 표시). 자세한 내용은 `decisions.md` 2026-06-24 참고.
+- [x] **홈 카드 우상단(? 버튼 쪽) 모서리 그림자 아티팩트 수정** — `WeekHeader.tsx`/`index.css`. 네이티브 앱(iOS WKWebView)에서만 보이던 버그. accent 글로우 블롭(`::before`, blur 20px)이 `box-shadow`+`backdrop-filter`를 같이 가진 `.week-header` 요소의 `overflow:hidden`으로 제대로 클리핑되지 않고 모서리 밖으로 새어나가 그림자처럼 보임. 글로우를 별도의 `.week-header__glow` 자식 div(자체 `overflow:hidden`)로 분리해 클리핑 레이어를 box-shadow/backdrop-filter 요소와 분리함으로써 해결.
 
 ## 다음 작업 (우선순위 순)
 

@@ -48,7 +48,8 @@ export default function ShareSection() {
     try {
       const t = await regenerateShareToken()
       setToken(t)
-      showStatus('새 링크가 발급되었습니다.')
+      await navigator.clipboard.writeText(shareUrl(t))
+      showStatus('새 링크가 발급되어 복사되었습니다.')
     } catch {
       showStatus('링크 발급에 실패했습니다.')
     } finally {

@@ -1253,14 +1253,16 @@ a.btn--primary {
 
 .settings__input {
   width: 5rem;
+  height: 50px;
   padding: 0.6rem;
   border: 1px solid var(--input-border);
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 1.125rem;
   font-weight: 800;
   text-align: center;
   background: var(--glass-strong);
   color: var(--text);
+  box-sizing: border-box;
 }
 
 .settings__unit {
@@ -1273,7 +1275,8 @@ a.btn--primary {
 .settings__save {
   flex: 0 0 auto;
   margin-left: auto;
-  padding: 0.6rem 1.25rem;
+  height: 50px;
+  padding: 0 1.25rem;
   border-radius: 14px;
   background: var(--accent);
   color: #fff;

@@ -1287,6 +1287,8 @@ a.btn--primary {
   cursor: pointer;
 }
 
+.settings__row + .settings__row { margin-top: 0.75rem; }
+
 .settings__row--data { gap: 10px; }
 
 .settings__data-btn {

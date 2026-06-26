@@ -106,10 +106,11 @@ metadata:
 - [x] **OTA 업데이트 미반영 버그 수정** — `package.json` version을 OTA 발행 전에 올리지 않아 `api/updates.js`가 계속 "업데이트 없음"으로 응답하던 버그. 0.2.0 → 0.2.1로 상향 후 재발행·재배포, `/api/updates` 응답으로 정상화 확인. `CLAUDE.md` 프로토콜에 버전 상향 필수 단계 + 배포 후 검증 단계 추가. 자세한 내용은 `decisions.md` 2026-06-24 참고.
 - [x] **공유 기능 버그 2건 수정 (0.2.2)** — ① Supabase `authenticated` 롤 테이블 GRANT가 (예상대로) 재초기화되어 공유 토큰 발급이 403으로 실패하던 문제 → `memory/fix-table-grants.sql` 재실행으로 해결. ② `shareUrl()`이 `window.location.origin`을 사용해 네이티브 앱에서 발급한 링크가 `capacitor://localhost/share/...` 형태로 나가던 버그 → 고정된 `https://timerge.vercel.app` 오리진 사용으로 수정. 부수적으로 `ShareSection.tsx`의 `handleCopy`/`handleRegenerate`/`handleSaveName`에 `catch`가 없어 에러 시 무반응으로 실패하던 문제도 수정(토스트 표시). 자세한 내용은 `decisions.md` 2026-06-24 참고.
 - [x] **홈 카드 우상단(? 버튼 쪽) 모서리 그림자 아티팩트 수정** — `WeekHeader.tsx`/`index.css`. 네이티브 앱(iOS WKWebView)에서만 보이던 버그. accent 글로우 블롭(`::before`, blur 20px)이 `box-shadow`+`backdrop-filter`를 같이 가진 `.week-header` 요소의 `overflow:hidden`으로 제대로 클리핑되지 않고 모서리 밖으로 새어나가 그림자처럼 보임. 글로우를 별도의 `.week-header__glow` 자식 div(자체 `overflow:hidden`)로 분리해 클리핑 레이어를 box-shadow/backdrop-filter 요소와 분리함으로써 해결.
+- [x] **설정 화면 공유 섹션 UI 정돈 (0.2.4~0.2.5)** — ① 표시이름 입력(38px)과 저장 버튼(54px) 높이 불일치 수정: `.settings__input`/`.settings__save` 모두 `height: 50px`로 통일, border-radius도 10px→14px로 아래 데이터 버튼과 맞춤(기본 주간 목표 입력 행도 동일 버그라 같이 고쳐짐). ② 재발급 클릭 시 토큰만 발급되고 클립보드 복사는 안 되던 문제 — `handleRegenerate`에 `navigator.clipboard.writeText` 추가해 발급+복사 한 번에 처리. ③ 입력 행과 링크 버튼 행이 붙어 보이던 간격 부족 — `.settings__row + .settings__row { margin-top: 0.75rem }` 추가(ShareSection에서만 두 row가 연속 배치되는 구조라 다른 화면엔 영향 없음).
 
 ## 다음 작업 (우선순위 순)
 
-1. **사용자가 0.2.2 OTA 반영 후 공유 링크가 `https://timerge.vercel.app/share/...` 형태로 정상 발급되는지 실기기에서 최종 확인** — 앱 완전 종료 후 재실행 필요(`directUpdate: 'onLaunch'`).
+1. **사용자가 0.2.5 OTA 반영 후 공유 섹션(버튼 높이/간격, 재발급 자동 복사) 실기기에서 최종 확인** — 앱 완전 종료 후 재실행 필요(`directUpdate: 'onLaunch'`).
 2. **iPhone에서 이번 네이티브 빌드 실기기 테스트** — `npm run cap:ios`로 Xcode 빌드 후 직접 설치해 OTA 플러그인 정상 동작(특히 `notifyAppReady` 호출 누락 시 10초 후 자동 롤백 안 되는지) 확인 필요. 사용자가 진행 중.
 3. **Apple 로그인 구현** — Bucky 담당 (이슈 #10). Apple Developer 콘솔 설정 + Xcode capability + `@capacitor-community/apple-sign-in` 플러그인. Supabase Apple provider는 이미 설정 완료. iOS 전용 (Android에서는 버튼 숨김).
 4. **iOS 엣지 스와이프(설정→홈) 동작 확인** — 왼쪽 엣지에서 화면 중앙으로 스와이프 시 이전 화면(설정→홈)으로 이동하는 제스처 처리. `history.pushState` + `popstate` 방식이 현재 구현되어 있으나 실기기에서 재확인 필요.

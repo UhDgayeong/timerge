@@ -13,6 +13,12 @@ metadata:
 
 **해결**: 글로우를 `.week-header`의 `::before`가 아니라 별도의 자식 div `.week-header__glow`(자체 `overflow:hidden; border-radius:inherit`)로 분리. 클리핑을 담당하는 레이어와 box-shadow/backdrop-filter를 가진 레이어를 분리하면 WKWebView 컴포지팅 문제를 피할 수 있음. **앞으로 글래스 카드에 글로우/블러 장식을 추가할 때는 box-shadow나 backdrop-filter를 가진 요소 자신에게 `overflow:hidden`으로 직접 클리핑시키지 말 것** — 항상 별도의 absolute 자식 래퍼에서 클리핑.
 
+## 2026-06-26 — 로그인 게이트된 UI(`ShareSection` 등)를 웹 프리뷰에서 시각 확인하는 방법
+
+**문제**: `ShareSection`은 `getUser()` 결과로 `loggedIn`이 true일 때만 실제 버튼들(링크 복사/재발급 등)을 렌더링. 프리뷰 환경에선 Google OAuth 실로그인이 불가능해 레이아웃 버그(버튼 높이 불일치, 행간 간격 부족)를 화면으로 확인할 방법이 없었음.
+
+**해결**: `ShareSection.tsx`의 `setLoggedIn(!!u)`를 임시로 `setLoggedIn(true) // TEMP_PREVIEW_DEBUG`로 바꿔 강제 렌더링시킨 뒤 `preview_screenshot`으로 검증하고, 확인 후 즉시 원복. **앞으로 로그인/인증 게이트가 있는 화면을 프리뷰로 검증해야 할 때는 이 패턴(조건 분기 임시 하드코딩 → 스크린샷 확인 → 즉시 원복)을 재사용할 것.** 단, 원복을 빠뜨리면 인증 체크가 무력화된 채 커밋될 위험이 있으므로 커밋 전 `git diff`로 TEMP_PREVIEW_DEBUG 마커가 남아있지 않은지 항상 확인.
+
 **관련 파일**: `src/index.css`(.week-header, .week-header__glow), `src/components/WeekHeader.tsx`
 
 ---
